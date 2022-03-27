@@ -1,0 +1,20 @@
+defmodule LetorEcom.Repo.Migrations.CreateEcommerceControls do
+  use Ecto.Migration
+
+  def change do
+    create table(:ecommerce_controls, primary_key: false) do
+      add :id, :binary_id, primary_key: true, default: fragment("gen_random_uuid()")
+      add :name, :string
+      add :region, :string
+      add :country, :string
+      add :centre_code_id, references(:centre_code, on_delete: :delete_all, type: :binary_id)
+
+      timestamps(type: :timestamptz)
+    end
+
+    create index(:ecommerce_controls, [:id])
+    create index(:ecommerce_controls, [:centre_code_id])
+    create unique_index(:ecommerce_controls, [:name])
+    create unique_index(:ecommerce_controls, [:region])
+  end
+end
