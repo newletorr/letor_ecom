@@ -14,12 +14,31 @@ defmodule LetorEcom.Catalogue.Sku do
   def changeset(sku, attrs) do
     sku
     |> cast(attrs, [:pickup_centre_id, :code, :item_name])
-    |> validate_required([:pickup_centre_id, :code, :item_name])
+    |> validate_required([:pickup_centre_id, :item_name])
     |> assoc_constraint(:pickup_centre)
     |> unique_constraint(:item_name,
       message: "Item with the same name already exists",
       name: :sku_item_name_pickup_centre_id_index
     )
     |> assoc_constraint(:pickup_centre)
+    |> gen_code
+  end
+
+  defp gen_code(changeset) do
+    case changeset.valid? do
+      true ->
+        alphabet = Enum.to_list(?a..?z) ++ Enum.to_list(?0..?9)
+        length = 4
+        value = for _ <- 1..length, into: "", do: <<Enum.random(alphabet)>>
+
+        actual_value =
+          value
+          |> String.upcase()
+
+        changeset |> put_change(:code, actual_value)
+
+      _ ->
+        changeset
+    end
   end
 end

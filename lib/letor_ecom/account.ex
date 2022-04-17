@@ -5,8 +5,10 @@ defmodule LetorEcom.Account do
 
   import Ecto.Query, warn: false
   alias LetorEcom.Repo
+  alias Ecto.Multi
 
   alias LetorEcom.Account.{Address, User}
+  alias LetorEcom.Transactions.UserWallet
 
   @doc """
   Returns the list of users.
@@ -49,10 +51,25 @@ defmodule LetorEcom.Account do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_user(attrs \\ %{}) do
-    %User{}
-    |> User.changeset(attrs)
-    |> Repo.insert()
+  def register_customer(attrs \\ %{}) do
+    user_changeset = %User{} |> User.changeset(attrs)
+
+    Multi.new()
+    |> Multi.insert(:user, user_changeset)
+    |> Multi.run(:user_wallet, fn repo, %{user: user} ->
+      user_wallet_changeset =
+        %UserWallet{}
+        |> UserWallet.changeset(%{user_id: user.id})
+
+      repo.insert(user_wallet_changeset)
+    end)
+    |> Repo.transaction()
+  end
+
+  def update_cus_pat_referal_points_earned(%User{} = user, attrs) do
+    user
+    |> User.update_referals_earned_changeset(attrs)
+    |> Repo.update()
   end
 
   @doc """
@@ -168,5 +185,101 @@ defmodule LetorEcom.Account do
   """
   def delete_address(%Address{} = address) do
     Repo.delete(address)
+  end
+
+  alias LetorEcom.Account.ReferedList
+
+  @doc """
+  Returns the list of refered_lists.
+
+  ## Examples
+
+      iex> list_refered_lists()
+      [%ReferedList{}, ...]
+
+  """
+  def list_refered_lists do
+    Repo.all(ReferedList)
+  end
+
+  @doc """
+  Gets a single refered_list.
+
+  Raises `Ecto.NoResultsError` if the Refered list does not exist.
+
+  ## Examples
+
+      iex> get_refered_list!(123)
+      %ReferedList{}
+
+      iex> get_refered_list!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_refered_list!(id), do: Repo.get!(ReferedList, id)
+
+  @doc """
+  Creates a refered_list.
+
+  ## Examples
+
+      iex> create_refered_list(%{field: value})
+      {:ok, %ReferedList{}}
+
+      iex> create_refered_list(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_refered_list(attrs \\ %{}) do
+    %ReferedList{}
+    |> ReferedList.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a refered_list.
+
+  ## Examples
+
+      iex> update_refered_list(refered_list, %{field: new_value})
+      {:ok, %ReferedList{}}
+
+      iex> update_refered_list(refered_list, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_refered_list(%ReferedList{} = refered_list, attrs) do
+    refered_list
+    |> ReferedList.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a refered_list.
+
+  ## Examples
+
+      iex> delete_refered_list(refered_list)
+      {:ok, %ReferedList{}}
+
+      iex> delete_refered_list(refered_list)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_refered_list(%ReferedList{} = refered_list) do
+    Repo.delete(refered_list)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking refered_list changes.
+
+  ## Examples
+
+      iex> change_refered_list(refered_list)
+      %Ecto.Changeset{data: %ReferedList{}}
+
+  """
+  def change_refered_list(%ReferedList{} = refered_list, attrs \\ %{}) do
+    ReferedList.changeset(refered_list, attrs)
   end
 end

@@ -3,66 +3,12 @@ defmodule LetorEcom.ControlTest do
 
   alias LetorEcom.Control
 
-  describe "centre_code" do
-    alias LetorEcom.Control.CentreCode
-
-    import LetorEcom.ControlFixtures
-
-    @invalid_attrs %{centre_name: nil}
-
-    test "list_centre_code/0 returns all centre_code" do
-      centre_code = centre_code_fixture()
-      assert Control.list_centre_code() == [centre_code]
-    end
-
-    test "get_centre_code!/1 returns the centre_code with given id" do
-      centre_code = centre_code_fixture()
-      assert Control.get_centre_code!(centre_code.id) == centre_code
-    end
-
-    test "create_centre_code/1 with valid data creates a centre_code" do
-      valid_attrs = %{centre_name: "some centre_name"}
-
-      assert {:ok, %CentreCode{} = centre_code} = Control.create_centre_code(valid_attrs)
-      assert centre_code.centre_name == "some centre_name"
-    end
-
-    test "create_centre_code/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Control.create_centre_code(@invalid_attrs)
-    end
-
-    test "update_centre_code/2 with valid data updates the centre_code" do
-      centre_code = centre_code_fixture()
-
-      update_attrs = %{
-        centre_name: "some updated centre_name"
-      }
-
-      assert {:ok, %CentreCode{} = centre_code} =
-               Control.update_centre_code(centre_code, update_attrs)
-
-      assert centre_code.centre_name == "some updated centre_name"
-    end
-
-    test "update_centre_code/2 with invalid data returns error changeset" do
-      centre_code = centre_code_fixture()
-      assert {:error, %Ecto.Changeset{}} = Control.update_centre_code(centre_code, @invalid_attrs)
-      assert centre_code == Control.get_centre_code!(centre_code.id)
-    end
-
-    test "delete_centre_code/1 deletes the centre_code" do
-      centre_code = centre_code_fixture()
-      assert {:ok, %CentreCode{}} = Control.delete_centre_code(centre_code)
-      assert_raise Ecto.NoResultsError, fn -> Control.get_centre_code!(centre_code.id) end
-    end
-  end
-
   describe "ecommerce_controls" do
     alias LetorEcom.Control.EcommerceControl
 
     import LetorEcom.ControlFixtures
 
-    @invalid_attrs %{country: nil, name: nil, region: nil, centre_code_id: nil}
+    @invalid_attrs %{country: nil, name: nil, region: nil}
 
     test "list_ecommerce_controls/0 returns all ecommerce_controls" do
       ecommerce_control = ecommerce_control_fixture()
@@ -75,13 +21,10 @@ defmodule LetorEcom.ControlTest do
     end
 
     test "create_ecommerce_control/1 with valid data creates a ecommerce_control" do
-      centre_code = centre_code_fixture()
-
       valid_attrs = %{
         country: "some country",
         name: "some name",
-        region: "some region",
-        centre_code_id: centre_code.id
+        region: "some region"
       }
 
       assert {:ok, %EcommerceControl{} = ecommerce_control} =
@@ -90,7 +33,6 @@ defmodule LetorEcom.ControlTest do
       assert ecommerce_control.country == "some country"
       assert ecommerce_control.name == "some name"
       assert ecommerce_control.region == "some region"
-      assert ecommerce_control.centre_code_id == centre_code.id
     end
 
     test "create_ecommerce_control/1 with invalid data returns error changeset" do
@@ -98,14 +40,12 @@ defmodule LetorEcom.ControlTest do
     end
 
     test "update_ecommerce_control/2 with valid data updates the ecommerce_control" do
-      centre_code = centre_code_fixture()
       ecommerce_control = ecommerce_control_fixture()
 
       update_attrs = %{
         country: "some updated country",
         name: "some updated name",
-        region: "some updated region",
-        centre_code_id: centre_code.id
+        region: "some updated region"
       }
 
       assert {:ok, %EcommerceControl{} = ecommerce_control} =
@@ -114,7 +54,6 @@ defmodule LetorEcom.ControlTest do
       assert ecommerce_control.country == "some updated country"
       assert ecommerce_control.name == "some updated name"
       assert ecommerce_control.region == "some updated region"
-      assert ecommerce_control.centre_code_id == centre_code.id
     end
 
     test "update_ecommerce_control/2 with invalid data returns error changeset" do
@@ -133,6 +72,160 @@ defmodule LetorEcom.ControlTest do
       assert_raise Ecto.NoResultsError, fn ->
         Control.get_ecommerce_control!(ecommerce_control.id)
       end
+    end
+  end
+
+  describe "location" do
+    alias LetorEcom.Control.Location
+
+    import LetorEcom.ControlFixtures
+
+    @invalid_attrs %{
+      city: nil,
+      country: nil,
+      location_area: nil,
+      location_coordinates: nil,
+      postal_code: nil,
+      state: nil
+    }
+
+    test "list_location/0 returns all location" do
+      location = location_fixture()
+      assert Control.list_location() == [location]
+    end
+
+    test "get_location!/1 returns the location with given id" do
+      location = location_fixture()
+      assert Control.get_location!(location.id) == location
+    end
+
+    test "create_location/1 with valid data creates a location" do
+      valid_attrs = %{
+        city: "some city",
+        country: "some country",
+        location_area: "some location_area",
+        location_coordinates: "some location_coordinates",
+        postal_code: "some postal_code",
+        state: "some state"
+      }
+
+      assert {:ok, %Location{} = location} = Control.create_location(valid_attrs)
+      assert location.city == "some city"
+      assert location.country == "some country"
+      assert location.location_area == "some location_area"
+      assert location.location_coordinates == "some location_coordinates"
+      assert location.postal_code == "some postal_code"
+      assert location.state == "some state"
+    end
+
+    test "create_location/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Control.create_location(@invalid_attrs)
+    end
+
+    test "update_location/2 with valid data updates the location" do
+      location = location_fixture()
+
+      update_attrs = %{
+        city: "some updated city",
+        country: "some updated country",
+        location_area: "some updated location_area",
+        location_coordinates: "some updated location_coordinates",
+        postal_code: "some updated postal_code",
+        state: "some updated state"
+      }
+
+      assert {:ok, %Location{} = location} = Control.update_location(location, update_attrs)
+      assert location.city == "some updated city"
+      assert location.country == "some updated country"
+      assert location.location_area == "some updated location_area"
+      assert location.location_coordinates == "some updated location_coordinates"
+      assert location.postal_code == "some updated postal_code"
+      assert location.state == "some updated state"
+    end
+
+    test "update_location/2 with invalid data returns error changeset" do
+      location = location_fixture()
+      assert {:error, %Ecto.Changeset{}} = Control.update_location(location, @invalid_attrs)
+      assert location == Control.get_location!(location.id)
+    end
+
+    test "delete_location/1 deletes the location" do
+      location = location_fixture()
+      assert {:ok, %Location{}} = Control.delete_location(location)
+      assert_raise Ecto.NoResultsError, fn -> Control.get_location!(location.id) end
+    end
+
+    test "change_location/1 returns a location changeset" do
+      location = location_fixture()
+      assert %Ecto.Changeset{} = Control.change_location(location)
+    end
+  end
+
+  describe "covered_institutions" do
+    alias LetorEcom.Control.CoveredInstitution
+
+    import LetorEcom.ControlFixtures
+
+    @invalid_attrs %{campus_name: nil, name: nil}
+
+    test "list_covered_institutions/0 returns all covered_institutions" do
+      covered_institution = covered_institution_fixture()
+      assert Control.list_covered_institutions() == [covered_institution]
+    end
+
+    test "get_covered_institution!/1 returns the covered_institution with given id" do
+      covered_institution = covered_institution_fixture()
+      assert Control.get_covered_institution!(covered_institution.id) == covered_institution
+    end
+
+    test "create_covered_institution/1 with valid data creates a covered_institution" do
+      valid_attrs = %{campus_name: "some campus_name", name: "some name"}
+
+      assert {:ok, %CoveredInstitution{} = covered_institution} =
+               Control.create_covered_institution(valid_attrs)
+
+      assert covered_institution.campus_name == "some campus_name"
+      assert covered_institution.name == "some name"
+    end
+
+    test "create_covered_institution/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Control.create_covered_institution(@invalid_attrs)
+    end
+
+    test "update_covered_institution/2 with valid data updates the covered_institution" do
+      covered_institution = covered_institution_fixture()
+      update_attrs = %{campus_name: "some updated campus_name", name: "some updated name"}
+
+      assert {:ok, %CoveredInstitution{} = covered_institution} =
+               Control.update_covered_institution(covered_institution, update_attrs)
+
+      assert covered_institution.campus_name == "some updated campus_name"
+      assert covered_institution.name == "some updated name"
+    end
+
+    test "update_covered_institution/2 with invalid data returns error changeset" do
+      covered_institution = covered_institution_fixture()
+
+      assert {:error, %Ecto.Changeset{}} =
+               Control.update_covered_institution(covered_institution, @invalid_attrs)
+
+      assert covered_institution == Control.get_covered_institution!(covered_institution.id)
+    end
+
+    test "delete_covered_institution/1 deletes the covered_institution" do
+      covered_institution = covered_institution_fixture()
+
+      assert {:ok, %CoveredInstitution{}} =
+               Control.delete_covered_institution(covered_institution)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Control.get_covered_institution!(covered_institution.id)
+      end
+    end
+
+    test "change_covered_institution/1 returns a covered_institution changeset" do
+      covered_institution = covered_institution_fixture()
+      assert %Ecto.Changeset{} = Control.change_covered_institution(covered_institution)
     end
   end
 end

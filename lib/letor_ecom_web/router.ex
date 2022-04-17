@@ -14,10 +14,11 @@ defmodule LetorEcomWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", LetorEcomWeb do
+  scope "/admin", LetorEcomWeb do
     pipe_through :browser
 
     get "/", PageController, :index
+    resources "/sku", SkuController
   end
 
   # Other scopes may use custom stacks.

@@ -28,7 +28,7 @@ defmodule LetorEcom.Repo.Migrations.CreateUsers do
       add :referal_code, :string
       add :first_referal_earned, :boolean, default: false, null: false
       add :second_referal_earned, :string
-      add :third_referal_eearned, :string
+      add :third_referal_earned, :string
       add :fourth_referal_earned, :string
       add :referal_points_earned, :string
 

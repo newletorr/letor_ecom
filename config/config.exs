@@ -8,6 +8,7 @@
 import Config
 
 config :letor_ecom,
+  confirmation_code_expire_hours: 1,
   ecto_repos: [LetorEcom.Repo],
   generators: [binary_id: true]
 

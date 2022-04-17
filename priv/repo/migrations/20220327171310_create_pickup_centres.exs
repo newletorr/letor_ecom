@@ -1,7 +1,9 @@
 defmodule LetorEcom.Repo.Migrations.CreatePickupCentres do
   use Ecto.Migration
 
-  def change do
+  def up do
+    execute("CREATE EXTENSION IF NOT EXISTS postgis")
+
     create table(:pickup_centres, primary_key: false) do
       add :id, :binary_id, primary_key: true, default: fragment("gen_random_uuid()")
       add :address, :string, null: false
@@ -10,8 +12,7 @@ defmodule LetorEcom.Repo.Migrations.CreatePickupCentres do
       add :city, :string, null: false
       add :state, :string, null: false
       add :country, :string, null: false
-      add :location_coordinates, :string
-      add :centre_code_id, references(:centre_code, on_delete: :nothing, type: :binary_id)
+      add :centre_code, :string
 
       add :ecommerce_control_id,
           references(:ecommerce_controls, on_delete: :nothing, type: :binary_id)
@@ -20,10 +21,22 @@ defmodule LetorEcom.Repo.Migrations.CreatePickupCentres do
     end
 
     create index(:pickup_centres, :id)
-    create index(:pickup_centres, [:centre_code_id])
     create index(:pickup_centres, [:ecommerce_control_id])
     create unique_index(:pickup_centres, [:name])
     create unique_index(:pickup_centres, [:area])
     create unique_index(:pickup_centres, [:address])
+
+    execute(
+      "SELECT AddGeometryColumn('pickup_centres', 'longitude_and_latitude_point', 4326, 'POINT', 2)"
+    )
+
+    execute(
+      "CREATE INDEX pickup_centres_longitude_and_latitude_point_index on pickup_centres USING gist (longitude_and_latitude_point)"
+    )
+  end
+
+  def down do
+    drop table(:pickup_centres)
+    execute("DROP EXTENSION IF EXISTS postgis")
   end
 end

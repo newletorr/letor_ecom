@@ -7,7 +7,8 @@ config :letor_ecom, LetorEcom.Repo,
   hostname: "localhost",
   database: "letor_ecom_dev",
   show_sensitive_data_on_connection_error: true,
-  pool_size: 10
+  pool_size: 10,
+  types: LetorEcom.PostgresTypes
 
 # For development, we disable any cache and enable
 # debugging and code reloading.

@@ -1,7 +1,8 @@
 defmodule LetorEcom.Account.User do
   use LetorEcom.SchemaHelper
-  alias LetorEcom.Account.Address
-
+  alias LetorEcom.Account.{Address, ReferedList}
+  alias LetorEcom.Transactions.UserWallet
+  @required_fields [:email, :first_name, :last_name, :address, :date_of_birth, :phone]
   @email_regex ~r/^[A-Za-z0-9._%+-+']+@[A-Za-z0-9.-]+\.[A-Za-z]+$/
   schema "users" do
     field :address, :string, read_after_writes: true
@@ -32,56 +33,24 @@ defmodule LetorEcom.Account.User do
     field :role, :string, read_after_writes: true
     field :second_referal_earned, :string
     field :sign_in_count, :integer
-    field :third_referal_eearned, :string
+    field :third_referal_earned, :string
+    field(:inputed_code, :string, virtual: true)
     has_one(:addresses, Address)
+    has_one(:user_wallet, UserWallet)
+    has_many(:refered_lists, ReferedList)
 
     timestamps(type: :utc_datetime)
+  end
+
+  defp all_fields do
+    __MODULE__.__schema__(:fields)
   end
 
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [
-      :email,
-      :facebood_id,
-      :image,
-      :first_name,
-      :last_name,
-      :full_name,
-      :business_name,
-      :address,
-      :date_of_birth,
-      :phone,
-      :role,
-      :current_sign_in_location,
-      :current_sign_at,
-      :last_sign_in_at,
-      :sign_in_count,
-      :current_sign_in_ip,
-      :last_sign_in_ip,
-      :confirmation_code,
-      :confirmed_at,
-      :confirmation_sent_at,
-      :referal_code,
-      :first_referal_earned,
-      :second_referal_earned,
-      :third_referal_eearned,
-      :fourth_referal_earned,
-      :referal_points_earned,
-      :password,
-      :password_confirmation,
-      :password_hash
-    ])
-    |> validate_required([
-      :email,
-      :first_name,
-      :last_name,
-      :address,
-      :date_of_birth,
-      :phone
-      # :password,
-      # :password_confirmation
-    ])
+    |> cast(attrs, all_fields())
+    |> validate_required(@required_fields)
     |> validate_format(:email, @email_regex, message: "Email must have the @ sign and no spaces")
     |> update_change(:email, &String.downcase/1)
     |> validate_length(:email, min: 5, max: 160)
@@ -111,6 +80,18 @@ defmodule LetorEcom.Account.User do
     |> set_role("customer")
     |> valid_phone(:phone)
     |> create_full_name()
+  end
+
+  def update_referals_earned_changeset(user, attrs) do
+    user
+    |> cast(attrs, [
+      :referal_points_earned,
+      :cum_referal_earned_points,
+      :first_referal_earned,
+      :second_referal_earned,
+      :third_referal_earned,
+      :fourth_referal_earned
+    ])
   end
 
   def password_changeset(user, attrs) do
@@ -150,8 +131,7 @@ defmodule LetorEcom.Account.User do
     changeset
   end
 
-  @spec valid_phone(Ecto.Changeset.t(), atom()) :: <<_::200>> | Ecto.Changeset.t()
-  def valid_phone(changeset, field) do
+  defp valid_phone(changeset, field) do
     phone = get_field(changeset, field)
 
     if is_nil(phone) == false do

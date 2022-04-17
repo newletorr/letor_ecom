@@ -17,9 +17,9 @@ defmodule LetorEcom.AccountFixtures do
         email: "#{Enum.random(1..100)}some@email.com",
         first_name: "first_name",
         last_name: "last_name",
-        phone: "081688918#{Enum.random(10..99)}"
-        # password: "Password1@",
-        # password_confirmation: "Password1@"
+        phone: "081688918#{Enum.random(10..99)}",
+        password: "Password1@",
+        password_confirmation: "Password1@"
       })
       |> LetorEcom.Account.create_user()
 
@@ -45,5 +45,20 @@ defmodule LetorEcom.AccountFixtures do
       |> LetorEcom.Account.create_address()
 
     address
+  end
+
+  @doc """
+  Generate a refered_list.
+  """
+  def refered_list_fixture(attrs \\ %{}) do
+    {:ok, refered_list} =
+      attrs
+      |> Enum.into(%{
+        date_activated: ~U[2022-04-15 12:58:00Z],
+        refered_person_id: "some refered_person_id"
+      })
+      |> LetorEcom.Account.create_refered_list()
+
+    refered_list
   end
 end

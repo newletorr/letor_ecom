@@ -6,88 +6,7 @@ defmodule LetorEcom.Control do
   import Ecto.Query, warn: false
   alias LetorEcom.Repo
 
-  alias LetorEcom.Control.{CentreCode, EcommerceControl}
-
-  @doc """
-  Returns the list of centre_code.
-
-  ## Examples
-
-      iex> list_centre_code()
-      [%CentreCode{}, ...]
-
-  """
-  def list_centre_code do
-    Repo.all(CentreCode)
-  end
-
-  @doc """
-  Gets a single centre_code.
-
-  Raises `Ecto.NoResultsError` if the Centre code does not exist.
-
-  ## Examples
-
-      iex> get_centre_code!(123)
-      %CentreCode{}
-
-      iex> get_centre_code!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_centre_code!(id), do: Repo.get!(CentreCode, id)
-
-  @doc """
-  Creates a centre_code.
-
-  ## Examples
-
-      iex> create_centre_code(%{field: value})
-      {:ok, %CentreCode{}}
-
-      iex> create_centre_code(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_centre_code(attrs \\ %{}) do
-    %CentreCode{}
-    |> CentreCode.changeset(attrs)
-    |> Repo.insert()
-  end
-
-  @doc """
-  Updates a centre_code.
-
-  ## Examples
-
-      iex> update_centre_code(centre_code, %{field: new_value})
-      {:ok, %CentreCode{}}
-
-      iex> update_centre_code(centre_code, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_centre_code(%CentreCode{} = centre_code, attrs) do
-    centre_code
-    |> CentreCode.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a centre_code.
-
-  ## Examples
-
-      iex> delete_centre_code(centre_code)
-      {:ok, %CentreCode{}}
-
-      iex> delete_centre_code(centre_code)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_centre_code(%CentreCode{} = centre_code) do
-    Repo.delete(centre_code)
-  end
+  alias LetorEcom.Control.{CoveredInstitution, EcommerceControl, Location}
 
   @doc """
   Returns the list of ecommerce_controls.
@@ -168,5 +87,167 @@ defmodule LetorEcom.Control do
   """
   def delete_ecommerce_control(%EcommerceControl{} = ecommerce_control) do
     Repo.delete(ecommerce_control)
+  end
+
+  @doc """
+  Returns the list of location.
+
+  ## Examples
+
+      iex> list_location()
+      [%Location{}, ...]
+
+  """
+  def list_location do
+    Repo.all(Location)
+  end
+
+  @doc """
+  Gets a single location.
+
+  Raises `Ecto.NoResultsError` if the Location does not exist.
+
+  ## Examples
+
+      iex> get_location!(123)
+      %Location{}
+
+      iex> get_location!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_location!(id), do: Repo.get!(Location, id)
+
+  @doc """
+  Creates a location.
+
+  ## Examples
+
+      iex> create_location(%{field: value})
+      {:ok, %Location{}}
+
+      iex> create_location(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_location(attrs \\ %{}) do
+    %Location{}
+    |> Location.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a location.
+
+  ## Examples
+
+      iex> update_location(location, %{field: new_value})
+      {:ok, %Location{}}
+
+      iex> update_location(location, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_location(%Location{} = location, attrs) do
+    location
+    |> Location.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a location.
+
+  ## Examples
+
+      iex> delete_location(location)
+      {:ok, %Location{}}
+
+      iex> delete_location(location)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_location(%Location{} = location) do
+    Repo.delete(location)
+  end
+
+  @doc """
+  Returns the list of covered_institutions.
+
+  ## Examples
+
+      iex> list_covered_institutions()
+      [%CoveredInstitution{}, ...]
+
+  """
+  def list_covered_institutions do
+    Repo.all(CoveredInstitution)
+  end
+
+  @doc """
+  Gets a single covered_institution.
+
+  Raises `Ecto.NoResultsError` if the Covered institution does not exist.
+
+  ## Examples
+
+      iex> get_covered_institution!(123)
+      %CoveredInstitution{}
+
+      iex> get_covered_institution!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_covered_institution!(id), do: Repo.get!(CoveredInstitution, id)
+
+  @doc """
+  Creates a covered_institution.
+
+  ## Examples
+
+      iex> create_covered_institution(%{field: value})
+      {:ok, %CoveredInstitution{}}
+
+      iex> create_covered_institution(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_covered_institution(attrs \\ %{}) do
+    %CoveredInstitution{}
+    |> CoveredInstitution.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a covered_institution.
+
+  ## Examples
+
+      iex> update_covered_institution(covered_institution, %{field: new_value})
+      {:ok, %CoveredInstitution{}}
+
+      iex> update_covered_institution(covered_institution, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_covered_institution(%CoveredInstitution{} = covered_institution, attrs) do
+    covered_institution
+    |> CoveredInstitution.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a covered_institution.
+
+  ## Examples
+
+      iex> delete_covered_institution(covered_institution)
+      {:ok, %CoveredInstitution{}}
+
+      iex> delete_covered_institution(covered_institution)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_covered_institution(%CoveredInstitution{} = covered_institution) do
+    Repo.delete(covered_institution)
   end
 end

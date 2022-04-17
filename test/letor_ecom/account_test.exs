@@ -184,4 +184,72 @@ defmodule LetorEcom.AccountTest do
       assert_raise Ecto.NoResultsError, fn -> Account.get_address!(address.id) end
     end
   end
+
+  describe "refered_lists" do
+    alias LetorEcom.Account.ReferedList
+
+    import LetorEcom.AccountFixtures
+
+    @invalid_attrs %{date_activated: nil, refered_person_id: nil}
+
+    test "list_refered_lists/0 returns all refered_lists" do
+      refered_list = refered_list_fixture()
+      assert Account.list_refered_lists() == [refered_list]
+    end
+
+    test "get_refered_list!/1 returns the refered_list with given id" do
+      refered_list = refered_list_fixture()
+      assert Account.get_refered_list!(refered_list.id) == refered_list
+    end
+
+    test "create_refered_list/1 with valid data creates a refered_list" do
+      valid_attrs = %{
+        date_activated: ~U[2022-04-15 12:58:00Z],
+        refered_person_id: "some refered_person_id"
+      }
+
+      assert {:ok, %ReferedList{} = refered_list} = Account.create_refered_list(valid_attrs)
+      assert refered_list.date_activated == ~U[2022-04-15 12:58:00Z]
+      assert refered_list.refered_person_id == "some refered_person_id"
+    end
+
+    test "create_refered_list/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Account.create_refered_list(@invalid_attrs)
+    end
+
+    test "update_refered_list/2 with valid data updates the refered_list" do
+      refered_list = refered_list_fixture()
+
+      update_attrs = %{
+        date_activated: ~U[2022-04-16 12:58:00Z],
+        refered_person_id: "some updated refered_person_id"
+      }
+
+      assert {:ok, %ReferedList{} = refered_list} =
+               Account.update_refered_list(refered_list, update_attrs)
+
+      assert refered_list.date_activated == ~U[2022-04-16 12:58:00Z]
+      assert refered_list.refered_person_id == "some updated refered_person_id"
+    end
+
+    test "update_refered_list/2 with invalid data returns error changeset" do
+      refered_list = refered_list_fixture()
+
+      assert {:error, %Ecto.Changeset{}} =
+               Account.update_refered_list(refered_list, @invalid_attrs)
+
+      assert refered_list == Account.get_refered_list!(refered_list.id)
+    end
+
+    test "delete_refered_list/1 deletes the refered_list" do
+      refered_list = refered_list_fixture()
+      assert {:ok, %ReferedList{}} = Account.delete_refered_list(refered_list)
+      assert_raise Ecto.NoResultsError, fn -> Account.get_refered_list!(refered_list.id) end
+    end
+
+    test "change_refered_list/1 returns a refered_list changeset" do
+      refered_list = refered_list_fixture()
+      assert %Ecto.Changeset{} = Account.change_refered_list(refered_list)
+    end
+  end
 end
