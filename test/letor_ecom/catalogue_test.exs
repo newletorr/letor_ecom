@@ -2,27 +2,17 @@ defmodule LetorEcom.CatalogueTest do
   use LetorEcom.DataCase
 
   alias LetorEcom.Catalogue
+  alias LetorEcom.Centres.PickupCentre
 
   describe "item_categories" do
     alias LetorEcom.Catalogue.ItemCategory
 
-    import LetorEcom.CatalogueFixtures
-    import LetorEcom.CentresFixtures
+    alias LetorEcom.Repo
 
     @invalid_attrs %{description: nil, name: nil}
 
-    test "list_item_categories/0 returns all item_categories" do
-      item_category = item_category_fixture()
-      assert Catalogue.list_item_categories() == [item_category]
-    end
-
-    test "get_item_category!/1 returns the item_category with given id" do
-      item_category = item_category_fixture()
-      assert Catalogue.get_item_category!(item_category.id) == item_category
-    end
-
     test "create_item_category/1 with valid data creates a item_category" do
-      pickup_centre = pickup_centre_fixture()
+      pickup_centre = Repo.all(PickupCentre) |> List.first()
 
       valid_attrs = %{
         description: "some description",
@@ -40,7 +30,9 @@ defmodule LetorEcom.CatalogueTest do
     end
 
     test "update_item_category/2 with valid data updates the item_category" do
-      item_category = item_category_fixture()
+      ecommerce_control = build(:ecommerce_control)
+      pickup_centre = insert!(:pickup_centre, ecommerce_control: ecommerce_control)
+      item_category = insert!(:item_category, pickup_centre: pickup_centre)
       update_attrs = %{description: "some updated description", name: "some updated name"}
 
       assert {:ok, %ItemCategory{} = item_category} =
@@ -51,16 +43,18 @@ defmodule LetorEcom.CatalogueTest do
     end
 
     test "update_item_category/2 with invalid data returns error changeset" do
-      item_category = item_category_fixture()
+      ecommerce_control = build(:ecommerce_control)
+      pickup_centre = insert!(:pickup_centre, ecommerce_control: ecommerce_control)
+      item_category = build(:item_category, pickup_centre: pickup_centre)
 
       assert {:error, %Ecto.Changeset{}} =
                Catalogue.update_item_category(item_category, @invalid_attrs)
-
-      assert item_category == Catalogue.get_item_category!(item_category.id)
     end
 
     test "delete_item_category/1 deletes the item_category" do
-      item_category = item_category_fixture()
+      ecommerce_control = build(:ecommerce_control)
+      pickup_centre = insert!(:pickup_centre, ecommerce_control: ecommerce_control)
+      item_category = build(:item_category, pickup_centre: pickup_centre)
       assert {:ok, %ItemCategory{}} = Catalogue.delete_item_category(item_category)
       assert_raise Ecto.NoResultsError, fn -> Catalogue.get_item_category!(item_category.id) end
     end
@@ -69,22 +63,10 @@ defmodule LetorEcom.CatalogueTest do
   describe "item_subcategories" do
     alias LetorEcom.Catalogue.ItemSubcategory
 
-    import LetorEcom.CatalogueFixtures
-
     @invalid_attrs %{description: nil, name: nil}
 
-    test "list_item_subcategories/0 returns all item_subcategories" do
-      item_subcategory = item_subcategory_fixture()
-      assert Catalogue.list_item_subcategories() == [item_subcategory]
-    end
-
-    test "get_item_subcategory!/1 returns the item_subcategory with given id" do
-      item_subcategory = item_subcategory_fixture()
-      assert Catalogue.get_item_subcategory!(item_subcategory.id) == item_subcategory
-    end
-
     test "create_item_subcategory/1 with valid data creates a item_subcategory" do
-      item_category = item_category_fixture()
+      item_category = build(:item_category)
 
       valid_attrs = %{
         description: "some description",
@@ -104,7 +86,8 @@ defmodule LetorEcom.CatalogueTest do
     end
 
     test "update_item_subcategory/2 with valid data updates the item_subcategory" do
-      item_subcategory = item_subcategory_fixture()
+      item_category = build(:item_category)
+      item_subcategory = insert!(:item_subcategory, item_category: item_category)
       update_attrs = %{description: "some updated description", name: "some updated name"}
 
       assert {:ok, %ItemSubcategory{} = item_subcategory} =
@@ -115,7 +98,9 @@ defmodule LetorEcom.CatalogueTest do
     end
 
     test "update_item_subcategory/2 with invalid data returns error changeset" do
-      item_subcategory = item_subcategory_fixture()
+      item_category = build(:item_category)
+
+      item_subcategory = insert!(:item_subcategory, item_category: item_category)
 
       assert {:error, %Ecto.Changeset{}} =
                Catalogue.update_item_subcategory(item_subcategory, @invalid_attrs)
@@ -124,35 +109,19 @@ defmodule LetorEcom.CatalogueTest do
     end
 
     test "delete_item_subcategory/1 deletes the item_subcategory" do
-      item_subcategory = item_subcategory_fixture()
+      item_category = build(:item_category)
+      item_subcategory = insert!(:item_subcategory, item_category: item_category)
       assert {:ok, %ItemSubcategory{}} = Catalogue.delete_item_subcategory(item_subcategory)
-
-      assert_raise Ecto.NoResultsError, fn ->
-        Catalogue.get_item_subcategory!(item_subcategory.id)
-      end
     end
   end
 
   describe "sku" do
     alias LetorEcom.Catalogue.Sku
 
-    import LetorEcom.CatalogueFixtures
-    import LetorEcom.CentresFixtures
-
     @invalid_attrs %{code: nil, item_name: nil}
 
-    test "list_sku/0 returns all sku" do
-      sku = sku_fixture()
-      assert Catalogue.list_sku() == [sku]
-    end
-
-    test "get_sku!/1 returns the sku with given id" do
-      sku = sku_fixture()
-      assert Catalogue.get_sku!(sku.id) == sku
-    end
-
     test "create_sku/1 with valid data creates a sku" do
-      pickup_centre = pickup_centre_fixture()
+      pickup_centre = Repo.all(PickupCentre) |> List.first()
 
       valid_attrs = %{
         code: "some code",
@@ -170,7 +139,10 @@ defmodule LetorEcom.CatalogueTest do
     end
 
     test "update_sku/2 with valid data updates the sku" do
-      sku = sku_fixture()
+      ecommerce_control = build(:ecommerce_control)
+      pickup_centre = insert!(:pickup_centre, ecommerce_control: ecommerce_control)
+
+      sku = insert!(:sku, pickup_centre: pickup_centre)
       update_attrs = %{code: "some updated code", item_name: "some updated item_name"}
 
       assert {:ok, %Sku{} = sku} = Catalogue.update_sku(sku, update_attrs)
@@ -179,22 +151,22 @@ defmodule LetorEcom.CatalogueTest do
     end
 
     test "update_sku/2 with invalid data returns error changeset" do
-      sku = sku_fixture()
+      ecommerce_control = build(:ecommerce_control)
+      pickup_centre = insert!(:pickup_centre, ecommerce_control: ecommerce_control)
+      sku = insert!(:sku, pickup_centre: pickup_centre)
       assert {:error, %Ecto.Changeset{}} = Catalogue.update_sku(sku, @invalid_attrs)
-      assert sku == Catalogue.get_sku!(sku.id)
     end
 
     test "delete_sku/1 deletes the sku" do
-      sku = sku_fixture()
+      ecommerce_control = build(:ecommerce_control)
+      pickup_centre = insert!(:pickup_centre, ecommerce_control: ecommerce_control)
+      sku = insert!(:sku, pickup_centre: pickup_centre)
       assert {:ok, %Sku{}} = Catalogue.delete_sku(sku)
-      assert_raise Ecto.NoResultsError, fn -> Catalogue.get_sku!(sku.id) end
     end
   end
 
   describe "items" do
     alias LetorEcom.Catalogue.Item
-
-    import LetorEcom.CatalogueFixtures
 
     @invalid_attrs %{
       actual_price: nil,
@@ -223,17 +195,9 @@ defmodule LetorEcom.CatalogueTest do
       type: nil
     }
 
-    test "list_items/0 returns all items" do
-      item = item_fixture()
-      assert Catalogue.list_items() == [item]
-    end
-
-    test "get_item!/1 returns the item with given id" do
-      item = item_fixture()
-      assert Catalogue.get_item!(item.id) == item
-    end
-
     test "create_item/1 with valid data creates a item" do
+      item_subcategory = build(:item_subcategory)
+
       valid_attrs = %{
         actual_price: "120.5",
         availability_time: "some availability_time",
@@ -258,7 +222,8 @@ defmodule LetorEcom.CatalogueTest do
         regional_name: "some regional_name",
         size: 42,
         third_party_item: "some third_party_item",
-        type: "some type"
+        type: "some type",
+        item_subcategory_id: item_subcategory.id
       }
 
       assert {:ok, %Item{} = item} = Catalogue.create_item(valid_attrs)
@@ -293,8 +258,8 @@ defmodule LetorEcom.CatalogueTest do
     end
 
     test "update_item/2 with valid data updates the item" do
-      item = item_fixture()
 
+      
       update_attrs = %{
         actual_price: "456.7",
         availability_time: "some updated availability_time",
@@ -350,13 +315,11 @@ defmodule LetorEcom.CatalogueTest do
     end
 
     test "update_item/2 with invalid data returns error changeset" do
-      item = item_fixture()
       assert {:error, %Ecto.Changeset{}} = Catalogue.update_item(item, @invalid_attrs)
       assert item == Catalogue.get_item!(item.id)
     end
 
     test "delete_item/1 deletes the item" do
-      item = item_fixture()
       assert {:ok, %Item{}} = Catalogue.delete_item(item)
       assert_raise Ecto.NoResultsError, fn -> Catalogue.get_item!(item.id) end
     end
@@ -364,8 +327,6 @@ defmodule LetorEcom.CatalogueTest do
 
   describe "item_images" do
     alias LetorEcom.Catalogue.ItemImage
-
-    import LetorEcom.CatalogueFixtures
 
     @invalid_attrs %{
       item_image1: nil,
@@ -448,8 +409,6 @@ defmodule LetorEcom.CatalogueTest do
   describe "item_tag" do
     alias LetorEcom.Catalogue.ItemTag
 
-    import LetorEcom.CatalogueFixtures
-
     @invalid_attrs %{class: nil, description: nil, name: nil}
 
     test "list_item_tag/0 returns all item_tag" do
@@ -501,17 +460,10 @@ defmodule LetorEcom.CatalogueTest do
       assert {:ok, %ItemTag{}} = Catalogue.delete_item_tag(item_tag)
       assert_raise Ecto.NoResultsError, fn -> Catalogue.get_item_tag!(item_tag.id) end
     end
-
-    test "change_item_tag/1 returns a item_tag changeset" do
-      item_tag = item_tag_fixture()
-      assert %Ecto.Changeset{} = Catalogue.change_item_tag(item_tag)
-    end
   end
 
   describe "item_taggings" do
     alias LetorEcom.Catalogue.ItemTagging
-
-    import LetorEcom.CatalogueFixtures
 
     @invalid_attrs %{}
 
@@ -556,11 +508,6 @@ defmodule LetorEcom.CatalogueTest do
       item_tagging = item_tagging_fixture()
       assert {:ok, %ItemTagging{}} = Catalogue.delete_item_tagging(item_tagging)
       assert_raise Ecto.NoResultsError, fn -> Catalogue.get_item_tagging!(item_tagging.id) end
-    end
-
-    test "change_item_tagging/1 returns a item_tagging changeset" do
-      item_tagging = item_tagging_fixture()
-      assert %Ecto.Changeset{} = Catalogue.change_item_tagging(item_tagging)
     end
   end
 end

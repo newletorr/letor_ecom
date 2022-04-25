@@ -7,31 +7,31 @@ defmodule LetorEcom.Catalogue.Item do
   alias LetorEcom.Repo
 
   schema "items" do
-    field :actual_price, :decimal, read_after_writes: true
-    field :availability_time, :string, read_after_writes: true
-    field :available_quantity, :integer, read_after_writes: true
-    field :barcode, :string, read_after_writes: true
-    field :brand_name, :string, read_after_writes: true
-    field :bulk, :boolean, default: false, read_after_writes: true
-    field :customization_allowed, :boolean, default: false, read_after_writes: true
-    field :description, :string, read_after_writes: true
-    field :details, :string, read_after_writes: true
-    field :expired, :boolean, default: false, read_after_writes: true
-    field :group_buying_price, :decimal, read_after_writes: true
-    field :item_code, :string, read_after_writes: true
-    field :main_price, :decimal, read_after_writes: true
-    field :name, :string, read_after_writes: true
-    field :out_of_stock, :boolean, default: false, read_after_writes: true
-    field :package_size, :string, read_after_writes: true
-    field :preparation_time, :string, read_after_writes: true
-    field :promo_price, :decimal, read_after_writes: true
-    field :qa_cleared, :boolean, default: false, read_after_writes: true
-    field :qr_code, :string, read_after_writes: true
-    field :regional_name, :string, read_after_writes: true
-    field :size, :integer, read_after_writes: true
-    field :third_party_item, :string, read_after_writes: true
-    field :type, :string, read_after_writes: true
-    field :instore_location, :string, read_after_writes: true
+    field(:actual_price, :decimal, read_after_writes: true)
+    field(:availability_time, :string, read_after_writes: true)
+    field(:available_quantity, :integer, read_after_writes: true)
+    field(:barcode, :string, read_after_writes: true)
+    field(:brand_name, :string, read_after_writes: true)
+    field(:bulk, :boolean, default: false, read_after_writes: true)
+    field(:customization_allowed, :boolean, default: false, read_after_writes: true)
+    field(:description, :string, read_after_writes: true)
+    field(:details, :string, read_after_writes: true)
+    field(:expired, :boolean, default: false, read_after_writes: true)
+    field(:group_buying_price, :decimal, read_after_writes: true)
+    field(:item_code, :string, read_after_writes: true)
+    field(:main_price, :decimal, read_after_writes: true)
+    field(:name, :string, read_after_writes: true)
+    field(:out_of_stock, :boolean, default: false, read_after_writes: true)
+    field(:package_size, :string, read_after_writes: true)
+    field(:preparation_time, :string, read_after_writes: true)
+    field(:promo_price, :decimal, read_after_writes: true)
+    field(:qa_cleared, :boolean, default: false, read_after_writes: true)
+    field(:qr_code, LetorEcom.Uploads.Type, read_after_writes: true)
+    field(:regional_name, :string, read_after_writes: true)
+    field(:size, :integer, read_after_writes: true)
+    field(:third_party_item, :string, read_after_writes: true)
+    field(:type, :string, read_after_writes: true)
+    field(:instore_location, :string, read_after_writes: true)
     many_to_many(:item_tag, ItemTag, join_through: ItemTagging)
     belongs_to(:item_subcategory, ItemSubcategory)
     belongs_to(:sku, Sku)
@@ -86,6 +86,42 @@ defmodule LetorEcom.Catalogue.Item do
     |> get_actual_price
   end
 
+
+  @doc false
+  def update_changeset(item, attrs) do
+    item
+    |> cast(attrs, [
+      :sku_id,
+      :item_subcategory_id,
+      :actual_price,
+      :available_quantity,
+      :description,
+      :main_price,
+      :group_buying_price,
+      :name,
+      :regional_name,
+      :out_of_stock,
+      :package_size,
+      :promo_price,
+      :brand_name,
+      :type,
+      :qa_cleared,
+      :size,
+      :item_code,
+      :expired,
+      :details,
+      :barcode,
+      :qr_code,
+      :bulk,
+      :customization_allowed,
+      :preparation_time,
+      :availability_time,
+      :third_party_item
+    ])
+    |> get_actual_price
+  end
+
+
   def special_category_changeset(item, attrs) do
     item
     |> cast(attrs, [:featured_item_id, :daily_deal_id, :popular_item_id])
@@ -97,7 +133,7 @@ defmodule LetorEcom.Catalogue.Item do
   def qr_code_changeset(item, attrs) do
     item
     |> cast(attrs, [:qr_code])
-    |> cast_attachments(attrs, [:qr_code])
+    |> cast_attachments(attrs, [:qr_code], allow_urls: true)
   end
 
   defp get_actual_price(changeset) do

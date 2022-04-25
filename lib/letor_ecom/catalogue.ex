@@ -21,35 +21,6 @@ defmodule LetorEcom.Catalogue do
   alias LetorEcom.Centres.{Inventory, InventoryChangeHistory}
 
   @doc """
-  Returns the list of item_categories.
-
-  ## Examples
-
-      iex> list_item_categories()
-      [%ItemCategory{}, ...]
-
-  """
-  def list_item_categories do
-    Repo.all(ItemCategory)
-  end
-
-  @doc """
-  Gets a single item_category.
-
-  Raises `Ecto.NoResultsError` if the Item category does not exist.
-
-  ## Examples
-
-      iex> get_item_category!(123)
-      %ItemCategory{}
-
-      iex> get_item_category!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_item_category!(id), do: Repo.get!(ItemCategory, id)
-
-  @doc """
   Creates a item_category.
 
   ## Examples
@@ -81,7 +52,7 @@ defmodule LetorEcom.Catalogue do
   """
   def update_item_category(%ItemCategory{} = item_category, attrs) do
     item_category
-    |> ItemCategory.changeset(attrs)
+    |> ItemCategory.update_changeset(attrs)
     |> Repo.update()
   end
 
@@ -162,7 +133,7 @@ defmodule LetorEcom.Catalogue do
   """
   def update_item_subcategory(%ItemSubcategory{} = item_subcategory, attrs) do
     item_subcategory
-    |> ItemSubcategory.changeset(attrs)
+    |> ItemSubcategory.update_changeset(attrs)
     |> Repo.update()
   end
 
@@ -181,35 +152,6 @@ defmodule LetorEcom.Catalogue do
   def delete_item_subcategory(%ItemSubcategory{} = item_subcategory) do
     Repo.delete(item_subcategory)
   end
-
-  @doc """
-  Returns the list of sku.
-
-  ## Examples
-
-      iex> list_sku()
-      [%Sku{}, ...]
-
-  """
-  def list_sku do
-    Repo.all(Sku)
-  end
-
-  @doc """
-  Gets a single sku.
-
-  Raises `Ecto.NoResultsError` if the Sku does not exist.
-
-  ## Examples
-
-      iex> get_sku!(123)
-      %Sku{}
-
-      iex> get_sku!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_sku!(id), do: Repo.get!(Sku, id)
 
   @doc """
   Creates a sku.
@@ -243,7 +185,7 @@ defmodule LetorEcom.Catalogue do
   """
   def update_sku(%Sku{} = sku, attrs) do
     sku
-    |> Sku.changeset(attrs)
+    |> Sku.update_changeset(attrs)
     |> Repo.update()
   end
 
@@ -262,35 +204,6 @@ defmodule LetorEcom.Catalogue do
   def delete_sku(%Sku{} = sku) do
     Repo.delete(sku)
   end
-
-  @doc """
-  Returns the list of items.
-
-  ## Examples
-
-      iex> list_items()
-      [%Item{}, ...]
-
-  """
-  def list_items do
-    Repo.all(Item)
-  end
-
-  @doc """
-  Gets a single item.
-
-  Raises `Ecto.NoResultsError` if the Item does not exist.
-
-  ## Examples
-
-      iex> get_item!(123)
-      %Item{}
-
-      iex> get_item!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_item!(id), do: Repo.get!(Item, id)
 
   def create_sku_inventory_and_item(attrs \\ %{}) do
     sku_changeset =
@@ -432,7 +345,7 @@ defmodule LetorEcom.Catalogue do
   """
   def update_item(%Item{} = item, attrs) do
     item
-    |> Item.changeset(attrs)
+    |> Item.update_changeset(attrs)
     |> Repo.update()
   end
 
@@ -451,35 +364,6 @@ defmodule LetorEcom.Catalogue do
   def delete_item(%Item{} = item) do
     Repo.delete(item)
   end
-
-  @doc """
-  Returns the list of item_images.
-
-  ## Examples
-
-      iex> list_item_images()
-      [%ItemImage{}, ...]
-
-  """
-  def list_item_images do
-    Repo.all(ItemImage)
-  end
-
-  @doc """
-  Gets a single item_image.
-
-  Raises `Ecto.NoResultsError` if the Item image does not exist.
-
-  ## Examples
-
-      iex> get_item_image!(123)
-      %ItemImage{}
-
-      iex> get_item_image!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_item_image!(id), do: Repo.get!(ItemImage, id)
 
   @doc """
   Creates a item_image.
@@ -513,7 +397,7 @@ defmodule LetorEcom.Catalogue do
   """
   def update_item_image(%ItemImage{} = item_image, attrs) do
     item_image
-    |> ItemImage.changeset(attrs)
+    |> ItemImage.update_changeset(attrs)
     |> Repo.update()
   end
 
@@ -532,35 +416,6 @@ defmodule LetorEcom.Catalogue do
   def delete_item_image(%ItemImage{} = item_image) do
     Repo.delete(item_image)
   end
-
-  @doc """
-  Returns the list of item_tag.
-
-  ## Examples
-
-      iex> list_item_tag()
-      [%ItemTag{}, ...]
-
-  """
-  def list_item_tag do
-    Repo.all(ItemTag)
-  end
-
-  @doc """
-  Gets a single item_tag.
-
-  Raises `Ecto.NoResultsError` if the Item tag does not exist.
-
-  ## Examples
-
-      iex> get_item_tag!(123)
-      %ItemTag{}
-
-      iex> get_item_tag!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_item_tag!(id), do: Repo.get!(ItemTag, id)
 
   @doc """
   Creates a item_tag.
@@ -594,7 +449,7 @@ defmodule LetorEcom.Catalogue do
   """
   def update_item_tag(%ItemTag{} = item_tag, attrs) do
     item_tag
-    |> ItemTag.changeset(attrs)
+    |> ItemTag.update_changeset(attrs)
     |> Repo.update()
   end
 
@@ -613,35 +468,6 @@ defmodule LetorEcom.Catalogue do
   def delete_item_tag(%ItemTag{} = item_tag) do
     Repo.delete(item_tag)
   end
-
-  @doc """
-  Returns the list of item_taggings.
-
-  ## Examples
-
-      iex> list_item_taggings()
-      [%ItemTagging{}, ...]
-
-  """
-  def list_item_taggings do
-    Repo.all(ItemTagging)
-  end
-
-  @doc """
-  Gets a single item_tagging.
-
-  Raises `Ecto.NoResultsError` if the Item tagging does not exist.
-
-  ## Examples
-
-      iex> get_item_tagging!(123)
-      %ItemTagging{}
-
-      iex> get_item_tagging!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_item_tagging!(id), do: Repo.get!(ItemTagging, id)
 
   @doc """
   Creates a item_tagging.

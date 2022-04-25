@@ -12,6 +12,7 @@
 
 alias LetorEcom.{
   Account,
+  AgentsAndSuppliers,
   Catalogue,
   Centres,
   Control,
@@ -1987,74 +1988,67 @@ Delicacies.create_item_recipe(%{
 Driver |> Repo.delete_all()
 
 {:ok, driver} =
-  Ordering.create_driver(%{
+  HumanResource.create_driver(%{
     email: "johnlexter@gmail.com",
     name: "John Lexter",
-    on_duty: true,
-    active: true,
+    status: "on-duty",
     phone: "08168817267",
     pickup_centre_id: pickup_centre.id,
     staff_id: stf5.id
   })
 
-Ordering.create_delivery_vehicles(%{
-  brand: "Qlink",
-  number: "RV123",
-  type: "Motor Cycle",
-  driver_id: driver.id
-})
+CampusAgent |> Repo.delete_all()
 
-CurbsideAgent |> Repo.delete_all()
-
-{:ok, %{curbside_agent: curbside_agent}} =
-  Agents.create_curbside_agent(%{
-    residential_address: "No 12 Ada George Road Port Harcourt",
-    business_address: "No 3 Iwofe Road Rumuolumeni Port Harcourt",
-    email: "lenata@gmail.com",
-    first_name: "Lenata",
-    last_name: "Baridi",
-    state_of_origin: "Rivers State",
-    home_town: "Baan",
+{:ok, campus_agent} =
+  AgentsAndSuppliers.create_campus_agent(%{
+    business_address: "No 12 Agip Road Rumueme",
+    agents_image: "/home/dumadi/Downloads/WhatsApp Image 2022-04-11 at 1.35.14 PM.jpeg",
+    email: "nneka@gmail.com",
+    first_name: "Nneka",
+    guarantor_first_name: "Daniel",
+    guarantor_phone: "09029901928",
+    guarantor_residential_address: "No 12 Ada George Road PHC",
+    guarantor_last_name: "Micah",
+    home_town: "Alimnmini",
+    id_image: "/home/dumadi/Downloads/WhatsApp Image 2022-04-11 at 1.35.14 PM.jpeg",
+    last_name: "Nwachukwu",
+    means_of_id: "National ID",
     nationality: "Nigeria",
-    phone: "08167781892",
+    phone: "08039901928",
+    residential_address: "No 1 Ada George Road PHC",
+    state_of_origin: "Rivers",
     status: "active",
     verified: true,
-    guarantor_first_name: "Legbosi",
-    guarantor_second_name: "Piagbara",
-    guarantor_phone: "08128891827",
-    guarantor_residential_address: "No 12 Agip Road Port Harcourt",
-    location_id: l2.id,
-    means_of_id: "NIN",
-    image: "/home/dumadi/Pictures/melody.jpeg",
+    location_id: l1.id,
     ecommerce_control_id: ecommerce_control.id
   })
 
-Warehouse |> Repo.delete_all()
+# Warehouse |> Repo.delete_all()
 
-{:ok, %{warehouse: warehouse}} =
-  Centres.create_warehouse(%{
-    address: "No 12 Aba Road Port Harcourt",
-    area: "Rumuomasi",
-    city: "Port Harcourt",
-    country: "Nigeria",
-    name: "Aba Road Warehouse",
-    point: %Geo.Point{coordinates: {3.90010, -0.98827}, srid: 4326},
-    ecommerce_control_id: ecommerce_control.id,
-    state: "Rivers State"
-  })
+# {:ok, %{warehouse: warehouse}} =
+# Centres.create_warehouse(%{
+#  address: "No 12 Aba Road Port Harcourt",
+# area: "Rumuomasi",
+# city: "Port Harcourt",
+# country: "Nigeria",
+# name: "Aba Road Warehouse",
+# point: %Geo.Point{coordinates: {3.90010, -0.98827}, srid: 4326},
+# ecommerce_control_id: ecommerce_control.id,
+# state: "Rivers State"
+# })
 
-WarehouseInventory |> Repo.delete_all()
+# WarehouseInventory |> Repo.delete_all()
 
-Centres.create_warehouse_inventory(%{
-  description: "Special China ceramic dishes",
-  expiry_date: ~D[2021-06-16],
-  image_url: "87y0EF23rblhfa]av",
-  name: "Ceramicous Chinese",
-  quantity: 21,
-  unit_sales_price: 1400,
-  bulk_sales_price: 26000,
-  uom: "Carton",
-  warehouse_id: warehouse.id
-  # seller_delivery_id
-  # warehouse_inventory_location
-})
+# Centres.create_warehouse_inventory(%{
+# description: "Special China ceramic dishes",
+# expiry_date: ~D[2021-06-16],
+## image_url: "87y0EF23rblhfa]av",
+# name: "Ceramicous Chinese",
+# quantity: 21,
+# unit_sales_price: 1400,
+# bulk_sales_price: 26000,
+# uom: "Carton",
+# warehouse_id: warehouse.id
+# seller_delivery_id
+# warehouse_inventory_location
+# })

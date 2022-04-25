@@ -18,6 +18,6 @@ defmodule LetorEcom.Account.Address do
     address
     |> cast(attrs, [:user_id, :address1, :address2, :business_name, :order_instruction, :zip_code])
     |> validate_required([:user_id, :address1, :business_name, :zip_code])
-    |> assoc_constraint(:user)
+    |> foreign_key_constraint(:user_id)
   end
 end

@@ -19,6 +19,22 @@ config :letor_ecom, LetorEcomWeb.Endpoint,
   pubsub_server: LetorEcom.PubSub,
   live_view: [signing_salt: "A1cMq7z3"]
 
+config :waffle,
+  storage: Waffle.Storage.S3,
+  bucket: System.get_env("AWS_BUCKET_NAME"),
+  virtual_host: true
+
+config :ex_aws,
+  json_codec: Jason,
+  access_key_id: System.get_env("AWS_ACCESS_KEY_ID"),
+  secret_access_key: System.get_env("AWS_SECRET_ACCESS_KEY"),
+  region: System.get_env("AWS_REGION"),
+  s3: [
+    scheme: "https://",
+    host: "letor-ecom-images.s3.eu-west-1.amazonaws.com/letor-ecom-images",
+    region: "eu-west-1"
+  ]
+
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails

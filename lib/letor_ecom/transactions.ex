@@ -128,35 +128,6 @@ defmodule LetorEcom.Transactions do
   end
 
   @doc """
-  Returns the list of user_wallets.
-
-  ## Examples
-
-      iex> list_user_wallets()
-      [%UserWallet{}, ...]
-
-  """
-  def list_user_wallets do
-    Repo.all(UserWallet)
-  end
-
-  @doc """
-  Gets a single user_wallet.
-
-  Raises `Ecto.NoResultsError` if the User wallet does not exist.
-
-  ## Examples
-
-      iex> get_user_wallet!(123)
-      %UserWallet{}
-
-      iex> get_user_wallet!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_user_wallet!(id), do: Repo.get!(UserWallet, id)
-
-  @doc """
   Creates a user_wallet.
 
   ## Examples

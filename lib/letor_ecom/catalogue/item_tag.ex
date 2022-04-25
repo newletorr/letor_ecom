@@ -16,4 +16,11 @@ defmodule LetorEcom.Catalogue.ItemTag do
     |> validate_required([:description, :name, :class])
     |> unique_constraint(:name, message: "Already exists")
   end
+
+   @doc false
+  def update_changeset(item_tag, attrs) do
+    item_tag
+    |> cast(attrs, [:description, :name, :class])
+    |> unique_constraint(:name, message: "Already exists")
+  end
 end

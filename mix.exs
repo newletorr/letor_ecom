@@ -100,7 +100,8 @@ defmodule LetorEcom.MixProject do
       {:geo_postgis, "~> 3.4"},
 
       # deployment
-      {:distillery, "~> 2.1"}
+      {:distillery, "~> 2.1"},
+      {:dialyxir, "~> 1.1", only: [:dev], runtime: false}
     ]
   end
 

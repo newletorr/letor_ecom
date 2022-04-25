@@ -17,7 +17,6 @@ defmodule LetorEcom.Account.Confirmation do
   @doc """
   Generate confirmation code
   """
-  @spec generate_confirmation_code(User.t()) :: {:ok, String.t(), User.t()} | {:error, any()}
   def generate_confirmation_code(%User{} = user) do
     with {:ok, code} <- generate_code(),
          {:ok, user} <-
@@ -60,7 +59,6 @@ defmodule LetorEcom.Account.Confirmation do
 
   def confirmed?(%User{}), do: true
 
-  @spec save_code(User.t(), map()) :: {:ok, User.t()} | {:error, any()}
   defp save_code(%User{} = user, attr) do
     user
     |> cast(attr, [:confirmation_code, :confirmation_sent_at])

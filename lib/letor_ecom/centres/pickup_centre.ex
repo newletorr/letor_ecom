@@ -10,20 +10,22 @@ defmodule LetorEcom.Centres.PickupCentre do
     PopularItem
   }
 
+  alias LetorEcom.Control.EcommerceControl
+
   alias LetorEcom.CustomerPurchases.{Order, PickUp}
   alias LetorEcom.Delicacies.RecipeClass
   alias LetorEcom.HumanResource.Driver
   alias Geo.PostGIS.Geometry
 
   schema "pickup_centres" do
-    field :address, :string
-    field :area, :string
-    field :city, :string
-    field :country, :string
-    field :longitude_and_latitude_point, Geometry
-    field :name, :string
-    field :state, :string
-    field :centre_code, :string
+    field :address, :string, read_after_writes: true
+    field :area, :string, read_after_writes: true
+    field :city, :string, read_after_writes: true
+    field :country, :string, read_after_writes: true
+    field :longitude_and_latitude_point, Geometry, read_after_writes: true
+    field :name, :string, read_after_writes: true
+    field :state, :string, read_after_writes: true
+    field :centre_code, :string, read_after_writes: true
     belongs_to(:ecommerce_control, EcommerceControl)
     has_many(:item_categories, ItemCategory)
     has_many(:sku, Sku)
@@ -39,6 +41,14 @@ defmodule LetorEcom.Centres.PickupCentre do
     timestamps(type: :utc_datetime)
   end
 
+  @spec changeset(
+          {map, map}
+          | %{
+              :__struct__ => atom | %{:__changeset__ => map, optional(any) => any},
+              optional(atom) => any
+            },
+          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: Ecto.Changeset.t()
   @doc false
   def changeset(pickup_centre, attrs) do
     pickup_centre
@@ -69,13 +79,18 @@ defmodule LetorEcom.Centres.PickupCentre do
       message: "There is a centre in this location already",
       name: :pickup_centres_area_city_index
     )
-    |> unique_constraint(:centre_code_id,
-      message: "A centre with the same centre code already exists"
-    )
     |> assoc_constraint(:ecommerce_control)
     |> gen_centre_code
   end
 
+  @spec update_changeset(
+          {map, map}
+          | %{
+              :__struct__ => atom | %{:__changeset__ => map, optional(any) => any},
+              optional(atom) => any
+            },
+          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: Ecto.Changeset.t()
   def update_changeset(pickup_centre, attrs) do
     pickup_centre
     |> cast(attrs, [

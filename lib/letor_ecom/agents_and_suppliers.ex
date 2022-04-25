@@ -4,6 +4,7 @@ defmodule LetorEcom.AgentsAndSuppliers do
   """
 
   import Ecto.Query, warn: false
+  alias Ecto.Multi
   alias LetorEcom.Repo
 
   alias LetorEcom.AgentsAndSuppliers.CampusAgent
@@ -50,9 +51,21 @@ defmodule LetorEcom.AgentsAndSuppliers do
 
   """
   def create_campus_agent(attrs \\ %{}) do
-    %CampusAgent{}
-    |> CampusAgent.changeset(attrs)
-    |> Repo.insert()
+    campus_agent_changeset = %CampusAgent{} |> CampusAgent.changeset(attrs)
+
+    Multi.new()
+    |> Multi.insert(:campus_agent, campus_agent_changeset)
+    |> Multi.run(:agents_uploads, fn repo, %{campus_agent: campus_agent} ->
+      agents_uploads_changeset =
+        campus_agent
+        |> CampusAgent.images_upload_changeset(%{
+          agents_image: attrs.agents_image,
+          id_image: attrs.id_image
+        })
+
+      repo.update(agents_uploads_changeset)
+    end)
+    |> Repo.transaction()
   end
 
   @doc """
@@ -69,7 +82,7 @@ defmodule LetorEcom.AgentsAndSuppliers do
   """
   def update_campus_agent(%CampusAgent{} = campus_agent, attrs) do
     campus_agent
-    |> CampusAgent.changeset(attrs)
+    |> CampusAgent.update_changeset(attrs)
     |> Repo.update()
   end
 

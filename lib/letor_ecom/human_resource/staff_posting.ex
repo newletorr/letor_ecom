@@ -12,6 +12,14 @@ defmodule LetorEcom.HumanResource.StaffPosting do
     timestamps(type: :utc_datetime)
   end
 
+  @spec stores_postings_changeset(
+          {map, map}
+          | %{
+              :__struct__ => atom | %{:__changeset__ => map, optional(any) => any},
+              optional(atom) => any
+            },
+          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: Ecto.Changeset.t()
   @doc false
   def stores_postings_changeset(staff_posting, attrs) do
     staff_posting
@@ -21,12 +29,28 @@ defmodule LetorEcom.HumanResource.StaffPosting do
     |> get_previous_posting
   end
 
+  @spec control_postings_changeset(
+          {map, map}
+          | %{
+              :__struct__ => atom | %{:__changeset__ => map, optional(any) => any},
+              optional(atom) => any
+            },
+          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: Ecto.Changeset.t()
   def control_postings_changeset(staff_posting, attrs) do
     staff_posting
     |> cast(attrs, [:ecommerce_control_id, :date_posted, :previous_posting])
     |> assoc_constraint(:ecommerce_control)
   end
 
+  @spec posting_update_changeset(
+          {map, map}
+          | %{
+              :__struct__ => atom | %{:__changeset__ => map, optional(any) => any},
+              optional(atom) => any
+            },
+          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: Ecto.Changeset.t()
   def posting_update_changeset(staff_posting, attrs) do
     staff_posting
     |> cast(attrs, [:ecommerce_control_id, :pickup_centre_id, :date_posted, :previous_posting])

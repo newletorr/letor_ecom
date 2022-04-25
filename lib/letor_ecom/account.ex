@@ -7,37 +7,8 @@ defmodule LetorEcom.Account do
   alias LetorEcom.Repo
   alias Ecto.Multi
 
-  alias LetorEcom.Account.{Address, User}
+  alias LetorEcom.Account.{Address, User, ReferedList}
   alias LetorEcom.Transactions.UserWallet
-
-  @doc """
-  Returns the list of users.
-
-  ## Examples
-
-      iex> list_users()
-      [%User{}, ...]
-
-  """
-  def list_users do
-    Repo.all(User)
-  end
-
-  @doc """
-  Gets a single user.
-
-  Raises `Ecto.NoResultsError` if the User does not exist.
-
-  ## Examples
-
-      iex> get_user!(123)
-      %User{}
-
-      iex> get_user!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_user!(id), do: Repo.get!(User, id)
 
   @doc """
   Creates a user.
@@ -107,35 +78,6 @@ defmodule LetorEcom.Account do
   end
 
   @doc """
-  Returns the list of addresses.
-
-  ## Examples
-
-      iex> list_addresses()
-      [%Address{}, ...]
-
-  """
-  def list_addresses do
-    Repo.all(Address)
-  end
-
-  @doc """
-  Gets a single address.
-
-  Raises `Ecto.NoResultsError` if the Address does not exist.
-
-  ## Examples
-
-      iex> get_address!(123)
-      %Address{}
-
-      iex> get_address!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_address!(id), do: Repo.get!(Address, id)
-
-  @doc """
   Creates a address.
 
   ## Examples
@@ -187,37 +129,6 @@ defmodule LetorEcom.Account do
     Repo.delete(address)
   end
 
-  alias LetorEcom.Account.ReferedList
-
-  @doc """
-  Returns the list of refered_lists.
-
-  ## Examples
-
-      iex> list_refered_lists()
-      [%ReferedList{}, ...]
-
-  """
-  def list_refered_lists do
-    Repo.all(ReferedList)
-  end
-
-  @doc """
-  Gets a single refered_list.
-
-  Raises `Ecto.NoResultsError` if the Refered list does not exist.
-
-  ## Examples
-
-      iex> get_refered_list!(123)
-      %ReferedList{}
-
-      iex> get_refered_list!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_refered_list!(id), do: Repo.get!(ReferedList, id)
-
   @doc """
   Creates a refered_list.
 
@@ -268,18 +179,5 @@ defmodule LetorEcom.Account do
   """
   def delete_refered_list(%ReferedList{} = refered_list) do
     Repo.delete(refered_list)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking refered_list changes.
-
-  ## Examples
-
-      iex> change_refered_list(refered_list)
-      %Ecto.Changeset{data: %ReferedList{}}
-
-  """
-  def change_refered_list(%ReferedList{} = refered_list, attrs \\ %{}) do
-    ReferedList.changeset(refered_list, attrs)
   end
 end

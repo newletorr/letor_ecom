@@ -13,7 +13,7 @@ defmodule LetorEcom.Repo.Migrations.CreateEcommerceControls do
     end
 
     create index(:ecommerce_controls, [:id])
-    create unique_index(:ecommerce_controls, [:name])
-    create unique_index(:ecommerce_controls, [:region])
+    # create unique_index(:ecommerce_controls, [:name])
+    # create unique_index(:ecommerce_controls, [:region])
   end
 end

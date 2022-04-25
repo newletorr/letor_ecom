@@ -178,7 +178,6 @@ defmodule LetorEcom.CustomerPurchases do
     end
   end
 
-  @spec place_order(EcomHealthService.Ordering.Order.t()) :: any
   @doc """
   Place Order an order.
 

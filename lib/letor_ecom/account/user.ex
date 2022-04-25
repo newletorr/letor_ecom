@@ -1,8 +1,19 @@
 defmodule LetorEcom.Account.User do
+  use Waffle.Ecto.Schema
   use LetorEcom.SchemaHelper
   alias LetorEcom.Account.{Address, ReferedList}
+  alias LetorEcom.Control.Location
   alias LetorEcom.Transactions.UserWallet
-  @required_fields [:email, :first_name, :last_name, :address, :date_of_birth, :phone]
+
+  @required_fields [
+    :location_id,
+    :email,
+    :first_name,
+    :last_name,
+    :address,
+    :date_of_birth,
+    :phone
+  ]
   @email_regex ~r/^[A-Za-z0-9._%+-+']+@[A-Za-z0-9.-]+\.[A-Za-z]+$/
   schema "users" do
     field :address, :string, read_after_writes: true
@@ -13,6 +24,7 @@ defmodule LetorEcom.Account.User do
     field :current_sign_at, :utc_datetime
     field :current_sign_in_ip, :string
     field :current_sign_in_location, :string
+    field :user_image, :string, read_after_writes: true
     field :date_of_birth, :date, read_after_writes: true
     field :email, :string, read_after_writes: true
     field :facebood_id, :string
@@ -20,7 +32,7 @@ defmodule LetorEcom.Account.User do
     field :first_referal_earned, :boolean, default: false
     field :fourth_referal_earned, :string
     field :full_name, :string, read_after_writes: true
-    field :image, :string
+    field :image, LetorEcom.Uploads.Type
     field :last_name, :string, read_after_writes: true
     field :last_sign_in_at, :utc_datetime
     field :last_sign_in_ip, :string
@@ -36,8 +48,9 @@ defmodule LetorEcom.Account.User do
     field :third_referal_earned, :string
     field(:inputed_code, :string, virtual: true)
     has_one(:addresses, Address)
-    has_one(:user_wallet, UserWallet)
+    has_one(:user_wallets, UserWallet)
     has_many(:refered_lists, ReferedList)
+    belongs_to(:location, Location)
 
     timestamps(type: :utc_datetime)
   end
@@ -46,6 +59,14 @@ defmodule LetorEcom.Account.User do
     __MODULE__.__schema__(:fields)
   end
 
+  @spec changeset(
+          {map, map}
+          | %{
+              :__struct__ => atom | %{:__changeset__ => map, optional(any) => any},
+              optional(atom) => any
+            },
+          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: Ecto.Changeset.t()
   @doc false
   def changeset(user, attrs) do
     user
@@ -82,6 +103,14 @@ defmodule LetorEcom.Account.User do
     |> create_full_name()
   end
 
+  @spec update_referals_earned_changeset(
+          {map, map}
+          | %{
+              :__struct__ => atom | %{:__changeset__ => map, optional(any) => any},
+              optional(atom) => any
+            },
+          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: Ecto.Changeset.t()
   def update_referals_earned_changeset(user, attrs) do
     user
     |> cast(attrs, [
@@ -94,6 +123,28 @@ defmodule LetorEcom.Account.User do
     ])
   end
 
+  @spec image_upload_changeset(
+          {map, map}
+          | %{
+              :__struct__ => atom | %{:__changeset__ => map, optional(any) => any},
+              optional(atom) => any
+            },
+          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: Ecto.Changeset.t()
+  def image_upload_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:user_image])
+    |> cast_attachments(attrs, [:user_image], allow_urls: true)
+  end
+
+  @spec password_changeset(
+          {map, map}
+          | %{
+              :__struct__ => atom | %{:__changeset__ => map, optional(any) => any},
+              optional(atom) => any
+            },
+          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: Ecto.Changeset.t()
   def password_changeset(user, attrs) do
     user
     |> cast(attrs, [:password, :password_confirmation, :password_hash])

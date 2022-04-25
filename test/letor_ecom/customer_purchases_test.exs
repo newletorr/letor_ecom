@@ -82,11 +82,6 @@ defmodule LetorEcom.CustomerPurchasesTest do
       assert {:ok, %CartItem{}} = CustomerPurchases.delete_cart_item(cart_item)
       assert_raise Ecto.NoResultsError, fn -> CustomerPurchases.get_cart_item!(cart_item.id) end
     end
-
-    test "change_cart_item/1 returns a cart_item changeset" do
-      cart_item = cart_item_fixture()
-      assert %Ecto.Changeset{} = CustomerPurchases.change_cart_item(cart_item)
-    end
   end
 
   describe "orders" do
@@ -302,11 +297,6 @@ defmodule LetorEcom.CustomerPurchasesTest do
       assert {:ok, %Order{}} = CustomerPurchases.delete_order(order)
       assert_raise Ecto.NoResultsError, fn -> CustomerPurchases.get_order!(order.id) end
     end
-
-    test "change_order/1 returns a order changeset" do
-      order = order_fixture()
-      assert %Ecto.Changeset{} = CustomerPurchases.change_order(order)
-    end
   end
 
   describe "order_dispatch" do
@@ -398,11 +388,6 @@ defmodule LetorEcom.CustomerPurchasesTest do
         CustomerPurchases.get_order_dispatch!(order_dispatch.id)
       end
     end
-
-    test "change_order_dispatch/1 returns a order_dispatch changeset" do
-      order_dispatch = order_dispatch_fixture()
-      assert %Ecto.Changeset{} = CustomerPurchases.change_order_dispatch(order_dispatch)
-    end
   end
 
   describe "delivery_charges" do
@@ -490,11 +475,6 @@ defmodule LetorEcom.CustomerPurchasesTest do
         CustomerPurchases.get_delivery_charge!(delivery_charge.id)
       end
     end
-
-    test "change_delivery_charge/1 returns a delivery_charge changeset" do
-      delivery_charge = delivery_charge_fixture()
-      assert %Ecto.Changeset{} = CustomerPurchases.change_delivery_charge(delivery_charge)
-    end
   end
 
   describe "referal_discount" do
@@ -578,11 +558,6 @@ defmodule LetorEcom.CustomerPurchasesTest do
       assert_raise Ecto.NoResultsError, fn ->
         CustomerPurchases.get_referal_discount!(referal_discount.id)
       end
-    end
-
-    test "change_referal_discount/1 returns a referal_discount changeset" do
-      referal_discount = referal_discount_fixture()
-      assert %Ecto.Changeset{} = CustomerPurchases.change_referal_discount(referal_discount)
     end
   end
 
@@ -668,215 +643,6 @@ defmodule LetorEcom.CustomerPurchasesTest do
         CustomerPurchases.get_referal_discount!(referal_discount.id)
       end
     end
-
-    test "change_referal_discount/1 returns a referal_discount changeset" do
-      referal_discount = referal_discount_fixture()
-      assert %Ecto.Changeset{} = CustomerPurchases.change_referal_discount(referal_discount)
-    end
-  end
-
-  describe "pick_ups" do
-    alias LetorEcom.CustomerPurchases.Pickup
-
-    import LetorEcom.CustomerPurchasesFixtures
-
-    @invalid_attrs %{pick_up_time: nil, picked: nil, pickup_code: nil}
-
-    test "list_pick_ups/0 returns all pick_ups" do
-      pickup = pickup_fixture()
-      assert CustomerPurchases.list_pick_ups() == [pickup]
-    end
-
-    test "get_pickup!/1 returns the pickup with given id" do
-      pickup = pickup_fixture()
-      assert CustomerPurchases.get_pickup!(pickup.id) == pickup
-    end
-
-    test "create_pickup/1 with valid data creates a pickup" do
-      valid_attrs = %{
-        pick_up_time: ~U[2022-04-15 19:49:00Z],
-        picked: true,
-        pickup_code: "some pickup_code"
-      }
-
-      assert {:ok, %Pickup{} = pickup} = CustomerPurchases.create_pickup(valid_attrs)
-      assert pickup.pick_up_time == ~U[2022-04-15 19:49:00Z]
-      assert pickup.picked == true
-      assert pickup.pickup_code == "some pickup_code"
-    end
-
-    test "create_pickup/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = CustomerPurchases.create_pickup(@invalid_attrs)
-    end
-
-    test "update_pickup/2 with valid data updates the pickup" do
-      pickup = pickup_fixture()
-
-      update_attrs = %{
-        pick_up_time: ~U[2022-04-16 19:49:00Z],
-        picked: false,
-        pickup_code: "some updated pickup_code"
-      }
-
-      assert {:ok, %Pickup{} = pickup} = CustomerPurchases.update_pickup(pickup, update_attrs)
-      assert pickup.pick_up_time == ~U[2022-04-16 19:49:00Z]
-      assert pickup.picked == false
-      assert pickup.pickup_code == "some updated pickup_code"
-    end
-
-    test "update_pickup/2 with invalid data returns error changeset" do
-      pickup = pickup_fixture()
-      assert {:error, %Ecto.Changeset{}} = CustomerPurchases.update_pickup(pickup, @invalid_attrs)
-      assert pickup == CustomerPurchases.get_pickup!(pickup.id)
-    end
-
-    test "delete_pickup/1 deletes the pickup" do
-      pickup = pickup_fixture()
-      assert {:ok, %Pickup{}} = CustomerPurchases.delete_pickup(pickup)
-      assert_raise Ecto.NoResultsError, fn -> CustomerPurchases.get_pickup!(pickup.id) end
-    end
-
-    test "change_pickup/1 returns a pickup changeset" do
-      pickup = pickup_fixture()
-      assert %Ecto.Changeset{} = CustomerPurchases.change_pickup(pickup)
-    end
-  end
-
-  describe "pick_ups" do
-    alias LetorEcom.CustomerPurchases.Pickp
-
-    import LetorEcom.CustomerPurchasesFixtures
-
-    @invalid_attrs %{pick_up_time: nil, picked: nil, pickup_code: nil}
-
-    test "list_pick_ups/0 returns all pick_ups" do
-      pickp = pickp_fixture()
-      assert CustomerPurchases.list_pick_ups() == [pickp]
-    end
-
-    test "get_pickp!/1 returns the pickp with given id" do
-      pickp = pickp_fixture()
-      assert CustomerPurchases.get_pickp!(pickp.id) == pickp
-    end
-
-    test "create_pickp/1 with valid data creates a pickp" do
-      valid_attrs = %{
-        pick_up_time: ~U[2022-04-15 19:50:00Z],
-        picked: true,
-        pickup_code: "some pickup_code"
-      }
-
-      assert {:ok, %Pickp{} = pickp} = CustomerPurchases.create_pickp(valid_attrs)
-      assert pickp.pick_up_time == ~U[2022-04-15 19:50:00Z]
-      assert pickp.picked == true
-      assert pickp.pickup_code == "some pickup_code"
-    end
-
-    test "create_pickp/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = CustomerPurchases.create_pickp(@invalid_attrs)
-    end
-
-    test "update_pickp/2 with valid data updates the pickp" do
-      pickp = pickp_fixture()
-
-      update_attrs = %{
-        pick_up_time: ~U[2022-04-16 19:50:00Z],
-        picked: false,
-        pickup_code: "some updated pickup_code"
-      }
-
-      assert {:ok, %Pickp{} = pickp} = CustomerPurchases.update_pickp(pickp, update_attrs)
-      assert pickp.pick_up_time == ~U[2022-04-16 19:50:00Z]
-      assert pickp.picked == false
-      assert pickp.pickup_code == "some updated pickup_code"
-    end
-
-    test "update_pickp/2 with invalid data returns error changeset" do
-      pickp = pickp_fixture()
-      assert {:error, %Ecto.Changeset{}} = CustomerPurchases.update_pickp(pickp, @invalid_attrs)
-      assert pickp == CustomerPurchases.get_pickp!(pickp.id)
-    end
-
-    test "delete_pickp/1 deletes the pickp" do
-      pickp = pickp_fixture()
-      assert {:ok, %Pickp{}} = CustomerPurchases.delete_pickp(pickp)
-      assert_raise Ecto.NoResultsError, fn -> CustomerPurchases.get_pickp!(pickp.id) end
-    end
-
-    test "change_pickp/1 returns a pickp changeset" do
-      pickp = pickp_fixture()
-      assert %Ecto.Changeset{} = CustomerPurchases.change_pickp(pickp)
-    end
-  end
-
-  describe "pick_ups" do
-    alias LetorEcom.CustomerPurchases.PickUp
-
-    import LetorEcom.CustomerPurchasesFixtures
-
-    @invalid_attrs %{pick_up_time: nil, picked: nil, pickup_code: nil}
-
-    test "list_pick_ups/0 returns all pick_ups" do
-      pick_up = pick_up_fixture()
-      assert CustomerPurchases.list_pick_ups() == [pick_up]
-    end
-
-    test "get_pick_up!/1 returns the pick_up with given id" do
-      pick_up = pick_up_fixture()
-      assert CustomerPurchases.get_pick_up!(pick_up.id) == pick_up
-    end
-
-    test "create_pick_up/1 with valid data creates a pick_up" do
-      valid_attrs = %{
-        pick_up_time: ~U[2022-04-15 19:50:00Z],
-        picked: true,
-        pickup_code: "some pickup_code"
-      }
-
-      assert {:ok, %PickUp{} = pick_up} = CustomerPurchases.create_pick_up(valid_attrs)
-      assert pick_up.pick_up_time == ~U[2022-04-15 19:50:00Z]
-      assert pick_up.picked == true
-      assert pick_up.pickup_code == "some pickup_code"
-    end
-
-    test "create_pick_up/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = CustomerPurchases.create_pick_up(@invalid_attrs)
-    end
-
-    test "update_pick_up/2 with valid data updates the pick_up" do
-      pick_up = pick_up_fixture()
-
-      update_attrs = %{
-        pick_up_time: ~U[2022-04-16 19:50:00Z],
-        picked: false,
-        pickup_code: "some updated pickup_code"
-      }
-
-      assert {:ok, %PickUp{} = pick_up} = CustomerPurchases.update_pick_up(pick_up, update_attrs)
-      assert pick_up.pick_up_time == ~U[2022-04-16 19:50:00Z]
-      assert pick_up.picked == false
-      assert pick_up.pickup_code == "some updated pickup_code"
-    end
-
-    test "update_pick_up/2 with invalid data returns error changeset" do
-      pick_up = pick_up_fixture()
-
-      assert {:error, %Ecto.Changeset{}} =
-               CustomerPurchases.update_pick_up(pick_up, @invalid_attrs)
-
-      assert pick_up == CustomerPurchases.get_pick_up!(pick_up.id)
-    end
-
-    test "delete_pick_up/1 deletes the pick_up" do
-      pick_up = pick_up_fixture()
-      assert {:ok, %PickUp{}} = CustomerPurchases.delete_pick_up(pick_up)
-      assert_raise Ecto.NoResultsError, fn -> CustomerPurchases.get_pick_up!(pick_up.id) end
-    end
-
-    test "change_pick_up/1 returns a pick_up changeset" do
-      pick_up = pick_up_fixture()
-      assert %Ecto.Changeset{} = CustomerPurchases.change_pick_up(pick_up)
-    end
   end
 
   describe "pick_ups" do
@@ -941,11 +707,6 @@ defmodule LetorEcom.CustomerPurchasesTest do
       pick_up = pick_up_fixture()
       assert {:ok, %PickUp{}} = CustomerPurchases.delete_pick_up(pick_up)
       assert_raise Ecto.NoResultsError, fn -> CustomerPurchases.get_pick_up!(pick_up.id) end
-    end
-
-    test "change_pick_up/1 returns a pick_up changeset" do
-      pick_up = pick_up_fixture()
-      assert %Ecto.Changeset{} = CustomerPurchases.change_pick_up(pick_up)
     end
   end
 end

@@ -1,5 +1,7 @@
 defmodule LetorEcom.Control.Location do
   use LetorEcom.SchemaHelper
+  alias LetorEcom.Account.User
+  alias LetorEcom.AgentsAndSuppliers.CampusAgent
   alias LetorEcom.Centres.PickupCentre
   alias Geo.PostGIS.Geometry
 
@@ -11,6 +13,8 @@ defmodule LetorEcom.Control.Location do
     field :postal_code, :string
     field :state, :string
     belongs_to(:pickup_centre, PickupCentre)
+    has_many(:campus_agents, CampusAgent)
+    has_many(:users, User)
     timestamps(type: :utc_datetime)
   end
 
@@ -31,9 +35,10 @@ defmodule LetorEcom.Control.Location do
       :city,
       :country,
       :location_area,
-      :state
-      #  :longitude_and_latitude_point
+      :state,
+      :longitude_and_latitude_point
     ])
+    |> unique_constraint(:location_area)
     |> assoc_constraint(:pickup_centre)
   end
 end

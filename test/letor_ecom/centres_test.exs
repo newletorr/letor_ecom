@@ -37,7 +37,11 @@ defmodule LetorEcom.CentresTest do
         area: "some area",
         city: "some city",
         country: "some country",
-        location_coordinates: "some location_coordinates",
+        location_coordinates: %Geo.Point{
+          coordinates: {3.90010, 0.90000},
+          properties: %{},
+          srid: 4326
+        },
         name: "some name",
         state: "some state",
         ecommerce_control_id: ecommerce_control.id
@@ -48,7 +52,13 @@ defmodule LetorEcom.CentresTest do
       assert pickup_centre.area == "some area"
       assert pickup_centre.city == "some city"
       assert pickup_centre.country == "some country"
-      assert pickup_centre.location_coordinates == "some location_coordinates"
+
+      assert pickup_centre.location_coordinates == %Geo.Point{
+               coordinates: {3.90010, 0.90000},
+               properties: %{},
+               srid: 4326
+             }
+
       assert pickup_centre.name == "some name"
       assert pickup_centre.state == "some state"
       assert pickup_centre.ecommerce_control_id == ecommerce_control.id
@@ -66,7 +76,11 @@ defmodule LetorEcom.CentresTest do
         area: "some updated area",
         city: "some updated city",
         country: "some updated country",
-        location_coordinates: "some updated location_coordinates",
+        location_coordinates: %Geo.Point{
+          coordinates: {3.90010, 0.90000},
+          properties: %{},
+          srid: 4326
+        },
         name: "some updated name",
         state: "some updated state"
       }
@@ -78,7 +92,13 @@ defmodule LetorEcom.CentresTest do
       assert pickup_centre.area == "some updated area"
       assert pickup_centre.city == "some updated city"
       assert pickup_centre.country == "some updated country"
-      assert pickup_centre.location_coordinates == "some updated location_coordinates"
+
+      assert pickup_centre.location_coordinates == %Geo.Point{
+               coordinates: {3.90010, 0.90000},
+               properties: %{},
+               srid: 4326
+             }
+
       assert pickup_centre.name == "some updated name"
       assert pickup_centre.state == "some updated state"
     end

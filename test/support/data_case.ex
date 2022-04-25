@@ -24,6 +24,7 @@ defmodule LetorEcom.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import LetorEcom.DataCase
+      import LetorEcom.Factory
     end
   end
 

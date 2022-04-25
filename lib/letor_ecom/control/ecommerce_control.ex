@@ -1,5 +1,6 @@
 defmodule LetorEcom.Control.EcommerceControl do
   use LetorEcom.SchemaHelper
+  alias LetorEcom.AgentsAndSuppliers.CampusAgent
   alias LetorEcom.Centres.PickupCentre
   alias LetorEcom.CustomerPurchases.{DeliveryCharge, ReferalDiscount}
   alias LetorEcom.Catalogue.ItemImage
@@ -15,19 +16,37 @@ defmodule LetorEcom.Control.EcommerceControl do
     has_one(:referal_discounts, ReferalDiscount)
     has_many(:staff_postings, StaffPosting)
     has_many(:item_image, ItemImage)
+    has_many(:campus_agents, CampusAgent)
 
     timestamps(type: :utc_datetime)
   end
 
+  @spec changeset(
+          {map, map}
+          | %{
+              :__struct__ => atom | %{:__changeset__ => map, optional(any) => any},
+              optional(atom) => any
+            },
+          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: Ecto.Changeset.t()
   @doc false
   def changeset(ecommerce_control, attrs) do
     ecommerce_control
     |> cast(attrs, [:name, :region, :country, :centre_code])
     |> validate_required([:name, :region, :country])
-    |> unique_constraint(:name)
-    |> unique_constraint(:region)
+    # |> unique_constraint(:name)
+    # |> unique_constraint(:region)
+    |> get_unique_code
   end
 
+  @spec update_changeset(
+          {map, map}
+          | %{
+              :__struct__ => atom | %{:__changeset__ => map, optional(any) => any},
+              optional(atom) => any
+            },
+          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: Ecto.Changeset.t()
   @doc false
   def update_changeset(ecommerce_control, attrs) do
     ecommerce_control

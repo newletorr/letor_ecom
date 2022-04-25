@@ -1,12 +1,12 @@
 defmodule LetorEcom.AccountTest do
   use LetorEcom.DataCase
-
   alias LetorEcom.Account
+  alias LetorEcom.Account.User
+  alias LetorEcom.Repo
 
   describe "users" do
     alias LetorEcom.Account.User
-
-    import LetorEcom.AccountFixtures
+    alias LetorEcom.Control.Location
 
     @invalid_attrs %{
       address: nil,
@@ -15,37 +15,29 @@ defmodule LetorEcom.AccountTest do
       email: nil,
       first_name: nil,
       last_name: nil,
-      phone: nil
+      phone: nil,
+      location_id: nil
       # password: nil,
       # password_confirmation: nil
     }
 
-    test "list_users/0 returns all users" do
-      user = user_fixture()
-      assert Account.list_users() == [user]
-    end
-
-    test "get_user!/1 returns the user with given id" do
-      user = user_fixture()
-      assert Account.get_user!(user.id) == user
-    end
-
     test "create_user/1 with valid data creates a user" do
+      location = Repo.all(Location) |> List.first()
+
       valid_attrs = %{
         address: "No 23 Okuzu Street Diobu",
-        business_name: "some business_name",
         date_of_birth: ~D[2022-03-23],
         email: "somename@email.com",
         first_name: "first_name",
         last_name: "last_name",
-        phone: "08168891829"
+        phone: "08168891829",
+        location_id: location.id
         # password: "Password1@",
         # password_confirmation: "Password1@"
       }
 
-      assert {:ok, %User{} = user} = Account.create_user(valid_attrs)
+      assert {:ok, %{user: user}} = Account.register_customer(valid_attrs)
       assert user.address == "No 23 Okuzu Street Diobu"
-      assert user.business_name == "some business_name"
       assert user.date_of_birth == ~D[2022-03-23]
       assert user.email == "somename@email.com"
       assert user.first_name == "first_name"
@@ -57,16 +49,19 @@ defmodule LetorEcom.AccountTest do
     end
 
     test "create_user/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Account.create_user(@invalid_attrs)
+      assert {:error, :user, %Ecto.Changeset{}, _} = Account.register_customer(@invalid_attrs)
     end
 
     test "update_user/2 with valid data updates the user" do
-      user = user_fixture()
+      ecommerce_control = build(:ecommerce_control)
+      pickup_centre = insert!(:pickup_centre, ecommerce_control: ecommerce_control)
+      location = insert!(:location, pickup_centre: pickup_centre)
+      user = insert!(:user, location: location)
+
       random_value = Enum.random(1..100)
 
       update_attrs = %{
         address: "some updated address",
-        business_name: "some updated business_name",
         date_of_birth: ~D[2022-03-23],
         email: "#{random_value}somename@email.com",
         first_name: "another_first_name",
@@ -78,7 +73,6 @@ defmodule LetorEcom.AccountTest do
 
       assert {:ok, %User{} = user} = Account.update_user(user, update_attrs)
       assert user.address == "some updated address"
-      assert user.business_name == "some updated business_name"
       assert user.date_of_birth == ~D[2022-03-23]
       assert user.email == "#{random_value}somename@email.com"
       assert user.first_name == "another_first_name"
@@ -89,22 +83,21 @@ defmodule LetorEcom.AccountTest do
     end
 
     test "update_user/2 with invalid data returns error changeset" do
-      user = user_fixture()
+      ecommerce_control = build(:ecommerce_control)
+      pickup_centre = insert!(:pickup_centre, ecommerce_control: ecommerce_control)
+      location = insert!(:location, pickup_centre: pickup_centre)
+      user = build(:user, location: location)
       assert {:error, %Ecto.Changeset{}} = Account.update_user(user, @invalid_attrs)
-      assert user == Account.get_user!(user.id)
     end
 
     test "delete_user/1 deletes the user" do
-      user = user_fixture()
+      user = Repo.all(User) |> List.first()
       assert {:ok, %User{}} = Account.delete_user(user)
-      assert_raise Ecto.NoResultsError, fn -> Account.get_user!(user.id) end
     end
   end
 
   describe "addresses" do
     alias LetorEcom.Account.Address
-
-    import LetorEcom.AccountFixtures
 
     @invalid_attrs %{
       address1: nil,
@@ -115,18 +108,8 @@ defmodule LetorEcom.AccountTest do
       user_id: nil
     }
 
-    test "list_addresses/0 returns all addresses" do
-      address = address_fixture()
-      assert Account.list_addresses() == [address]
-    end
-
-    test "get_address!/1 returns the address with given id" do
-      address = address_fixture()
-      assert Account.get_address!(address.id) == address
-    end
-
     test "create_address/1 with valid data creates a address" do
-      user = user_fixture()
+      user = Repo.all(User) |> List.first()
 
       valid_attrs = %{
         address1: "some address1",
@@ -151,8 +134,12 @@ defmodule LetorEcom.AccountTest do
     end
 
     test "update_address/2 with valid data updates the address" do
-      user = user_fixture()
-      address = address_fixture()
+      user = Repo.all(User) |> List.first()
+      ecommerce_control = build(:ecommerce_control)
+      pickup_centre = insert!(:pickup_centre, ecommerce_control: ecommerce_control)
+      location = insert!(:location, pickup_centre: pickup_centre)
+      user1 = build(:user, location: location)
+      address = insert!(:address, user: user1)
 
       update_attrs = %{
         address1: "some updated address1",
@@ -169,43 +156,39 @@ defmodule LetorEcom.AccountTest do
       assert address.business_name == "some updated business_name"
       assert address.order_instruction == "some updated order_instruction"
       assert address.zip_code == "some updated zip_code"
-      assert address.user_id == user.id
     end
 
     test "update_address/2 with invalid data returns error changeset" do
-      address = address_fixture()
+      ecommerce_control = build(:ecommerce_control)
+      pickup_centre = insert!(:pickup_centre, ecommerce_control: ecommerce_control)
+      location = insert!(:location, pickup_centre: pickup_centre)
+      user = build(:user, location: location)
+      address = insert!(:address, user: user)
       assert {:error, %Ecto.Changeset{}} = Account.update_address(address, @invalid_attrs)
-      assert address == Account.get_address!(address.id)
     end
 
     test "delete_address/1 deletes the address" do
-      address = address_fixture()
+      ecommerce_control = build(:ecommerce_control)
+      pickup_centre = insert!(:pickup_centre, ecommerce_control: ecommerce_control)
+      location = insert!(:location, pickup_centre: pickup_centre)
+      user = build(:user, location: location)
+      address = insert!(:address, user: user)
       assert {:ok, %Address{}} = Account.delete_address(address)
-      assert_raise Ecto.NoResultsError, fn -> Account.get_address!(address.id) end
     end
   end
 
   describe "refered_lists" do
     alias LetorEcom.Account.ReferedList
 
-    import LetorEcom.AccountFixtures
-
     @invalid_attrs %{date_activated: nil, refered_person_id: nil}
 
-    test "list_refered_lists/0 returns all refered_lists" do
-      refered_list = refered_list_fixture()
-      assert Account.list_refered_lists() == [refered_list]
-    end
-
-    test "get_refered_list!/1 returns the refered_list with given id" do
-      refered_list = refered_list_fixture()
-      assert Account.get_refered_list!(refered_list.id) == refered_list
-    end
-
     test "create_refered_list/1 with valid data creates a refered_list" do
+      user = Repo.all(User) |> List.first()
+
       valid_attrs = %{
         date_activated: ~U[2022-04-15 12:58:00Z],
-        refered_person_id: "some refered_person_id"
+        refered_person_id: "some refered_person_id",
+        user_id: user.id
       }
 
       assert {:ok, %ReferedList{} = refered_list} = Account.create_refered_list(valid_attrs)
@@ -218,11 +201,17 @@ defmodule LetorEcom.AccountTest do
     end
 
     test "update_refered_list/2 with valid data updates the refered_list" do
-      refered_list = refered_list_fixture()
+      user = Repo.all(User) |> List.first()
+      ecommerce_control = build(:ecommerce_control)
+      pickup_centre = insert!(:pickup_centre, ecommerce_control: ecommerce_control)
+      location = insert!(:location, pickup_centre: pickup_centre)
+      user1 = insert!(:user, location: location)
+      refered_list = insert!(:refered_list, user: user1)
 
       update_attrs = %{
         date_activated: ~U[2022-04-16 12:58:00Z],
-        refered_person_id: "some updated refered_person_id"
+        refered_person_id: "some updated refered_person_id",
+        user_id: user.id
       }
 
       assert {:ok, %ReferedList{} = refered_list} =
@@ -233,23 +222,23 @@ defmodule LetorEcom.AccountTest do
     end
 
     test "update_refered_list/2 with invalid data returns error changeset" do
-      refered_list = refered_list_fixture()
+      ecommerce_control = build(:ecommerce_control)
+      pickup_centre = insert!(:pickup_centre, ecommerce_control: ecommerce_control)
+      location = insert!(:location, pickup_centre: pickup_centre)
+      user = build(:user, location: location)
+      refered_list = insert!(:refered_list, user: user)
 
       assert {:error, %Ecto.Changeset{}} =
                Account.update_refered_list(refered_list, @invalid_attrs)
-
-      assert refered_list == Account.get_refered_list!(refered_list.id)
     end
 
     test "delete_refered_list/1 deletes the refered_list" do
-      refered_list = refered_list_fixture()
+      ecommerce_control = build(:ecommerce_control)
+      pickup_centre = insert!(:pickup_centre, ecommerce_control: ecommerce_control)
+      location = insert!(:location, pickup_centre: pickup_centre)
+      user = build(:user, location: location)
+      refered_list = insert!(:refered_list, user: user)
       assert {:ok, %ReferedList{}} = Account.delete_refered_list(refered_list)
-      assert_raise Ecto.NoResultsError, fn -> Account.get_refered_list!(refered_list.id) end
-    end
-
-    test "change_refered_list/1 returns a refered_list changeset" do
-      refered_list = refered_list_fixture()
-      assert %Ecto.Changeset{} = Account.change_refered_list(refered_list)
     end
   end
 end

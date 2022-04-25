@@ -16,6 +16,7 @@ defmodule LetorEcom.Repo.Migrations.CreateUsers do
       add :date_of_birth, :date
       add :phone, :string
       add :role, :string
+      add :user_image, :string
       add :current_sign_in_location, :string
       add :current_sign_at, :utc_datetime
       add :last_sign_in_at, :utc_datetime

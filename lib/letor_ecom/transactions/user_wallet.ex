@@ -10,10 +10,18 @@ defmodule LetorEcom.Transactions.UserWallet do
     timestamps(type: :utc_datetime)
   end
 
+  @spec changeset(
+          {map, map}
+          | %{
+              :__struct__ => atom | %{:__changeset__ => map, optional(any) => any},
+              optional(atom) => any
+            },
+          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: Ecto.Changeset.t()
   @doc false
   def changeset(user_wallet, attrs) do
     user_wallet
-    |> cast(attrs, [:user_id, :amount, :wallet_id])
+    |> cast(attrs, [:amount, :wallet_id])
     |> assoc_constraint(:user)
   end
 

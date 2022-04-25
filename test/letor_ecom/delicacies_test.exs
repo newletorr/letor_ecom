@@ -36,14 +36,19 @@ defmodule LetorEcom.DelicaciesTest do
       recipe_class = recipe_class_fixture()
       update_attrs = %{description: "some updated description", name: "some updated name"}
 
-      assert {:ok, %RecipeClass{} = recipe_class} = Delicacies.update_recipe_class(recipe_class, update_attrs)
+      assert {:ok, %RecipeClass{} = recipe_class} =
+               Delicacies.update_recipe_class(recipe_class, update_attrs)
+
       assert recipe_class.description == "some updated description"
       assert recipe_class.name == "some updated name"
     end
 
     test "update_recipe_class/2 with invalid data returns error changeset" do
       recipe_class = recipe_class_fixture()
-      assert {:error, %Ecto.Changeset{}} = Delicacies.update_recipe_class(recipe_class, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Delicacies.update_recipe_class(recipe_class, @invalid_attrs)
+
       assert recipe_class == Delicacies.get_recipe_class!(recipe_class.id)
     end
 
@@ -64,7 +69,17 @@ defmodule LetorEcom.DelicaciesTest do
 
     import LetorEcom.DelicaciesFixtures
 
-    @invalid_attrs %{description: nil, directions: nil, image1_url: nil, image2_url: nil, image3_url: nil, meal_type: nil, name: nil, special: nil, video: nil}
+    @invalid_attrs %{
+      description: nil,
+      directions: nil,
+      image1_url: nil,
+      image2_url: nil,
+      image3_url: nil,
+      meal_type: nil,
+      name: nil,
+      special: nil,
+      video: nil
+    }
 
     test "list_recipes/0 returns all recipes" do
       recipe = recipe_fixture()
@@ -77,7 +92,17 @@ defmodule LetorEcom.DelicaciesTest do
     end
 
     test "create_recipe/1 with valid data creates a recipe" do
-      valid_attrs = %{description: "some description", directions: "some directions", image1_url: "some image1_url", image2_url: "some image2_url", image3_url: "some image3_url", meal_type: "some meal_type", name: "some name", special: "some special", video: "some video"}
+      valid_attrs = %{
+        description: "some description",
+        directions: "some directions",
+        image1_url: "some image1_url",
+        image2_url: "some image2_url",
+        image3_url: "some image3_url",
+        meal_type: "some meal_type",
+        name: "some name",
+        special: "some special",
+        video: "some video"
+      }
 
       assert {:ok, %Recipe{} = recipe} = Delicacies.create_recipe(valid_attrs)
       assert recipe.description == "some description"
@@ -97,7 +122,18 @@ defmodule LetorEcom.DelicaciesTest do
 
     test "update_recipe/2 with valid data updates the recipe" do
       recipe = recipe_fixture()
-      update_attrs = %{description: "some updated description", directions: "some updated directions", image1_url: "some updated image1_url", image2_url: "some updated image2_url", image3_url: "some updated image3_url", meal_type: "some updated meal_type", name: "some updated name", special: "some updated special", video: "some updated video"}
+
+      update_attrs = %{
+        description: "some updated description",
+        directions: "some updated directions",
+        image1_url: "some updated image1_url",
+        image2_url: "some updated image2_url",
+        image3_url: "some updated image3_url",
+        meal_type: "some updated meal_type",
+        name: "some updated name",
+        special: "some updated special",
+        video: "some updated video"
+      }
 
       assert {:ok, %Recipe{} = recipe} = Delicacies.update_recipe(recipe, update_attrs)
       assert recipe.description == "some updated description"
@@ -160,12 +196,16 @@ defmodule LetorEcom.DelicaciesTest do
       item_recipe = item_recipe_fixture()
       update_attrs = %{}
 
-      assert {:ok, %ItemRecipe{} = item_recipe} = Delicacies.update_item_recipe(item_recipe, update_attrs)
+      assert {:ok, %ItemRecipe{} = item_recipe} =
+               Delicacies.update_item_recipe(item_recipe, update_attrs)
     end
 
     test "update_item_recipe/2 with invalid data returns error changeset" do
       item_recipe = item_recipe_fixture()
-      assert {:error, %Ecto.Changeset{}} = Delicacies.update_item_recipe(item_recipe, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Delicacies.update_item_recipe(item_recipe, @invalid_attrs)
+
       assert item_recipe == Delicacies.get_item_recipe!(item_recipe.id)
     end
 

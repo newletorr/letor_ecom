@@ -91,21 +91,11 @@ defmodule LetorEcom.TransactionsTest do
 
     @invalid_attrs %{amount: nil, wallet_id: nil}
 
-    test "list_user_wallets/0 returns all user_wallets" do
-      user_wallet = user_wallet_fixture()
-      assert Transactions.list_user_wallets() == [user_wallet]
-    end
-
-    test "get_user_wallet!/1 returns the user_wallet with given id" do
-      user_wallet = user_wallet_fixture()
-      assert Transactions.get_user_wallet!(user_wallet.id) == user_wallet
-    end
-
     test "create_user_wallet/1 with valid data creates a user_wallet" do
-      valid_attrs = %{amount: "120.5", wallet_id: "some wallet_id"}
+      valid_attrs = %{amount: "some amount", wallet_id: "some wallet_id"}
 
       assert {:ok, %UserWallet{} = user_wallet} = Transactions.create_user_wallet(valid_attrs)
-      assert user_wallet.amount == Decimal.new("120.5")
+      assert user_wallet.amount == "some amount"
       assert user_wallet.wallet_id == "some wallet_id"
     end
 
@@ -115,12 +105,12 @@ defmodule LetorEcom.TransactionsTest do
 
     test "update_user_wallet/2 with valid data updates the user_wallet" do
       user_wallet = user_wallet_fixture()
-      update_attrs = %{amount: "456.7", wallet_id: "some updated wallet_id"}
+      update_attrs = %{amount: "some updated amount", wallet_id: "some updated wallet_id"}
 
       assert {:ok, %UserWallet{} = user_wallet} =
                Transactions.update_user_wallet(user_wallet, update_attrs)
 
-      assert user_wallet.amount == Decimal.new("456.7")
+      assert user_wallet.amount == "some updated amount"
       assert user_wallet.wallet_id == "some updated wallet_id"
     end
 
@@ -136,12 +126,6 @@ defmodule LetorEcom.TransactionsTest do
     test "delete_user_wallet/1 deletes the user_wallet" do
       user_wallet = user_wallet_fixture()
       assert {:ok, %UserWallet{}} = Transactions.delete_user_wallet(user_wallet)
-      assert_raise Ecto.NoResultsError, fn -> Transactions.get_user_wallet!(user_wallet.id) end
-    end
-
-    test "change_user_wallet/1 returns a user_wallet changeset" do
-      user_wallet = user_wallet_fixture()
-      assert %Ecto.Changeset{} = Transactions.change_user_wallet(user_wallet)
     end
   end
 end
