@@ -1,5 +1,6 @@
 defmodule LetorEcom.CustomerPurchasesTest do
   use LetorEcom.DataCase
+  import LetorEcom.Factory
 
   alias LetorEcom.CustomerPurchases
 

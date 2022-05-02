@@ -1,5 +1,6 @@
 defmodule LetorEcom.DelicaciesTest do
   use LetorEcom.DataCase
+  import LetorEcom.Factory
 
   alias LetorEcom.Delicacies
 

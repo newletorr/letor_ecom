@@ -22,7 +22,7 @@ defmodule LetorEcom.Centres.PickupCentre do
     field :area, :string, read_after_writes: true
     field :city, :string, read_after_writes: true
     field :country, :string, read_after_writes: true
-    field :longitude_and_latitude_point, Geometry, read_after_writes: true
+    field :location_coordinates, Geometry, read_after_writes: true
     field :name, :string, read_after_writes: true
     field :state, :string, read_after_writes: true
     field :centre_code, :string, read_after_writes: true
@@ -60,7 +60,7 @@ defmodule LetorEcom.Centres.PickupCentre do
       :city,
       :state,
       :country,
-      :longitude_and_latitude_point,
+      :location_coordinates,
       :centre_code
     ])
     |> validate_required([
@@ -71,7 +71,7 @@ defmodule LetorEcom.Centres.PickupCentre do
       :city,
       :state,
       :country,
-      :longitude_and_latitude_point
+      :location_coordinates
     ])
     |> unique_constraint(:name, message: "A centre with the same already exists")
     |> unique_constraint(:address, message: "A centre with the same address already exists")
@@ -101,7 +101,7 @@ defmodule LetorEcom.Centres.PickupCentre do
       :city,
       :state,
       :country,
-      :longitude_and_latitude_point
+      :location_coordinates
     ])
     |> unique_constraint(:name, message: "A centre with the same name already exists")
     |> unique_constraint(:address, message: "A centre with the same address already exists")

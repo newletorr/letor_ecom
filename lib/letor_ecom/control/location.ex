@@ -9,7 +9,7 @@ defmodule LetorEcom.Control.Location do
     field :city, :string
     field :country, :string
     field :location_area, :string
-    field :longitude_and_latitude_point, Geometry
+    field :location_coordinates, Geometry
     field :postal_code, :string
     field :state, :string
     belongs_to(:pickup_centre, PickupCentre)
@@ -28,7 +28,7 @@ defmodule LetorEcom.Control.Location do
       :location_area,
       :state,
       :postal_code,
-      :longitude_and_latitude_point
+      :location_coordinates
     ])
     |> validate_required([
       :pickup_centre_id,
@@ -36,7 +36,7 @@ defmodule LetorEcom.Control.Location do
       :country,
       :location_area,
       :state,
-      :longitude_and_latitude_point
+      :location_coordinates
     ])
     |> unique_constraint(:location_area)
     |> assoc_constraint(:pickup_centre)

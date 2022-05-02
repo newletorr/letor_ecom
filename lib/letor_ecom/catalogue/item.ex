@@ -26,7 +26,8 @@ defmodule LetorEcom.Catalogue.Item do
     field(:preparation_time, :string, read_after_writes: true)
     field(:promo_price, :decimal, read_after_writes: true)
     field(:qa_cleared, :boolean, default: false, read_after_writes: true)
-    field(:qr_code, LetorEcom.Uploads.Type, read_after_writes: true)
+    # LetorEcom.Uploads.Type, read_after_writes: true)
+    field :qr_code, :string
     field(:regional_name, :string, read_after_writes: true)
     field(:size, :integer, read_after_writes: true)
     field(:third_party_item, :string, read_after_writes: true)
@@ -39,10 +40,19 @@ defmodule LetorEcom.Catalogue.Item do
     belongs_to(:featured_item, FeaturedItem)
     belongs_to(:popular_item, PopularItem)
     has_many(:cart_items, CartItem)
+    has_many(:item_taggings, ItemTagging)
 
     timestamps(type: :utc_datetime)
   end
 
+  @spec changeset(
+          {map, map}
+          | %{
+              :__struct__ => atom | %{:__changeset__ => map, optional(any) => any},
+              optional(atom) => any
+            },
+          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: Ecto.Changeset.t()
   @doc false
   def changeset(item, attrs) do
     item
@@ -86,7 +96,14 @@ defmodule LetorEcom.Catalogue.Item do
     |> get_actual_price
   end
 
-
+  @spec update_changeset(
+          {map, map}
+          | %{
+              :__struct__ => atom | %{:__changeset__ => map, optional(any) => any},
+              optional(atom) => any
+            },
+          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: Ecto.Changeset.t()
   @doc false
   def update_changeset(item, attrs) do
     item
@@ -121,7 +138,14 @@ defmodule LetorEcom.Catalogue.Item do
     |> get_actual_price
   end
 
-
+  @spec special_category_changeset(
+          {map, map}
+          | %{
+              :__struct__ => atom | %{:__changeset__ => map, optional(any) => any},
+              optional(atom) => any
+            },
+          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: Ecto.Changeset.t()
   def special_category_changeset(item, attrs) do
     item
     |> cast(attrs, [:featured_item_id, :daily_deal_id, :popular_item_id])
@@ -130,10 +154,19 @@ defmodule LetorEcom.Catalogue.Item do
     |> assoc_constraint(:popular_item)
   end
 
+  @spec qr_code_changeset(
+          {map, map}
+          | %{
+              :__struct__ => atom | %{:__changeset__ => map, optional(any) => any},
+              optional(atom) => any
+            },
+          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: Ecto.Changeset.t()
   def qr_code_changeset(item, attrs) do
     item
     |> cast(attrs, [:qr_code])
-    |> cast_attachments(attrs, [:qr_code], allow_urls: true)
+
+    # |> cast_attachments(attrs, [:qr_code], allow_urls: true)
   end
 
   defp get_actual_price(changeset) do

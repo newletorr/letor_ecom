@@ -205,29 +205,23 @@ defmodule LetorEcom.Catalogue do
     Repo.delete(sku)
   end
 
+  @spec create_sku_inventory_and_item(
+          atom
+          | %{:name => any, :pickup_centre_id => any, optional(any) => any}
+        ) :: any
   def create_sku_inventory_and_item(attrs \\ %{}) do
-    sku_changeset =
-      %Sku{} |> Sku.changeset(%{item_name: attrs.name, pickup_centre_id: attrs.pickup_centre_id})
+    sku_changeset = %Sku{} |> Sku.changeset(attrs)
 
     Multi.new()
+    # insert items stock keeping unit
     |> Multi.insert(:sku, sku_changeset)
+    # Create an item with the stock keeping unit above
     |> Multi.run(:item, fn repo, %{sku: sku} ->
-      item_changeset =
-        %Item{}
-        |> Item.changeset(%{
-          item_subcategory_id: attrs.item_subcategory_id,
-          barcode: attrs.barcode,
-          item_image_id: attrs.item_image_id,
-          type: attrs.type,
-          name: attrs.name,
-          main_price: attrs.main_price,
-          package_size: attrs.package_size,
-          description: attrs.description,
-          sku_id: sku.id
-        })
+      item_changeset = %Item{} |> Item.changeset(Map.put(attrs, :sku_id, sku.id))
 
       repo.insert(item_changeset)
     end)
+    # Create item tagging for item if a tag_id is provided
     |> Multi.run(:item_tagging, fn repo, %{item: item} ->
       if is_nil(item.id) == false do
         {:ok, nil}
@@ -239,6 +233,7 @@ defmodule LetorEcom.Catalogue do
         repo.insert(item_tagging_changeset)
       end
     end)
+    # create qr code for item
     |> Multi.run(:item_qr_code, fn repo, %{item: item} ->
       {:ok, qr_code} =
         item.id
@@ -255,29 +250,15 @@ defmodule LetorEcom.Catalogue do
 
       repo.update(qr_code_changeset)
     end)
+    # Create an inventory item for the item created above
     |> Multi.run(:inventory, fn repo, %{sku: sku} ->
       inventory_changeset =
         %Inventory{}
-        |> Inventory.changeset(%{
-          buy_price: attrs.buy_price,
-          max_external_quantity: attrs.max_external_quantity,
-          max_internal_quantity: attrs.max_internal_quantity,
-          sales_price: attrs.sales_price,
-          expiry_date: attrs.expiry_date,
-          item_image_id: attrs.item_image_id,
-          pickup_centre_id: attrs.pickup_centre_id,
-          inventory_location_id: attrs.inventory_location_id,
-          description: attrs.description,
-          internal_quantity: attrs.internal_quantity,
-          external_quantity: attrs.external_quantity,
-          name: attrs.name,
-          internal_quantity_uom: attrs.internal_quantity_uom,
-          external_quantity_uom: attrs.external_quantity_uom,
-          sku_id: sku.id
-        })
+        |> Inventory.changeset(Map.put(attrs, :sku_id, sku.id))
 
       repo.insert(inventory_changeset)
     end)
+    # Create qr code for inventory item
     |> Multi.run(:inventory_qr_code, fn repo, %{inventory: inventory} ->
       {:ok, qr_code} =
         inventory.id
@@ -296,6 +277,7 @@ defmodule LetorEcom.Catalogue do
 
       repo.update(qr_code_changeset)
     end)
+    # Track inventory creation history
     |> Multi.run(:inventory_change_history, fn repo, %{inventory: inventory} ->
       inventory_history_changeset =
         %InventoryChangeHistory{}
@@ -378,9 +360,23 @@ defmodule LetorEcom.Catalogue do
 
   """
   def create_item_image(attrs \\ %{}) do
-    %ItemImage{}
-    |> ItemImage.changeset(attrs)
-    |> Repo.insert()
+    item_image_changeset = %ItemImage{} |> ItemImage.changeset(attrs)
+
+    Multi.new()
+    |> Multi.insert(:item_image, item_image_changeset)
+    |> Multi.run(:image_uploads, fn repo, %{item_image: item_image} ->
+      uploads_changeset =
+        item_image
+        |> ItemImage.image_uploads_changeset(%{
+          item_image1: attrs.item_image1,
+          item_image2: attrs.item_image2,
+          item_image3: attrs.item_image3,
+          item_image4: attrs.item_image4
+        })
+
+      repo.update(uploads_changeset)
+    end)
+    |> Repo.transaction()
   end
 
   @doc """

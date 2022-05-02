@@ -1,15 +1,25 @@
 defmodule LetorEcom.Catalogue.ItemCategory do
   use LetorEcom.SchemaHelper
+  alias LetorEcom.Catalogue.ItemSubcategory
   alias LetorEcom.Centres.PickupCentre
 
   schema "item_categories" do
     field(:description, :string)
     field(:name, :string)
     belongs_to(:pickup_centre, PickupCentre)
+    has_many(:item_subcategories, ItemSubcategory)
 
     timestamps(type: :utc_datetime)
   end
 
+  @spec changeset(
+          {map, map}
+          | %{
+              :__struct__ => atom | %{:__changeset__ => map, optional(any) => any},
+              optional(atom) => any
+            },
+          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: Ecto.Changeset.t()
   @doc false
   def changeset(item_category, attrs) do
     item_category
@@ -22,6 +32,14 @@ defmodule LetorEcom.Catalogue.ItemCategory do
     |> assoc_constraint(:pickup_centre)
   end
 
+  @spec update_changeset(
+          {map, map}
+          | %{
+              :__struct__ => atom | %{:__changeset__ => map, optional(any) => any},
+              optional(atom) => any
+            },
+          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: Ecto.Changeset.t()
   @doc false
   def update_changeset(item_category, attrs) do
     item_category

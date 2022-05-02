@@ -20,12 +20,10 @@ defmodule LetorEcom.Repo.Migrations.CreateLocation do
     create index(:location, :pickup_centre_id)
     create(unique_index(:location, [:location_area]))
 
-    execute(
-      "SELECT AddGeometryColumn('location', 'longitude_and_latitude_point', 4326, 'POINT', 2)"
-    )
+    execute("SELECT AddGeometryColumn('location', 'location_coordinates', 4326, 'POINT', 2)")
 
     execute(
-      "CREATE INDEX location_longitude_and_latitude_point_index on location USING gist (longitude_and_latitude_point)"
+      "CREATE INDEX location_location_coordinates_index on location USING gist (location_coordinates)"
     )
   end
 

@@ -10,6 +10,7 @@ import Config
 config :letor_ecom,
   confirmation_code_expire_hours: 1,
   ecto_repos: [LetorEcom.Repo],
+  migration_timestamps: [type: :utc_datetime],
   generators: [binary_id: true]
 
 # Configures the endpoint

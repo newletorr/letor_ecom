@@ -27,11 +27,11 @@ defmodule LetorEcom.Repo.Migrations.CreatePickupCentres do
     create unique_index(:pickup_centres, [:address])
 
     execute(
-      "SELECT AddGeometryColumn('pickup_centres', 'longitude_and_latitude_point', 4326, 'POINT', 2)"
+      "SELECT AddGeometryColumn('pickup_centres', 'location_coordinates', 4326, 'POINT', 2)"
     )
 
     execute(
-      "CREATE INDEX pickup_centres_longitude_and_latitude_point_index on pickup_centres USING gist (longitude_and_latitude_point)"
+      "CREATE INDEX pickup_centres_location_coordinates_index on pickup_centres USING gist (location_coordinates)"
     )
   end
 

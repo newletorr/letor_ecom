@@ -4,9 +4,9 @@ defmodule LetorEcom.Repo.Migrations.CreateItemImages do
   def change do
     create table(:item_images, primary_key: false) do
       add :id, :binary_id, primary_key: true, default: fragment("gen_random_uuid()")
-      add :item_name, :string, null: false
-      add :item_image1, :string, null: false
-      add :item_image2, :string, null: false
+      add :item_name, :string
+      add :item_image1, :string
+      add :item_image2, :string
       add :item_image3, :string
       add :item_image4, :string
       add :video_url, :string

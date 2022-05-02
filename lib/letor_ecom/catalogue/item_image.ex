@@ -4,10 +4,14 @@ defmodule LetorEcom.Catalogue.ItemImage do
   alias LetorEcom.Control.EcommerceControl
 
   schema "item_images" do
-    field(:item_image1, LetorEcom.Uploads.Type, read_after_writes: true)
-    field(:item_image2, LetorEcom.Uploads.Type, read_after_writes: true)
-    field(:item_image3, LetorEcom.Uploads.Type, read_after_writes: true)
-    field(:item_image4, LetorEcom.Uploads.Type, read_after_writes: true)
+    # LetorEcom.Uploads.Type, read_after_writes: true)
+    field :item_image1, :string
+    # LetorEcom.Uploads.Type, read_after_writes: true)
+    field :item_image2, :string
+    # LetorEcom.Uploads.Type, read_after_writes: true)
+    field :item_image3, :string
+    # LetorEcom.Uploads.Type, read_after_writes: true)
+    field :item_image4, :string
     field(:item_name, :string, read_after_writes: true)
     field(:video_url, :string, read_after_writes: true)
     belongs_to(:ecommerce_control, EcommerceControl)
@@ -25,31 +29,53 @@ defmodule LetorEcom.Catalogue.ItemImage do
     ])
     |> validate_required([
       :ecommerce_control_id,
-      :item_name,
-      :item_image1,
-      :item_image2,
-      :item_image3,
-      :item_image4
+      :item_name
     ])
-    |> cast_attachments(attrs, [:item_image1, :item_image2, :item_image3, :item_image4])
     |> unique_constraint(:item_name, message: "An image with the same already exist")
     |> assoc_constraint(:ecommerce_control)
   end
 
+  @spec update_changeset(
+          {map, map}
+          | %{
+              :__struct__ => atom | %{:__changeset__ => map, optional(any) => any},
+              optional(atom) => any
+            },
+          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: Ecto.Changeset.t()
   @doc false
   def update_changeset(item_image, attrs) do
     item_image
     |> cast(attrs, [
       :ecommerce_control_id,
       :item_name,
+      :item_image1,
+      :item_image2,
+      :item_image3,
+      :item_image4,
       :video_url
     ])
+    |> cast_attachments(attrs, [:item_image1, :item_image2, :item_image3, :item_image4],
+      allow_urls: true
+    )
     |> unique_constraint(:item_name, message: "An image with the same already exist")
     |> assoc_constraint(:ecommerce_control)
   end
 
+  @spec image_uploads_changeset(
+          {map, map}
+          | %{
+              :__struct__ => atom | %{:__changeset__ => map, optional(any) => any},
+              optional(atom) => any
+            },
+          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: Ecto.Changeset.t()
   def image_uploads_changeset(item_image, attrs) do
     item_image
     |> cast(attrs, [:item_image1, :item_image2, :item_image3, :item_image4])
+
+    # |> cast_attachments(attrs, [:item_image1, :item_image2, :item_image3, :item_image4],
+    #  allow_urls: true
+    # )
   end
 end
