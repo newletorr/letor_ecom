@@ -108,7 +108,7 @@ defmodule LetorEcom.Factory do
   def build(:sku) do
     %Sku{
       code: "some code",
-      item_name: "some item_name"
+      name: "some name"
     }
   end
 
@@ -120,6 +120,34 @@ defmodule LetorEcom.Factory do
       item_image4: "some item_image4",
       item_name: "some item_name",
       video_url: "some video_url"
+    }
+  end
+
+  def build(:item) do
+    %Item{
+      actual_price: Decimal.new("120.5"),
+      availability_time: "some availability_time",
+      available_quantity: 42,
+      barcode: "some barcode",
+      brand_name: "some brand_name",
+      bulk: true,
+      customization_allowed: true,
+      description: "some description",
+      details: "some details",
+      expired: true,
+      group_buying_price: Decimal.new("120.5"),
+      item_code: "some item_code",
+      main_price: Decimal.new("120.5"),
+      name: "some name",
+      out_of_stock: true,
+      package_size: "some package_size",
+      preparation_time: "some preparation_time",
+      promo_price: Decimal.new("120.5"),
+      qa_cleared: true,
+      regional_name: "some regional_name",
+      size: 42,
+      third_party_item: "some third_party_item",
+      type: "some type"
     }
   end
 
@@ -135,42 +163,13 @@ defmodule LetorEcom.Factory do
     %ItemTagging{}
   end
 
-  def build(:item) do
-    %Item{
-      actual_price: "120.5",
-      availability_time: "some availability_time",
-      available_quantity: 42,
-      barcode: "some barcode",
-      brand_name: "some brand_name",
-      bulk: true,
-      customization_allowed: true,
-      description: "some description",
-      details: "some details",
-      expired: true,
-      group_buying_price: "120.5",
-      item_code: "some item_code",
-      main_price: "120.5",
-      name: "some name",
-      out_of_stock: true,
-      package_size: "some package_size",
-      preparation_time: "some preparation_time",
-      promo_price: "120.5",
-      qa_cleared: true,
-      qr_code: "some qr_code",
-      regional_name: "some regional_name",
-      size: 42,
-      third_party_item: "some third_party_item",
-      type: "some type"
-    }
-  end
-
   def build(:pickup_centre) do
     %PickupCentre{
       address: "#{Enum.random(1..1000)}some address",
       area: "#{Enum.random(1..1000)}some area",
       city: "some city",
       country: "some country",
-      longitude_and_latitude_point: %Geo.Point{coordinates: {3.90010, 0.90000}, srid: 4326},
+      location_coordinates: %Geo.Point{coordinates: {3.90010, 0.90000}, srid: 4326},
       name: "#{Enum.random(1..1000)}some name",
       state: "some state"
     }
@@ -198,7 +197,7 @@ defmodule LetorEcom.Factory do
   def build(:inventory) do
     %Inventory{
       brand_name: "some brand_name",
-      buy_price: "120.5",
+      buy_price: Decimal.new("120.5"),
       description: "some description",
       expired: true,
       expiry_date: ~D[2022-04-06],
@@ -211,7 +210,7 @@ defmodule LetorEcom.Factory do
       name: "some name",
       qr_code: "some qr_code",
       quality_assurance_status: "some quality_assurance_status",
-      sales_price: "120.5",
+      sales_price: Decimal.new("120.5"),
       size: 42,
       status: "some status"
     }
@@ -219,10 +218,10 @@ defmodule LetorEcom.Factory do
 
   def build(:inventory_change_history) do
     %InventoryChangeHistory{
-      buy_price: "120.5",
+      buy_price: Decimal.new("120.5"),
       external_quantity: 42,
       internal_quantity: 42,
-      sales_price: "120.5",
+      sales_price: Decimal.new("120.5"),
       change_type: "created"
     }
   end
@@ -240,7 +239,7 @@ defmodule LetorEcom.Factory do
       city: "some city",
       country: "some country",
       location_area: "#{Enum.random(10..1000)}some location_area",
-      longitude_and_latitude_point: %Geo.Point{coordinates: {3.90010, 0.90000}, srid: 4326},
+      location_coordinates: %Geo.Point{coordinates: {3.90010, 0.90000}, srid: 4326},
       postal_code: "some postal_code",
       state: "some state"
     }
@@ -270,7 +269,7 @@ defmodule LetorEcom.Factory do
       centre_pickup: "some centre_pickup",
       contact_person: "some contact_person",
       customer_delivery_confirmation_code: "some customer_delivery_confirmation_code",
-      delivery_charge: "120.5",
+      delivery_charge: Decimal.new("120.5"),
       delivery_date: ~D[2022-03-30],
       delivery_period: "some delivery_period",
       delivery_option: "some deliviery_option",
@@ -278,7 +277,7 @@ defmodule LetorEcom.Factory do
       eight_am_twelve_pm: true,
       fifteen_to_thirty_minutes: true,
       four_pm_ten_pm: true,
-      grand_total: "120.5",
+      grand_total: Decimal.new("120.5"),
       latest_time: ~T[14:00:00],
       one_to_two_hours: true,
       order_confirmed: true,
@@ -292,7 +291,7 @@ defmodule LetorEcom.Factory do
       payment_option: "some payment_option",
       payment_status: "some payment_status",
       phone: "some phone",
-      referal_discount: "120.5",
+      referal_discount: Decimal.new("120.5"),
       time_delivered: ~U[2022-03-30 12:32:00Z],
       twelve_pm_four_pm: true,
       urgency_status: "some urgency_status"
@@ -312,19 +311,19 @@ defmodule LetorEcom.Factory do
 
   def build(:delivery_charge) do
     %DeliveryCharge{
-      eight_to_twelve: "120.5",
-      fifteen_to_thirty_minutes: "120.5",
-      four_to_ten: "120.5",
-      twelve_to_four: "120.5"
+      eight_to_twelve: Decimal.new("120.5"),
+      fifteen_to_thirty_minutes: Decimal.new("120.5"),
+      four_to_ten: Decimal.new("120.5"),
+      twelve_to_four: Decimal.new("120.5")
     }
   end
 
   def build(:referal_discount) do
     %ReferalDiscount{
-      first_discount: "120.5",
-      fourth_discount: "120.5",
-      second_discount: "120.5",
-      third_discount: "120.5"
+      first_discount: Decimal.new("120.5"),
+      fourth_discount: Decimal.new("120.5"),
+      second_discount: Decimal.new("120.5"),
+      third_discount: Decimal.new("120.5")
     }
   end
 
@@ -402,7 +401,7 @@ defmodule LetorEcom.Factory do
 
   def build(:user_wallet) do
     %UserWallet{
-      amount: "120.5",
+      amount: Decimal.new("120.5"),
       wallet_id: "some wallet_id"
     }
   end

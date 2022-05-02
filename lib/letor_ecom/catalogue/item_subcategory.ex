@@ -10,6 +10,14 @@ defmodule LetorEcom.Catalogue.ItemSubcategory do
     timestamps(type: :utc_datetime)
   end
 
+  @spec changeset(
+          {map, map}
+          | %{
+              :__struct__ => atom | %{:__changeset__ => map, optional(any) => any},
+              optional(atom) => any
+            },
+          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: Ecto.Changeset.t()
   @doc false
   def changeset(item_subcategory, attrs) do
     item_subcategory
@@ -19,7 +27,7 @@ defmodule LetorEcom.Catalogue.ItemSubcategory do
       message: "A subcategory with the same name already exist in this Category",
       name: :item_subcategories_name_item_category_id_index
     )
-    |> assoc_constraint(:item_category)
+    |> foreign_key_constraint(:item_category_id)
   end
 
   @doc false

@@ -31,14 +31,16 @@ defmodule LetorEcom.AgentsAndSuppliers.CampusAgent do
   schema "campus_agents" do
     field(:business_address, :string)
     field(:email, :string)
-    field(:agents_image, LetorEcom.Uploads.Type)
+    # LetorEcom.Uploads.Type)
+    field :agents_image, :string
     field(:first_name, :string)
     field(:guarantor_first_name, :string)
     field(:guarantor_phone, :string)
     field(:guarantor_residential_address, :string)
     field(:guarantor_last_name, :string)
     field(:home_town, :string)
-    field(:id_image, LetorEcom.Uploads.Type)
+    # LetorEcom.Uploads.Type)
+    field :id_image, :string
     field(:last_name, :string)
     field(:means_of_id, :string)
     field(:nationality, :string)

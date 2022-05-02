@@ -1,5 +1,6 @@
 defmodule LetorEcom.HumanResourceTest do
   use LetorEcom.DataCase
+  import LetorEcom.Factory
 
   alias LetorEcom.HumanResource
 

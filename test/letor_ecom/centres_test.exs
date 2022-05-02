@@ -1,36 +1,24 @@
 defmodule LetorEcom.CentresTest do
   use LetorEcom.DataCase
+  import LetorEcom.Factory
 
   alias LetorEcom.Centres
 
   describe "pickup_centres" do
     alias LetorEcom.Centres.PickupCentre
 
-    import LetorEcom.CentresFixtures
-    import LetorEcom.ControlFixtures
-
     @invalid_attrs %{
       address: nil,
       area: nil,
       city: nil,
       country: nil,
-      location_coordinates: nil,
+      location_coordinatess: nil,
       name: nil,
       state: nil
     }
 
-    test "list_pickup_centres/0 returns all pickup_centres" do
-      pickup_centre = pickup_centre_fixture()
-      assert Centres.list_pickup_centres() == [pickup_centre]
-    end
-
-    test "get_pickup_centre!/1 returns the pickup_centre with given id" do
-      pickup_centre = pickup_centre_fixture()
-      assert Centres.get_pickup_centre!(pickup_centre.id) == pickup_centre
-    end
-
     test "create_pickup_centre/1 with valid data creates a pickup_centre" do
-      ecommerce_control = ecommerce_control_fixture()
+      ecommerce_control = Repo.all(EcommerceControl) |> List.first()
 
       valid_attrs = %{
         address: "some address",
@@ -53,8 +41,8 @@ defmodule LetorEcom.CentresTest do
       assert pickup_centre.city == "some city"
       assert pickup_centre.country == "some country"
 
-      assert pickup_centre.location_coordinates == %Geo.Point{
-               coordinates: {3.90010, 0.90000},
+      assert pickup_centre.location_coordinatess == %Geo.Point{
+               coordinate: {3.90010, 0.90000},
                properties: %{},
                srid: 4326
              }
@@ -69,7 +57,7 @@ defmodule LetorEcom.CentresTest do
     end
 
     test "update_pickup_centre/2 with valid data updates the pickup_centre" do
-      pickup_centre = pickup_centre_fixture()
+      pickup_centre = Repo.all(PickupCentre) |> List.first()
 
       update_attrs = %{
         address: "some updated address",
@@ -93,8 +81,8 @@ defmodule LetorEcom.CentresTest do
       assert pickup_centre.city == "some updated city"
       assert pickup_centre.country == "some updated country"
 
-      assert pickup_centre.location_coordinates == %Geo.Point{
-               coordinates: {3.90010, 0.90000},
+      assert pickup_centre.location_coordinatess == %Geo.Point{
+               coordinate: {3.90010, 0.90000},
                properties: %{},
                srid: 4326
              }
@@ -104,7 +92,7 @@ defmodule LetorEcom.CentresTest do
     end
 
     test "update_pickup_centre/2 with invalid data returns error changeset" do
-      pickup_centre = pickup_centre_fixture()
+      pickup_centre =
 
       assert {:error, %Ecto.Changeset{}} =
                Centres.update_pickup_centre(pickup_centre, @invalid_attrs)
@@ -122,19 +110,7 @@ defmodule LetorEcom.CentresTest do
   describe "inventory_location" do
     alias LetorEcom.Centres.InventoryLocation
 
-    import LetorEcom.CentresFixtures
-
     @invalid_attrs %{name: nil, type: nil}
-
-    test "list_inventory_location/0 returns all inventory_location" do
-      inventory_location = inventory_location_fixture()
-      assert Centres.list_inventory_location() == [inventory_location]
-    end
-
-    test "get_inventory_location!/1 returns the inventory_location with given id" do
-      inventory_location = inventory_location_fixture()
-      assert Centres.get_inventory_location!(inventory_location.id) == inventory_location
-    end
 
     test "create_inventory_location/1 with valid data creates a inventory_location" do
       valid_attrs = %{name: "some name", type: "some type"}
@@ -178,17 +154,10 @@ defmodule LetorEcom.CentresTest do
         Centres.get_inventory_location!(inventory_location.id)
       end
     end
-
-    test "change_inventory_location/1 returns a inventory_location changeset" do
-      inventory_location = inventory_location_fixture()
-      assert %Ecto.Changeset{} = Centres.change_inventory_location(inventory_location)
-    end
   end
 
   describe "daily_deals" do
     alias LetorEcom.Centres.DailyDeal
-
-    import LetorEcom.CentresFixtures
 
     @invalid_attrs %{}
 
@@ -240,8 +209,6 @@ defmodule LetorEcom.CentresTest do
 
   describe "popular_items" do
     alias LetorEcom.Centres.PopularItem
-
-    import LetorEcom.CentresFixtures
 
     @invalid_attrs %{}
 
@@ -297,8 +264,6 @@ defmodule LetorEcom.CentresTest do
   describe "featured_items" do
     alias LetorEcom.Centres.FeaturedItem
 
-    import LetorEcom.CentresFixtures
-
     @invalid_attrs %{}
 
     test "list_featured_items/0 returns all featured_items" do
@@ -352,8 +317,6 @@ defmodule LetorEcom.CentresTest do
 
   describe "inventories" do
     alias LetorEcom.Centres.Inventory
-
-    import LetorEcom.CentresFixtures
 
     @invalid_attrs %{
       brand_name: nil,
@@ -488,8 +451,6 @@ defmodule LetorEcom.CentresTest do
 
   describe "inventory_change_history" do
     alias LetorEcom.Centres.InventoryChangeHistory
-
-    import LetorEcom.CentresFixtures
 
     @invalid_attrs %{
       buy_price: nil,

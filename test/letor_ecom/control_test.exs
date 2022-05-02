@@ -1,5 +1,6 @@
 defmodule LetorEcom.ControlTest do
   use LetorEcom.DataCase
+  import LetorEcom.Factory
 
   alias LetorEcom.Control
 

@@ -1,5 +1,6 @@
 defmodule LetorEcom.AgentsAndSuppliersTest do
-  use LetorEcom.DataCase
+  use LetorEcom.DataCase, async: true
+  import LetorEcom.Factory
   alias LetorEcom.AgentsAndSuppliers
   alias LetorEcom.Control.{EcommerceControl, Location}
 

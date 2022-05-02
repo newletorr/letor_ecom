@@ -7,15 +7,15 @@ defmodule LetorEcom.Repo.Migrations.CreateItems do
       add :actual_price, :decimal
       add :available_quantity, :integer
       add :description, :string
-      add :main_price, :decimal, null: false
+      add :main_price, :decimal
       add :group_buying_price, :decimal
-      add :name, :string, null: false
+      add :name, :string
       add :regional_name, :string
       add :out_of_stock, :boolean, default: false, null: false
       add :package_size, :string
       add :promo_price, :decimal
       add :brand_name, :string
-      add :type, :string, null: false
+      add :type, :string
       add :qa_cleared, :boolean, default: false, null: false
       add :size, :integer
       add :item_code, :string

@@ -1,5 +1,6 @@
 defmodule LetorEcom.AccountTest do
-  use LetorEcom.DataCase
+  use LetorEcom.DataCase, async: true
+  import LetorEcom.Factory
   alias LetorEcom.Account
   alias LetorEcom.Account.User
   alias LetorEcom.Repo

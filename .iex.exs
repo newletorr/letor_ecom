@@ -45,6 +45,7 @@ IEx.configure(
 )
 
 import Ecto.Query, warn: false
+import Geo.PostGIS
 alias LetorEcom.Repo
 
 alias LetorEcom.{
@@ -60,7 +61,7 @@ alias LetorEcom.{
 
 alias LetorEcom.Account.{Address, User}
 alias LetorEcom.AgentsAndSuppliers.CampusAgent
-alias LetorEcom.Catalogue.{Item, ItemCategory, ItemImage, ItemSubcategory, Sku}
+alias LetorEcom.Catalogue.{Item, ItemCategory, ItemImage, ItemSubcategory, ItemTag, Sku}
 
 alias LetorEcom.Centres.{
   DailyDeal,

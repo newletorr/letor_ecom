@@ -41,7 +41,6 @@ defmodule LetorEcom.CustomerPurchases.Order do
     field :twelve_pm_four_pm, :boolean, default: false, read_after_writes: true
     field :urgency_status, :string, read_after_writes: true
     belongs_to(:user, User)
-    belongs_to(:pickup_centre, PickupCentre)
     belongs_to(:location, Location)
     belongs_to(:campus_agent, CampusAgent)
     belongs_to(:order_dispatch, OrderDispatch)
@@ -63,7 +62,6 @@ defmodule LetorEcom.CustomerPurchases.Order do
     order
     |> cast(attrs, [
       :location_id,
-      :pickup_centre_id,
       :order_number,
       :address,
       :delivery_charge,
@@ -125,7 +123,6 @@ defmodule LetorEcom.CustomerPurchases.Order do
     |> cast(attrs, [
       :user_id,
       :location_id,
-      :pickup_centre_id,
       :order_number,
       :address,
       :delivery_charge,
@@ -176,7 +173,6 @@ defmodule LetorEcom.CustomerPurchases.Order do
       :user_id,
       :location_id,
       :curbside_agent_id,
-      :pickup_centre_id,
       :order_number,
       :address,
       :delivery_date,
@@ -211,7 +207,6 @@ defmodule LetorEcom.CustomerPurchases.Order do
     |> cast(attrs, [
       :user_id,
       :location_id,
-      :pickup_centre_id,
       :campus_agent_id,
       :order_number,
       :delivery_date,

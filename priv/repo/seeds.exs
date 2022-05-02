@@ -80,7 +80,10 @@ PickupCentre |> Repo.delete_all()
     city: "Port Harcourt",
     state: "Rivers State",
     country: "Nigeria",
-    longitude_and_latitude_point: %Geo.Point{coordinates: {3.90010, -0.98827}, srid: 4326},
+    location_coordinates: %Geo.Point{
+      coordinates: {4.892429226369097, 6.915226982931952},
+      srid: 4326
+    },
     ecommerce_control_id: ecommerce_control.id
   })
 
@@ -105,7 +108,10 @@ Location |> Repo.delete_all()
     state: "Rivers State",
     postal_code: "5_500_019",
     pickup_centre_id: pickup_centre.id,
-    longitude_and_latitude_point: %Geo.Point{coordinates: {3.90010, 0.90000}, srid: 4326}
+    location_coordinates: %Geo.Point{
+      coordinates: {4.833813967530579, 7.0250130040393675},
+      srid: 4326
+    }
   })
 
 {:ok, l2} =
@@ -116,7 +122,10 @@ Location |> Repo.delete_all()
     state: "Rivers State",
     postal_code: "500_050",
     pickup_centre_id: pickup_centre.id,
-    longitude_and_latitude_point: %Geo.Point{coordinates: {7.90010, 1.90000}, srid: 4326}
+    location_coordinates: %Geo.Point{
+      coordinates: {4.847480291388287, 6.990528986062236},
+      srid: 4326
+    }
   })
 
 {:ok, l3} =
@@ -127,7 +136,94 @@ Location |> Repo.delete_all()
     state: "Rivers State",
     postal_code: "550_050",
     pickup_centre_id: pickup_centre.id,
-    longitude_and_latitude_point: %Geo.Point{coordinates: {2.90010, 0.20000}, srid: 4326}
+    location_coordinates: %Geo.Point{
+      coordinates: {4.820363267328334, 7.054064684036778},
+      srid: 4326
+    }
+  })
+
+{:ok, l4} =
+  Control.create_location(%{
+    city: "Port Harcourt",
+    country: "Nigeria",
+    location_area: "Elelewon",
+    state: "Rivers State",
+    postal_code: "550_050",
+    pickup_centre_id: pickup_centre.id,
+    location_coordinates: %Geo.Point{
+      coordinates: {4.8399775403135346, 7.072863034551638},
+      srid: 4326
+    }
+  })
+
+{:ok, l5} =
+  Control.create_location(%{
+    city: "Port Harcourt",
+    country: "Nigeria",
+    location_area: "Rumukwurushi",
+    state: "Rivers State",
+    postal_code: "550_050",
+    pickup_centre_id: pickup_centre.id,
+    location_coordinates: %Geo.Point{
+      coordinates: {4.855674721086868, 7.0546260493795385},
+      srid: 4326
+    }
+  })
+
+{:ok, l6} =
+  Control.create_location(%{
+    city: "Port Harcourt",
+    country: "Nigeria",
+    location_area: "Diobu",
+    state: "Rivers State",
+    postal_code: "550_050",
+    pickup_centre_id: pickup_centre.id,
+    location_coordinates: %Geo.Point{
+      coordinates: {4.79742647706751, 6.989686287353521},
+      srid: 4326
+    }
+  })
+
+{:ok, l7} =
+  Control.create_location(%{
+    city: "Port Harcourt",
+    country: "Nigeria",
+    location_area: "Woji",
+    state: "Rivers State",
+    postal_code: "550_050",
+    pickup_centre_id: pickup_centre.id,
+    location_coordinates: %Geo.Point{
+      coordinates: {4.830803833226627, 7.055239447143174},
+      srid: 4326
+    }
+  })
+
+{:ok, l7} =
+  Control.create_location(%{
+    city: "Port Harcourt",
+    country: "Nigeria",
+    location_area: "D-Line",
+    state: "Rivers State",
+    postal_code: "550_050",
+    pickup_centre_id: pickup_centre.id,
+    location_coordinates: %Geo.Point{
+      coordinates: {4.803326672694468, 7.0017811414468625},
+      srid: 4326
+    }
+  })
+
+{:ok, l7} =
+  Control.create_location(%{
+    city: "Port Harcourt",
+    country: "Nigeria",
+    location_area: "Borokiri",
+    state: "Rivers State",
+    postal_code: "550_050",
+    pickup_centre_id: pickup_centre.id,
+    location_coordinates: %Geo.Point{
+      coordinates: {4.746401785470347, 7.036592874548285},
+      srid: 4326
+    }
   })
 
 Staff |> Repo.delete_all()
@@ -397,7 +493,7 @@ User |> Repo.delete_all()
 
 ItemImage |> Repo.delete_all()
 
-{:ok, images1} =
+{:ok, %{image_uploads: image1}} =
   Catalogue.create_item_image(%{
     item_image1: "/home/dumadi/Desktop/banana.png",
     item_image2: "/home/dumadi/Desktop/banana.png",
@@ -407,7 +503,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, images2} =
+{:ok, %{image_uploads: image2}} =
   Catalogue.create_item_image(%{
     item_image1: "/home/dumadi/Desktop/cakes.png",
     item_image2: "/home/dumadi/Desktop/cakes.png",
@@ -417,7 +513,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, images3} =
+{:ok, %{image_uploads: image3}} =
   Catalogue.create_item_image(%{
     item_image1: "/home/dumadi/Desktop/crafish.png",
     item_image2: "/home/dumadi/Desktop/crafish.png",
@@ -427,7 +523,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, images4} =
+{:ok, %{image_uploads: image4}} =
   Catalogue.create_item_image(%{
     item_image1: "/home/dumadi/Desktop/eggs.png",
     item_image2: "/home/dumadi/Desktop/eggs.png",
@@ -437,7 +533,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, images5} =
+{:ok, %{image_uploads: image5}} =
   Catalogue.create_item_image(%{
     item_image1: "https://res.cloudinary.com/letorrc/image/upload/v1596849287/grapes_hzmvdv.png",
     item_image2: "https://res.cloudinary.com/letorrc/image/upload/v1596849287/grapes_hzmvdv.png",
@@ -447,7 +543,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, images6} =
+{:ok, %{image_uploads: image6}} =
   Catalogue.create_item_image(%{
     item_image1: "https://res.cloudinary.com/letorrc/image/upload/v1596849296/lemon_uelnua.png",
     item_image2: "https://res.cloudinary.com/letorrc/image/upload/v1596849296/lemon_uelnua.png",
@@ -457,7 +553,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, images7} =
+{:ok, %{image_uploads: image7}} =
   Catalogue.create_item_image(%{
     item_image1: "https://res.cloudinary.com/letorrc/image/upload/v1596849540/milk_vpoaow.png",
     item_image2: "https://res.cloudinary.com/letorrc/image/upload/v1596849540/milk_vpoaow.png",
@@ -467,7 +563,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, images8} =
+{:ok, %{image_uploads: image8}} =
   Catalogue.create_item_image(%{
     item_image1: "https://res.cloudinary.com/letorrc/image/upload/v1596849553/onion_zkuzio.png",
     item_image2: "https://res.cloudinary.com/letorrc/image/upload/v1596849553/onion_zkuzio.png",
@@ -477,7 +573,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, images9} =
+{:ok, %{image_uploads: image9}} =
   Catalogue.create_item_image(%{
     item_image1: "https://res.cloudinary.com/letorrc/image/upload/v1596849564/pepper_vlmw62.png",
     item_image2: "https://res.cloudinary.com/letorrc/image/upload/v1596849564/pepper_vlmw62.png",
@@ -487,7 +583,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, images10} =
+{:ok, %{image_uploads: image10}} =
   Catalogue.create_item_image(%{
     item_image1:
       "https://res.cloudinary.com/letorrc/image/upload/v1596849573/pompkins_mohcpx.png",
@@ -501,7 +597,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, images11} =
+{:ok, %{image_uploads: image11}} =
   Catalogue.create_item_image(%{
     item_image1: "https://res.cloudinary.com/letorrc/image/upload/v1596849595/potato_q40ppj.png",
     item_image2: "https://res.cloudinary.com/letorrc/image/upload/v1596849595/potato_q40ppj.png",
@@ -511,7 +607,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, images12} =
+{:ok, %{image_uploads: image12}} =
   Catalogue.create_item_image(%{
     item_image1: "https://res.cloudinary.com/letorrc/image/upload/v1596849603/spinash_lxtedb.png",
     item_image2: "https://res.cloudinary.com/letorrc/image/upload/v1596849603/spinash_lxtedb.png",
@@ -521,7 +617,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, images13} =
+{:ok, %{image_uploads: image13}} =
   Catalogue.create_item_image(%{
     item_image1:
       "https://res.cloudinary.com/letorrc/image/upload/v1600516853/new_images/Milo-Nestle_fnvnpg.jpg",
@@ -535,7 +631,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, images14} =
+{:ok, %{image_uploads: image14}} =
   Catalogue.create_item_image(%{
     item_image1: "/home/dumadi/Documents/New images/bournvita.jpg",
     item_image2: "/home/dumadi/Documents/New images/bournvita.jpg",
@@ -545,7 +641,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, images15} =
+{:ok, %{image_uploads: image15}} =
   Catalogue.create_item_image(%{
     item_image1: "/home/dumadi/Documents/New images/dangote-salt2.jpg",
     item_image2: "/home/dumadi/Documents/New images/dangote-salt2.jpg",
@@ -555,7 +651,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, images16} =
+{:ok, %{image_uploads: image16}} =
   Catalogue.create_item_image(%{
     item_image1: "/home/dumadi/Documents/New images/PowerPasta.jpg",
     item_image2: "/home/dumadi/Documents/New images/PowerPasta.jpg",
@@ -565,7 +661,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, images17} =
+{:ok, %{image_uploads: image17}} =
   Catalogue.create_item_image(%{
     item_image1: "/home/dumadi/Documents/New images/supradin.jpeg",
     item_image2: "/home/dumadi/Documents/New images/supradin.jpeg",
@@ -575,7 +671,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, images18} =
+{:ok, %{image_uploads: image18}} =
   Catalogue.create_item_image(%{
     item_image1: "/home/dumadi/Documents/New images/coffee machin.jpg",
     item_image2: "/home/dumadi/Documents/New images/coffee machin.jpg",
@@ -1223,11 +1319,14 @@ InventoryChangeHistory |> Repo.delete_all()
   Catalogue.create_sku_inventory_and_item(%{
     item_subcategory_id: sub4.id,
     type: "Groceries",
+    details: "",
+    brand_name: "",
     main_price: 500,
     package_size: "Hand",
     barcode: "",
+    brand_name: "",
     details: "Fresh Banana sourced from the land of Ekpeye",
-    item_image_id: images1.id,
+    item_image_id: image1.id,
     pickup_centre_id: pickup_centre.id,
     inventory_location_id: inv_loc2.id,
     description: "Ripe Fresh Nigerian Bananas",
@@ -1253,9 +1352,12 @@ Catalogue.update_for_special_cat(item1, %{daily_deals_id: deals.id})
     details: "special made with adequate amount of sugar for children",
     item_subcategory_id: sub26.id,
     type: "Groceries",
+    details: "",
+    brand_name: "",
     main_price: 300,
+    brand_name: "",
     package_size: "Packet",
-    item_image_id: images2.id,
+    item_image_id: image2.id,
     pickup_centre_id: pickup_centre.id,
     inventory_location_id: inv_loc2.id,
     description: "Cakes",
@@ -1280,10 +1382,12 @@ Catalogue.update_for_special_cat(item2, %{daily_deals_id: deals.id, featured_ite
     barcode: "",
     item_subcategory_id: sub16.id,
     type: "Groceries",
+    details: "",
+    brand_name: "",
     main_price: 500,
     package_size: "Piece",
     description: "Fresh Cray Fish",
-    item_image_id: images3.id,
+    item_image_id: image3.id,
     pickup_centre_id: pickup_centre.id,
     inventory_location_id: inv_loc2.id,
     max_internal_quantity: 20,
@@ -1307,10 +1411,12 @@ Catalogue.update_for_special_cat(item3, %{daily_deals_id: deals.id, featured_ite
     barcode: "",
     item_subcategory_id: sub27.id,
     type: "Groceries",
+    details: "",
+    brand_name: "",
     main_price: 800,
     package_size: "Crate",
     description: "Fresh Eggs",
-    item_image_id: images4.id,
+    item_image_id: image4.id,
     pickup_centre_id: pickup_centre.id,
     inventory_location_id: inv_loc3.id,
     max_internal_quantity: 100,
@@ -1334,9 +1440,11 @@ Catalogue.update_for_special_cat(item4, %{daily_deals_id: deals.id, featured_ite
     barcode: "",
     item_subcategory_id: sub4.id,
     type: "Groceries",
+    details: "",
+    brand_name: "",
     main_price: 750,
     package_size: "Crate",
-    item_image_id: images5.id,
+    item_image_id: image5.id,
     pickup_centre_id: pickup_centre.id,
     inventory_location_id: inv_loc2.id,
     description: "Strawberry",
@@ -1361,9 +1469,11 @@ Catalogue.update_for_special_cat(item5, %{daily_deals_id: deals.id, featured_ite
     barcode: "",
     item_subcategory_id: sub4.id,
     type: "Groceries",
+    details: "",
+    brand_name: "",
     main_price: 750,
     package_size: "Piece",
-    item_image_id: images6.id,
+    item_image_id: image6.id,
     pickup_centre_id: pickup_centre.id,
     inventory_location_id: inv_loc2.id,
     description: "Lemon",
@@ -1388,9 +1498,11 @@ Catalogue.update_for_special_cat(item6, %{daily_deals_id: deals.id, featured_ite
     barcode: "",
     item_subcategory_id: sub21.id,
     type: "Groceries",
+    details: "",
+    brand_name: "",
     main_price: 750,
     package_size: "Sachet",
-    item_image_id: images7.id,
+    item_image_id: image7.id,
     pickup_centre_id: pickup_centre.id,
     inventory_location_id: inv_loc2.id,
     description: "Itambe Sachet Liquid Milk",
@@ -1419,9 +1531,11 @@ Catalogue.update_for_special_cat(item7, %{
     barcode: "",
     item_subcategory_id: sub3.id,
     type: "Groceries",
+    details: "",
+    brand_name: "",
     main_price: 300,
     package_size: "Sachet",
-    item_image_id: images8.id,
+    item_image_id: image8.id,
     pickup_centre_id: pickup_centre.id,
     inventory_location_id: inv_loc2.id,
     description: "Spring Onions",
@@ -1445,9 +1559,11 @@ Catalogue.update_for_special_cat(item8, %{daily_deals_id: deals.id, popular_item
   Catalogue.create_sku_inventory_and_item(%{
     barcode: "",
     type: "Groceries",
+    details: "",
+    brand_name: "",
     package_size: "Bowl",
     main_price: 600,
-    item_image_id: images9.id,
+    item_image_id: image9.id,
     item_subcategory_id: sub1.id,
     pickup_centre_id: pickup_centre.id,
     inventory_location_id: inv_loc2.id,
@@ -1471,9 +1587,11 @@ Catalogue.update_for_special_cat(item8, %{daily_deals_id: deals.id, popular_item
     barcode: "",
     item_subcategory_id: sub3.id,
     type: "Groceries",
+    details: "",
+    brand_name: "",
     main_price: 300,
     package_size: "Bowl",
-    item_image_id: images10.id,
+    item_image_id: image10.id,
     pickup_centre_id: pickup_centre.id,
     inventory_location_id: inv_loc2.id,
     description: "Fresh Tomatoes",
@@ -1502,9 +1620,11 @@ Catalogue.update_for_special_cat(item10, %{
     barcode: "",
     item_subcategory_id: sub65.id,
     type: "Groceries",
+    details: "",
+    brand_name: "",
     main_price: 500,
     package_size: "Bowl",
-    item_image_id: images11.id,
+    item_image_id: image11.id,
     pickup_centre_id: pickup_centre.id,
     inventory_location_id: inv_loc5.id,
     description: "Irish Potato",
@@ -1531,9 +1651,11 @@ Catalogue.update_for_special_cat(item11, %{
     barcode: "",
     item_subcategory_id: sub3.id,
     type: "Groceries",
+    details: "",
+    brand_name: "",
     main_price: 500,
     package_size: "Bowl",
-    item_image_id: images12.id,
+    item_image_id: image12.id,
     pickup_centre_id: pickup_centre.id,
     inventory_location_id: inv_loc6.id,
     description: "Spinach",
@@ -1559,8 +1681,10 @@ Catalogue.update_for_special_cat(item12, %{
   Catalogue.create_sku_inventory_and_item(%{
     barcode: "",
     item_subcategory_id: sub46.id,
-    item_image_id: images13.id,
+    item_image_id: image13.id,
     type: "Groceries",
+    details: "",
+    brand_name: "",
     main_price: 800,
     package_size: "tin",
     brand_name: "Nestle",
@@ -1589,11 +1713,13 @@ Catalogue.update_for_special_cat(item13, %{
 inv14 =
   Catalogue.create_sku_inventory_and_item(%{
     type: "Groceries",
+    details: "",
+    brand_name: "",
     barcode: "",
     main_price: 1200,
     package_size: "Tin",
     item_subcategory_id: sub46.id,
-    item_image_id: images14.id,
+    item_image_id: image14.id,
     pickup_centre_id: pickup_centre.id,
     inventory_location_id: inv_loc7.id,
     description: "Small Size, tin cadbury bournvita",
@@ -1617,10 +1743,12 @@ inv14 =
     barcode: "",
     item_subcategory_id: sub38.id,
     type: "Groceries",
+    details: "",
+    brand_name: "",
     main_price: 550,
     package_size: "sachet",
     brand_name: "Golden Penni",
-    item_image_id: images15.id,
+    item_image_id: image15.id,
     pickup_centre_id: pickup_centre.id,
     inventory_location_id: inv_loc8.id,
     description: "Iodized Sachet Dangote Salt",
@@ -1653,7 +1781,7 @@ Catalogue.update_for_special_cat(item15, %{
     package_size: "Packet",
     description: "Supradin Capsules",
     brand_name: "Emzor",
-    item_image_id: images17.id,
+    item_image_id: image17.id,
     pickup_centre_id: pickup_centre.id,
     inventory_location_id: inv_loc10.id,
     max_internal_quantity: 200,
