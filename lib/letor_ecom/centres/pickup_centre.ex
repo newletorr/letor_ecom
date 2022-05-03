@@ -4,6 +4,7 @@ defmodule LetorEcom.Centres.PickupCentre do
 
   alias LetorEcom.Centres.{
     EcommerceControl,
+    Inventory,
     InventoryLocation,
     DailyDeal,
     FeaturedItem,
@@ -31,6 +32,7 @@ defmodule LetorEcom.Centres.PickupCentre do
     has_many(:sku, Sku)
     has_many(:order, Order)
     has_many(:driver, Driver)
+    has_many(:inventory, Inventory)
     has_many(:inventory_location, InventoryLocation)
     has_many(:daily_deals, DailyDeal)
     has_many(:featured_item, FeaturedItem)

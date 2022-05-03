@@ -1,6 +1,8 @@
 defmodule LetorEcom.Catalogue.ItemImage do
   use LetorEcom.SchemaHelper
   use Waffle.Ecto.Schema
+  alias LetorEcom.Catalogue.Item
+  alias LetorEcom.Centres.Inventory
   alias LetorEcom.Control.EcommerceControl
 
   schema "item_images" do
@@ -15,6 +17,8 @@ defmodule LetorEcom.Catalogue.ItemImage do
     field(:item_name, :string, read_after_writes: true)
     field(:video_url, :string, read_after_writes: true)
     belongs_to(:ecommerce_control, EcommerceControl)
+    has_many(:item, Item)
+    has_many(:inventory, Inventory)
 
     timestamps(type: :utc_datetime)
   end
