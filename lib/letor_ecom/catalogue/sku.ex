@@ -1,11 +1,15 @@
 defmodule LetorEcom.Catalogue.Sku do
   use LetorEcom.SchemaHelper
-  alias LetorEcom.Centres.PickupCentre
+
+  alias LetorEcom.Catalogue.Item
+  alias LetorEcom.Centres.{Inventory, PickupCentre}
 
   schema "sku" do
     field(:code, :string)
     field(:name, :string)
     belongs_to(:pickup_centre, PickupCentre)
+    has_many(:item, Item)
+    has_many(:inventory, Inventory)
 
     timestamps(type: :utc_datetime)
   end
