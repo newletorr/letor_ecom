@@ -1,11 +1,11 @@
 defmodule LetorEcom.AgentsAndSuppliers.CampusAgent do
   use LetorEcom.SchemaHelper
   use Waffle.Ecto.Schema
-  alias LetorEcom.Control.{EcommerceControl, Location}
+  alias LetorEcom.Control.{CoveredInstitution, EcommerceControl}
   alias LetorEcom.CustomerPurchases.Order
 
   @required_fields [
-    :location_id,
+    :covered_institution_id,
     :ecommerce_control_id,
     :residential_address,
     :business_address,
@@ -51,7 +51,7 @@ defmodule LetorEcom.AgentsAndSuppliers.CampusAgent do
     field(:status, :string)
     field(:verified, :boolean)
     field(:guarantor_verified, :boolean)
-    belongs_to(:location, Location)
+    belongs_to(:covered_institution, CoveredInstitution)
     belongs_to(:ecommerce_control, EcommerceControl)
     has_many(:order, Order)
 
@@ -80,8 +80,8 @@ defmodule LetorEcom.AgentsAndSuppliers.CampusAgent do
     |> unique_constraint(:email, message: "An agent with the same email already exists")
     |> unique_constraint(:phone, message: "An agent with the same phone number already exists")
     |> validate_required(@required_fields)
-    |> assoc_constraint(:location)
-    |> assoc_constraint(:ecommerce_control)
+    |> assoc_constraint(:covered_institution, name: :covered_institution_campus_agents_index)
+    |> assoc_constraint(:ecommerce_control, name: :ecommerce_control_campus_agents_index)
     |> valid_phone(:phone)
     |> valid_phone(:guarantor_phone)
   end
@@ -97,7 +97,7 @@ defmodule LetorEcom.AgentsAndSuppliers.CampusAgent do
   def update_changeset(campus_agent, attrs) do
     campus_agent
     |> cast(attrs, all_fields())
-    |> assoc_constraint(:location)
+    |> assoc_constraint(:covered_institution)
     |> assoc_constraint(:ecommerce_control)
   end
 

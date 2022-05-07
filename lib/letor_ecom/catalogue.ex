@@ -223,7 +223,7 @@ defmodule LetorEcom.Catalogue do
     end)
     # Create item tagging for item if a tag_id is provided
     |> Multi.run(:item_tagging, fn repo, %{item: item} ->
-      if is_nil(item.id) == false do
+      if is_nil(attrs.item_tag_id) == true do
         {:ok, nil}
       else
         item_tagging_changeset =
