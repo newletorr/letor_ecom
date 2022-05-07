@@ -101,6 +101,7 @@ defmodule LetorEcom.Account.User do
     |> set_role("customer")
     |> valid_phone(:phone)
     |> create_full_name()
+    |> assoc_constraint(:location)
   end
 
   @spec update_referals_earned_changeset(

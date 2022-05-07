@@ -6,6 +6,7 @@ defmodule LetorEcom.Repo.Migrations.CreateOrdersAssoc do
       add :user_id, references(:users, on_delete: :nothing, type: :binary_id)
       add :location_id, references(:location, on_delete: :nothing, type: :binary_id)
       add :order_dispatch_id, references(:order_dispatches, on_delete: :nothing, type: :binary_id)
+      add :campus_agent_id, references(:campus_agents, on_delete: :nothing, type: :binary_id)
     end
   end
 end

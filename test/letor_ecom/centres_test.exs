@@ -365,10 +365,10 @@ defmodule LetorEcom.CentresTest do
       assert {:error, %Ecto.Changeset{}} = Centres.update_inventory(inventory, @invalid_attrs)
     end
 
-    #test "delete_inventory/1 deletes the inventory" do
-     # inventory = Repo.all(Inventory) |> List.first()
-      #assert {:ok, %Inventory{}} = Centres.delete_inventory(inventory)
-    #end
+    # test "delete_inventory/1 deletes the inventory" do
+    # inventory = Repo.all(Inventory) |> List.first()
+    # assert {:ok, %Inventory{}} = Centres.delete_inventory(inventory)
+    # end
   end
 
   describe "inventory_change_history" do

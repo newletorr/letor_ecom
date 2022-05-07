@@ -1,15 +1,3 @@
-# Script for populating the database. You can run it as:
-#
-#     mix run priv/repo/seeds.exs
-#
-# Inside the script, you can read and write to any of your
-# repositories directly:
-#
-#     LetorEcom.Repo.insert!(%LetorEcom.SomeSchema{})
-#
-# We recommend using the bang functions (`insert!`, `update!`
-# and so on) as they will fail if something goes wrong.
-
 alias LetorEcom.{
   Account,
   AgentsAndSuppliers,
@@ -224,6 +212,16 @@ Location |> Repo.delete_all()
       coordinates: {4.746401785470347, 7.036592874548285},
       srid: 4326
     }
+  })
+
+CoveredInstitution |> Repo.delete_all()
+
+{:ok, covered_institution} =
+  Control.create_covered_institution(%{
+    campus_name: "Port Harcourt Campus",
+    name: "Rivers State University",
+    location_id: l2.id,
+    ecommerce_control_id: ecommerce_control.id
   })
 
 Staff |> Repo.delete_all()
@@ -1310,499 +1308,6 @@ PopularItem |> Repo.delete_all()
     pickup_centre_id: pickup_centre.id
   })
 
-Inventory |> Repo.delete_all()
-Item |> Repo.delete_all()
-Sku |> Repo.delete_all()
-InventoryChangeHistory |> Repo.delete_all()
-
-{:ok, %{item: item1}} =
-  Catalogue.create_sku_inventory_and_item(%{
-    item_subcategory_id: sub4.id,
-    type: "Groceries",
-    details: "",
-    brand_name: "",
-    main_price: 500,
-    package_size: "Hand",
-    barcode: "",
-    brand_name: "",
-    details: "Fresh Banana sourced from the land of Ekpeye",
-    item_image_id: image1.id,
-    pickup_centre_id: pickup_centre.id,
-    inventory_location_id: inv_loc2.id,
-    description: "Ripe Fresh Nigerian Bananas",
-    max_internal_quantity: 25,
-    max_external_quantity: 30,
-    name: "Banana",
-    reorder_level: 5,
-    internal_quantity: 20,
-    external_quantity: 5,
-    internal_quantity_uom: "Hand",
-    external_quantity_uom: "Bunch",
-    buy_price: 500,
-    sales_price: 800,
-    status: "available",
-    expiry_date: ~D[2023-02-03]
-  })
-
-Catalogue.update_for_special_cat(item1, %{daily_deals_id: deals.id})
-
-{:ok, %{item: item2}} =
-  Catalogue.create_sku_inventory_and_item(%{
-    barcode: "",
-    details: "special made with adequate amount of sugar for children",
-    item_subcategory_id: sub26.id,
-    type: "Groceries",
-    details: "",
-    brand_name: "",
-    main_price: 300,
-    brand_name: "",
-    package_size: "Packet",
-    item_image_id: image2.id,
-    pickup_centre_id: pickup_centre.id,
-    inventory_location_id: inv_loc2.id,
-    description: "Cakes",
-    max_internal_quantity: 20,
-    max_external_quantity: 30,
-    name: "Cakes",
-    reorder_level: 13,
-    internal_quantity: 12,
-    external_quantity: 5,
-    internal_quantity_uom: "Piece",
-    external_quantity_uom: "Piece",
-    buy_price: 150,
-    sales_price: 250,
-    status: "available",
-    expiry_date: ~D[2023-02-03]
-  })
-
-Catalogue.update_for_special_cat(item2, %{daily_deals_id: deals.id, featured_item_id: featured.id})
-
-{:ok, %{item: item3}} =
-  Catalogue.create_sku_inventory_and_item(%{
-    barcode: "",
-    item_subcategory_id: sub16.id,
-    type: "Groceries",
-    details: "",
-    brand_name: "",
-    main_price: 500,
-    package_size: "Piece",
-    description: "Fresh Cray Fish",
-    item_image_id: image3.id,
-    pickup_centre_id: pickup_centre.id,
-    inventory_location_id: inv_loc2.id,
-    max_internal_quantity: 20,
-    max_external_quantity: 15,
-    name: "Cray Fish",
-    reorder_level: 3,
-    internal_quantity: 12,
-    external_quantity: 5,
-    internal_quantity_uom: "bowl",
-    external_quantity_uom: "Basket",
-    buy_price: 500,
-    sales_price: 750,
-    status: "available",
-    expiry_date: ~D[2023-02-03]
-  })
-
-Catalogue.update_for_special_cat(item3, %{daily_deals_id: deals.id, featured_item_id: featured.id})
-
-{:ok, %{item: item4}} =
-  Catalogue.create_sku_inventory_and_item(%{
-    barcode: "",
-    item_subcategory_id: sub27.id,
-    type: "Groceries",
-    details: "",
-    brand_name: "",
-    main_price: 800,
-    package_size: "Crate",
-    description: "Fresh Eggs",
-    item_image_id: image4.id,
-    pickup_centre_id: pickup_centre.id,
-    inventory_location_id: inv_loc3.id,
-    max_internal_quantity: 100,
-    max_external_quantity: 120,
-    name: "Egg",
-    reorder_level: 10,
-    internal_quantity: 80,
-    external_quantity: 10,
-    internal_quantity_uom: "crate",
-    external_quantity_uom: "crate",
-    buy_price: 700,
-    sales_price: 1000,
-    status: "available",
-    expiry_date: ~D[2023-02-03]
-  })
-
-Catalogue.update_for_special_cat(item4, %{daily_deals_id: deals.id, featured_item_id: featured.id})
-
-{:ok, %{item: item5}} =
-  Catalogue.create_sku_inventory_and_item(%{
-    barcode: "",
-    item_subcategory_id: sub4.id,
-    type: "Groceries",
-    details: "",
-    brand_name: "",
-    main_price: 750,
-    package_size: "Crate",
-    item_image_id: image5.id,
-    pickup_centre_id: pickup_centre.id,
-    inventory_location_id: inv_loc2.id,
-    description: "Strawberry",
-    max_internal_quantity: 100,
-    max_external_quantity: 120,
-    name: "Strawberry",
-    reorder_level: 13,
-    internal_quantity: 80,
-    external_quantity: 10,
-    internal_quantity_uom: "packets",
-    external_quantity_uom: "packets",
-    buy_price: 500,
-    sales_price: 700,
-    status: "available",
-    expiry_date: ~D[2023-02-03]
-  })
-
-Catalogue.update_for_special_cat(item5, %{daily_deals_id: deals.id, featured_item_id: featured.id})
-
-{:ok, %{item: item6}} =
-  Catalogue.create_sku_inventory_and_item(%{
-    barcode: "",
-    item_subcategory_id: sub4.id,
-    type: "Groceries",
-    details: "",
-    brand_name: "",
-    main_price: 750,
-    package_size: "Piece",
-    item_image_id: image6.id,
-    pickup_centre_id: pickup_centre.id,
-    inventory_location_id: inv_loc2.id,
-    description: "Lemon",
-    max_internal_quantity: 100,
-    max_external_quantity: 120,
-    name: "Lemon",
-    reorder_level: 5,
-    internal_quantity: 80,
-    external_quantity: 10,
-    internal_quantity_uom: "packets",
-    external_quantity_uom: "packets",
-    buy_price: 200,
-    sales_price: 300,
-    status: "available",
-    expiry_date: ~D[2023-02-03]
-  })
-
-Catalogue.update_for_special_cat(item6, %{daily_deals_id: deals.id, featured_item_id: featured.id})
-
-{:ok, %{item: item7}} =
-  Catalogue.create_sku_inventory_and_item(%{
-    barcode: "",
-    item_subcategory_id: sub21.id,
-    type: "Groceries",
-    details: "",
-    brand_name: "",
-    main_price: 750,
-    package_size: "Sachet",
-    item_image_id: image7.id,
-    pickup_centre_id: pickup_centre.id,
-    inventory_location_id: inv_loc2.id,
-    description: "Itambe Sachet Liquid Milk",
-    max_internal_quantity: 100,
-    max_external_quantity: 30,
-    name: "Itambe Milk",
-    reorder_level: 5,
-    internal_quantity: 80,
-    external_quantity: 5,
-    internal_quantity_uom: "Packet",
-    external_quantity_uom: "Carton",
-    buy_price: 150,
-    sales_price: 250,
-    status: "available",
-    expiry_date: ~D[2023-02-03]
-  })
-
-Catalogue.update_for_special_cat(item7, %{
-  daily_deals_id: deals.id,
-  popular_item_id: pop.id,
-  featured_item_id: featured.id
-})
-
-{:ok, %{item: item8}} =
-  Catalogue.create_sku_inventory_and_item(%{
-    barcode: "",
-    item_subcategory_id: sub3.id,
-    type: "Groceries",
-    details: "",
-    brand_name: "",
-    main_price: 300,
-    package_size: "Sachet",
-    item_image_id: image8.id,
-    pickup_centre_id: pickup_centre.id,
-    inventory_location_id: inv_loc2.id,
-    description: "Spring Onions",
-    max_internal_quantity: 20,
-    max_external_quantity: 30,
-    name: "Spring Onions",
-    reorder_level: 10,
-    internal_quantity: 10,
-    external_quantity: 5,
-    internal_quantity_uom: "Basket",
-    external_quantity_uom: "Set",
-    buy_price: 150,
-    sales_price: 250,
-    status: "available",
-    expiry_date: ~D[2023-02-03]
-  })
-
-Catalogue.update_for_special_cat(item8, %{daily_deals_id: deals.id, popular_item_id: featured.id})
-
-{:ok, %{item: item9}} =
-  Catalogue.create_sku_inventory_and_item(%{
-    barcode: "",
-    type: "Groceries",
-    details: "",
-    brand_name: "",
-    package_size: "Bowl",
-    main_price: 600,
-    item_image_id: image9.id,
-    item_subcategory_id: sub1.id,
-    pickup_centre_id: pickup_centre.id,
-    inventory_location_id: inv_loc2.id,
-    description: "Fresh Pepper",
-    max_internal_quantity: 20,
-    max_external_quantity: 30,
-    name: "Fresh Pepper",
-    reorder_level: 10,
-    internal_quantity: 10,
-    external_quantity: 5,
-    internal_quantity_uom: "Basket",
-    external_quantity_uom: "Bowl",
-    buy_price: 400,
-    sales_price: 600,
-    status: "available",
-    expiry_date: ~D[2023-02-03]
-  })
-
-{:ok, %{item: item10}} =
-  Catalogue.create_sku_inventory_and_item(%{
-    barcode: "",
-    item_subcategory_id: sub3.id,
-    type: "Groceries",
-    details: "",
-    brand_name: "",
-    main_price: 300,
-    package_size: "Bowl",
-    item_image_id: image10.id,
-    pickup_centre_id: pickup_centre.id,
-    inventory_location_id: inv_loc2.id,
-    description: "Fresh Tomatoes",
-    max_internal_quantity: 20,
-    max_external_quantity: 30,
-    name: "Fresh Tomatoes",
-    reorder_level: 10,
-    internal_quantity: 10,
-    external_quantity: 5,
-    internal_quantity_uom: "Basket",
-    external_quantity_uom: "Bowl",
-    buy_price: 150,
-    sales_price: 250,
-    status: "available",
-    expiry_date: ~D[2023-02-03]
-  })
-
-Catalogue.update_for_special_cat(item10, %{
-  daily_deals_id: deals.id,
-  featured_item_id: featured.id,
-  popular_item_id: pop.id
-})
-
-{:ok, %{item: item11}} =
-  Catalogue.create_sku_inventory_and_item(%{
-    barcode: "",
-    item_subcategory_id: sub65.id,
-    type: "Groceries",
-    details: "",
-    brand_name: "",
-    main_price: 500,
-    package_size: "Bowl",
-    item_image_id: image11.id,
-    pickup_centre_id: pickup_centre.id,
-    inventory_location_id: inv_loc5.id,
-    description: "Irish Potato",
-    max_internal_quantity: 20,
-    max_external_quantity: 30,
-    name: "Irish Potato",
-    reorder_level: 13,
-    internal_quantity: 10,
-    external_quantity: 5,
-    internal_quantity_uom: "Basket",
-    external_quantity_uom: "Bowl",
-    buy_price: 500,
-    sales_price: 600,
-    status: "available",
-    expiry_date: ~D[2023-02-03]
-  })
-
-Catalogue.update_for_special_cat(item11, %{
-  popular_item_id: pop.id
-})
-
-{:ok, %{item: item12}} =
-  Catalogue.create_sku_inventory_and_item(%{
-    barcode: "",
-    item_subcategory_id: sub3.id,
-    type: "Groceries",
-    details: "",
-    brand_name: "",
-    main_price: 500,
-    package_size: "Bowl",
-    item_image_id: image12.id,
-    pickup_centre_id: pickup_centre.id,
-    inventory_location_id: inv_loc6.id,
-    description: "Spinach",
-    max_internal_quantity: 20,
-    max_external_quantity: 30,
-    name: "Spinach",
-    reorder_level: 5,
-    internal_quantity: 10,
-    external_quantity: 5,
-    internal_quantity_uom: "Basket",
-    external_quantity_uom: "Bowl",
-    buy_price: 250,
-    sales_price: 400,
-    status: "available",
-    expiry_date: ~D[2023-02-03]
-  })
-
-Catalogue.update_for_special_cat(item12, %{
-  popular_item_id: pop.id
-})
-
-{:ok, %{item: item13}} =
-  Catalogue.create_sku_inventory_and_item(%{
-    barcode: "",
-    item_subcategory_id: sub46.id,
-    item_image_id: image13.id,
-    type: "Groceries",
-    details: "",
-    brand_name: "",
-    main_price: 800,
-    package_size: "tin",
-    brand_name: "Nestle",
-    pickup_centre_id: pickup_centre.id,
-    inventory_location_id: inv_loc7.id,
-    description: "Medium Size Tin Milo",
-    max_internal_quantity: 200,
-    max_external_quantity: 300,
-    name: "Medium Size Tin Milo",
-    reorder_level: 10,
-    internal_quantity: 100,
-    external_quantity: 25,
-    internal_quantity_uom: "tin",
-    external_quantity_uom: "Carton",
-    buy_price: 1000,
-    sales_price: 1200,
-    brand_name: "Nestle",
-    status: "available",
-    expiry_date: ~D[2023-02-03]
-  })
-
-Catalogue.update_for_special_cat(item13, %{
-  popular_item_id: pop.id
-})
-
-inv14 =
-  Catalogue.create_sku_inventory_and_item(%{
-    type: "Groceries",
-    details: "",
-    brand_name: "",
-    barcode: "",
-    main_price: 1200,
-    package_size: "Tin",
-    item_subcategory_id: sub46.id,
-    item_image_id: image14.id,
-    pickup_centre_id: pickup_centre.id,
-    inventory_location_id: inv_loc7.id,
-    description: "Small Size, tin cadbury bournvita",
-    max_internal_quantity: 200,
-    max_external_quantity: 300,
-    name: "Small Size Bournvita",
-    reorder_level: 10,
-    internal_quantity: 100,
-    external_quantity: 25,
-    internal_quantity_uom: "tin",
-    external_quantity_uom: "Carton",
-    buy_price: 1000,
-    sales_price: 1200,
-    brand_name: "Cadbury",
-    status: "available",
-    expiry_date: ~D[2023-02-03]
-  })
-
-{:ok, %{item: item15}} =
-  Catalogue.create_sku_inventory_and_item(%{
-    barcode: "",
-    item_subcategory_id: sub38.id,
-    type: "Groceries",
-    details: "",
-    brand_name: "",
-    main_price: 550,
-    package_size: "sachet",
-    brand_name: "Golden Penni",
-    item_image_id: image15.id,
-    pickup_centre_id: pickup_centre.id,
-    inventory_location_id: inv_loc8.id,
-    description: "Iodized Sachet Dangote Salt",
-    max_internal_quantity: 200,
-    max_external_quantity: 300,
-    name: "Sachet Dangote Salt",
-    reorder_level: 10,
-    internal_quantity: 100,
-    external_quantity: 25,
-    internal_quantity_uom: "Sachet",
-    external_quantity_uom: "Bags",
-    buy_price: 1000,
-    sales_price: 1200,
-    brand_name: "Danngote",
-    status: "available",
-    expiry_date: ~D[2023-02-03]
-  })
-
-Catalogue.update_for_special_cat(item15, %{
-  popular_item_id: pop.id
-})
-
-{:ok, %{item: item16}} =
-  Catalogue.create_sku_inventory_and_item(%{
-    barcode: "",
-    item_subcategory_id: sub66.id,
-    type: "Health",
-    name: "Supradin",
-    main_price: 300,
-    package_size: "Packet",
-    description: "Supradin Capsules",
-    brand_name: "Emzor",
-    item_image_id: image17.id,
-    pickup_centre_id: pickup_centre.id,
-    inventory_location_id: inv_loc10.id,
-    max_internal_quantity: 200,
-    max_external_quantity: 300,
-    reorder_level: 10,
-    internal_quantity: 100,
-    external_quantity: 25,
-    internal_quantity_uom: "packet",
-    external_quantity_uom: "Carton",
-    buy_price: 1000,
-    sales_price: 1200,
-    status: "available",
-    expiry_date: ~D[2023-02-03]
-  })
-
-Catalogue.update_for_special_cat(item16, %{
-  daily_deals_id: deals.id,
-  featured_item_id: featured.id,
-  popular_item_id: pop.id
-})
-
 ItemTag |> Repo.delete_all()
 
 {:ok, tag1} =
@@ -1854,31 +1359,513 @@ ItemTag |> Repo.delete_all()
     class: "Household Items"
   })
 
-ItemTagging |> Repo.delete_all()
+Inventory |> Repo.delete_all()
+Item |> Repo.delete_all()
+Sku |> Repo.delete_all()
+InventoryChangeHistory |> Repo.delete_all()
 
-Catalogue.create_item_tagging(%{
-  item_tag_id: tag5.id,
-  item_id: item1.id
+{:ok, %{item: item1}} =
+  Catalogue.create_sku_inventory_and_item(%{
+    item_subcategory_id: sub4.id,
+    item_tag_id: tag5.id,
+    type: "Groceries",
+    details: "",
+    brand_name: "",
+    main_price: 500,
+    package_size: "Hand",
+    barcode: "",
+    brand_name: "",
+    details: "Fresh Banana sourced from the land of Ekpeye",
+    item_image_id: image1.id,
+    pickup_centre_id: pickup_centre.id,
+    inventory_location_id: inv_loc2.id,
+    description: "Ripe Fresh Nigerian Bananas",
+    max_internal_quantity: 25,
+    max_external_quantity: 30,
+    name: "Banana",
+    reorder_level: 5,
+    internal_quantity: 20,
+    external_quantity: 5,
+    internal_quantity_uom: "Hand",
+    external_quantity_uom: "Bunch",
+    buy_price: 500,
+    sales_price: 800,
+    status: "available",
+    expiry_date: ~D[2023-02-03]
+  })
+
+Catalogue.update_for_special_cat(item1, %{daily_deals_id: deals.id})
+
+{:ok, %{item: item2}} =
+  Catalogue.create_sku_inventory_and_item(%{
+    barcode: "",
+    item_tag_id: tag5.id,
+    details: "special made with adequate amount of sugar for children",
+    item_subcategory_id: sub26.id,
+    type: "Groceries",
+    details: "",
+    brand_name: "",
+    main_price: 300,
+    brand_name: "",
+    package_size: "Packet",
+    item_image_id: image2.id,
+    pickup_centre_id: pickup_centre.id,
+    inventory_location_id: inv_loc2.id,
+    description: "Cakes",
+    max_internal_quantity: 20,
+    max_external_quantity: 30,
+    name: "Cakes",
+    reorder_level: 13,
+    internal_quantity: 12,
+    external_quantity: 5,
+    internal_quantity_uom: "Piece",
+    external_quantity_uom: "Piece",
+    buy_price: 150,
+    sales_price: 250,
+    status: "available",
+    expiry_date: ~D[2023-02-03]
+  })
+
+Catalogue.update_for_special_cat(item2, %{daily_deals_id: deals.id, featured_item_id: featured.id})
+
+{:ok, %{item: item3}} =
+  Catalogue.create_sku_inventory_and_item(%{
+    barcode: "",
+    item_tag_id: "",
+    item_subcategory_id: sub16.id,
+    type: "Groceries",
+    details: "",
+    brand_name: "",
+    main_price: 500,
+    package_size: "Piece",
+    description: "Fresh Cray Fish",
+    item_image_id: image3.id,
+    pickup_centre_id: pickup_centre.id,
+    inventory_location_id: inv_loc2.id,
+    max_internal_quantity: 20,
+    max_external_quantity: 15,
+    name: "Cray Fish",
+    reorder_level: 3,
+    internal_quantity: 12,
+    external_quantity: 5,
+    internal_quantity_uom: "bowl",
+    external_quantity_uom: "Basket",
+    buy_price: 500,
+    sales_price: 750,
+    status: "available",
+    expiry_date: ~D[2023-02-03]
+  })
+
+Catalogue.update_for_special_cat(item3, %{daily_deals_id: deals.id, featured_item_id: featured.id})
+
+{:ok, %{item: item4}} =
+  Catalogue.create_sku_inventory_and_item(%{
+    barcode: "",
+    item_tag_id: "",
+    item_subcategory_id: sub27.id,
+    type: "Groceries",
+    details: "",
+    brand_name: "",
+    main_price: 800,
+    package_size: "Crate",
+    description: "Fresh Eggs",
+    item_image_id: image4.id,
+    pickup_centre_id: pickup_centre.id,
+    inventory_location_id: inv_loc3.id,
+    max_internal_quantity: 100,
+    max_external_quantity: 120,
+    name: "Egg",
+    reorder_level: 10,
+    internal_quantity: 80,
+    external_quantity: 10,
+    internal_quantity_uom: "crate",
+    external_quantity_uom: "crate",
+    buy_price: 700,
+    sales_price: 1000,
+    status: "available",
+    expiry_date: ~D[2023-02-03]
+  })
+
+Catalogue.update_for_special_cat(item4, %{daily_deals_id: deals.id, featured_item_id: featured.id})
+
+{:ok, %{item: item5}} =
+  Catalogue.create_sku_inventory_and_item(%{
+    barcode: "",
+    item_tag_id: "",
+    item_subcategory_id: sub4.id,
+    type: "Groceries",
+    details: "",
+    brand_name: "",
+    main_price: 750,
+    package_size: "Crate",
+    item_image_id: image5.id,
+    pickup_centre_id: pickup_centre.id,
+    inventory_location_id: inv_loc2.id,
+    description: "Strawberry",
+    max_internal_quantity: 100,
+    max_external_quantity: 120,
+    name: "Strawberry",
+    reorder_level: 13,
+    internal_quantity: 80,
+    external_quantity: 10,
+    internal_quantity_uom: "packets",
+    external_quantity_uom: "packets",
+    buy_price: 500,
+    sales_price: 700,
+    status: "available",
+    expiry_date: ~D[2023-02-03]
+  })
+
+Catalogue.update_for_special_cat(item5, %{daily_deals_id: deals.id, featured_item_id: featured.id})
+
+{:ok, %{item: item6}} =
+  Catalogue.create_sku_inventory_and_item(%{
+    barcode: "",
+    item_tag_id: "",
+    item_subcategory_id: sub4.id,
+    type: "Groceries",
+    details: "",
+    brand_name: "",
+    main_price: 750,
+    package_size: "Piece",
+    item_image_id: image6.id,
+    pickup_centre_id: pickup_centre.id,
+    inventory_location_id: inv_loc2.id,
+    description: "Lemon",
+    max_internal_quantity: 100,
+    max_external_quantity: 120,
+    name: "Lemon",
+    reorder_level: 5,
+    internal_quantity: 80,
+    external_quantity: 10,
+    internal_quantity_uom: "packets",
+    external_quantity_uom: "packets",
+    buy_price: 200,
+    sales_price: 300,
+    status: "available",
+    expiry_date: ~D[2023-02-03]
+  })
+
+Catalogue.update_for_special_cat(item6, %{daily_deals_id: deals.id, featured_item_id: featured.id})
+
+{:ok, %{item: item7}} =
+  Catalogue.create_sku_inventory_and_item(%{
+    barcode: "",
+    item_subcategory_id: sub21.id,
+    type: "Groceries",
+    item_tag_id: "",
+    details: "",
+    brand_name: "",
+    main_price: 750,
+    package_size: "Sachet",
+    item_image_id: image7.id,
+    pickup_centre_id: pickup_centre.id,
+    inventory_location_id: inv_loc2.id,
+    description: "Itambe Sachet Liquid Milk",
+    max_internal_quantity: 100,
+    max_external_quantity: 30,
+    name: "Itambe Milk",
+    reorder_level: 5,
+    internal_quantity: 80,
+    external_quantity: 5,
+    internal_quantity_uom: "Packet",
+    external_quantity_uom: "Carton",
+    buy_price: 150,
+    sales_price: 250,
+    status: "available",
+    expiry_date: ~D[2023-02-03]
+  })
+
+Catalogue.update_for_special_cat(item7, %{
+  daily_deals_id: deals.id,
+  popular_item_id: pop.id,
+  featured_item_id: featured.id
 })
 
-Catalogue.create_item_tagging(%{
-  item_tag_id: tag5.id,
-  item_id: item2.id
+{:ok, %{item: item8}} =
+  Catalogue.create_sku_inventory_and_item(%{
+    barcode: "",
+    item_subcategory_id: sub3.id,
+    type: "Groceries",
+    details: "",
+    item_tag_id: "",
+    brand_name: "",
+    main_price: 300,
+    package_size: "Sachet",
+    item_image_id: image8.id,
+    pickup_centre_id: pickup_centre.id,
+    inventory_location_id: inv_loc2.id,
+    description: "Spring Onions",
+    max_internal_quantity: 20,
+    max_external_quantity: 30,
+    name: "Spring Onions",
+    reorder_level: 10,
+    internal_quantity: 10,
+    external_quantity: 5,
+    internal_quantity_uom: "Basket",
+    external_quantity_uom: "Set",
+    buy_price: 150,
+    sales_price: 250,
+    status: "available",
+    expiry_date: ~D[2023-02-03]
+  })
+
+Catalogue.update_for_special_cat(item8, %{daily_deals_id: deals.id, popular_item_id: featured.id})
+
+{:ok, %{item: item9}} =
+  Catalogue.create_sku_inventory_and_item(%{
+    barcode: "",
+    type: "Groceries",
+    details: "",
+    brand_name: "",
+    package_size: "Bowl",
+    main_price: 600,
+    item_tag_id: "",
+    item_image_id: image9.id,
+    item_subcategory_id: sub1.id,
+    pickup_centre_id: pickup_centre.id,
+    inventory_location_id: inv_loc2.id,
+    description: "Fresh Pepper",
+    max_internal_quantity: 20,
+    max_external_quantity: 30,
+    name: "Fresh Pepper",
+    reorder_level: 10,
+    internal_quantity: 10,
+    external_quantity: 5,
+    internal_quantity_uom: "Basket",
+    external_quantity_uom: "Bowl",
+    buy_price: 400,
+    sales_price: 600,
+    status: "available",
+    expiry_date: ~D[2023-02-03]
+  })
+
+{:ok, %{item: item10}} =
+  Catalogue.create_sku_inventory_and_item(%{
+    barcode: "",
+    item_subcategory_id: sub3.id,
+    type: "Groceries",
+    details: "",
+    brand_name: "",
+    main_price: 300,
+    package_size: "Bowl",
+    item_tag_id: tag1.id,
+    item_image_id: image10.id,
+    pickup_centre_id: pickup_centre.id,
+    inventory_location_id: inv_loc2.id,
+    description: "Fresh Tomatoes",
+    max_internal_quantity: 20,
+    max_external_quantity: 30,
+    name: "Fresh Tomatoes",
+    reorder_level: 10,
+    internal_quantity: 10,
+    external_quantity: 5,
+    internal_quantity_uom: "Basket",
+    external_quantity_uom: "Bowl",
+    buy_price: 150,
+    sales_price: 250,
+    status: "available",
+    expiry_date: ~D[2023-02-03]
+  })
+
+Catalogue.update_for_special_cat(item10, %{
+  daily_deals_id: deals.id,
+  featured_item_id: featured.id,
+  popular_item_id: pop.id
 })
 
-Catalogue.create_item_tagging(%{
-  item_tag_id: tag1.id,
-  item_id: item10.id
+{:ok, %{item: item11}} =
+  Catalogue.create_sku_inventory_and_item(%{
+    barcode: "",
+    item_subcategory_id: sub65.id,
+    type: "Groceries",
+    details: "",
+    item_tag_id: tag1.id,
+    brand_name: "",
+    main_price: 500,
+    package_size: "Bowl",
+    item_image_id: image11.id,
+    pickup_centre_id: pickup_centre.id,
+    inventory_location_id: inv_loc5.id,
+    description: "Irish Potato",
+    max_internal_quantity: 20,
+    max_external_quantity: 30,
+    name: "Irish Potato",
+    reorder_level: 13,
+    internal_quantity: 10,
+    external_quantity: 5,
+    internal_quantity_uom: "Basket",
+    external_quantity_uom: "Bowl",
+    buy_price: 500,
+    sales_price: 600,
+    status: "available",
+    expiry_date: ~D[2023-02-03]
+  })
+
+Catalogue.update_for_special_cat(item11, %{
+  popular_item_id: pop.id
 })
 
-Catalogue.create_item_tagging(%{
-  item_tag_id: tag1.id,
-  item_id: item12.id
+{:ok, %{item: item12}} =
+  Catalogue.create_sku_inventory_and_item(%{
+    barcode: "",
+    item_subcategory_id: sub3.id,
+    type: "Groceries",
+    details: "",
+    item_tag_id: "",
+    brand_name: "",
+    main_price: 500,
+    package_size: "Bowl",
+    item_image_id: image12.id,
+    pickup_centre_id: pickup_centre.id,
+    inventory_location_id: inv_loc6.id,
+    description: "Spinach",
+    max_internal_quantity: 20,
+    max_external_quantity: 30,
+    name: "Spinach",
+    reorder_level: 5,
+    internal_quantity: 10,
+    external_quantity: 5,
+    internal_quantity_uom: "Basket",
+    external_quantity_uom: "Bowl",
+    buy_price: 250,
+    sales_price: 400,
+    status: "available",
+    expiry_date: ~D[2023-02-03]
+  })
+
+Catalogue.update_for_special_cat(item12, %{
+  popular_item_id: pop.id
 })
 
-Catalogue.create_item_tagging(%{
-  item_tag_id: tag3.id,
-  item_id: item16.id
+{:ok, %{item: item13}} =
+  Catalogue.create_sku_inventory_and_item(%{
+    barcode: "",
+    item_subcategory_id: sub46.id,
+    item_image_id: image13.id,
+    type: "Groceries",
+    details: "",
+    item_tag_id: "",
+    brand_name: "",
+    main_price: 800,
+    package_size: "tin",
+    brand_name: "Nestle",
+    pickup_centre_id: pickup_centre.id,
+    inventory_location_id: inv_loc7.id,
+    description: "Medium Size Tin Milo",
+    max_internal_quantity: 200,
+    max_external_quantity: 300,
+    name: "Medium Size Tin Milo",
+    reorder_level: 10,
+    internal_quantity: 100,
+    external_quantity: 25,
+    internal_quantity_uom: "tin",
+    external_quantity_uom: "Carton",
+    buy_price: 1000,
+    sales_price: 1200,
+    brand_name: "Nestle",
+    status: "available",
+    expiry_date: ~D[2023-02-03]
+  })
+
+Catalogue.update_for_special_cat(item13, %{
+  popular_item_id: pop.id
+})
+
+inv14 =
+  Catalogue.create_sku_inventory_and_item(%{
+    type: "Groceries",
+    details: "",
+    brand_name: "",
+    barcode: "",
+    item_tag_id: "",
+    main_price: 1200,
+    package_size: "Tin",
+    item_subcategory_id: sub46.id,
+    item_image_id: image14.id,
+    pickup_centre_id: pickup_centre.id,
+    inventory_location_id: inv_loc7.id,
+    description: "Small Size, tin cadbury bournvita",
+    max_internal_quantity: 200,
+    max_external_quantity: 300,
+    name: "Small Size Bournvita",
+    reorder_level: 10,
+    internal_quantity: 100,
+    external_quantity: 25,
+    internal_quantity_uom: "tin",
+    external_quantity_uom: "Carton",
+    buy_price: 1000,
+    sales_price: 1200,
+    brand_name: "Cadbury",
+    status: "available",
+    expiry_date: ~D[2023-02-03]
+  })
+
+{:ok, %{item: item15}} =
+  Catalogue.create_sku_inventory_and_item(%{
+    barcode: "",
+    item_subcategory_id: sub38.id,
+    type: "Groceries",
+    details: "",
+    brand_name: "",
+    item_tag_id: "",
+    main_price: 550,
+    package_size: "sachet",
+    brand_name: "Golden Penni",
+    item_image_id: image15.id,
+    pickup_centre_id: pickup_centre.id,
+    inventory_location_id: inv_loc8.id,
+    description: "Iodized Sachet Dangote Salt",
+    max_internal_quantity: 200,
+    max_external_quantity: 300,
+    name: "Sachet Dangote Salt",
+    reorder_level: 10,
+    internal_quantity: 100,
+    external_quantity: 25,
+    internal_quantity_uom: "Sachet",
+    external_quantity_uom: "Bags",
+    buy_price: 1000,
+    sales_price: 1200,
+    brand_name: "Danngote",
+    status: "available",
+    expiry_date: ~D[2023-02-03]
+  })
+
+Catalogue.update_for_special_cat(item15, %{
+  popular_item_id: pop.id
+})
+
+{:ok, %{item: item16}} =
+  Catalogue.create_sku_inventory_and_item(%{
+    barcode: "",
+    item_subcategory_id: sub66.id,
+    type: "Health",
+    name: "Supradin",
+    item_tag_id: tag3.id,
+    main_price: 300,
+    package_size: "Packet",
+    description: "Supradin Capsules",
+    brand_name: "Emzor",
+    item_image_id: image17.id,
+    pickup_centre_id: pickup_centre.id,
+    inventory_location_id: inv_loc10.id,
+    max_internal_quantity: 200,
+    max_external_quantity: 300,
+    reorder_level: 10,
+    internal_quantity: 100,
+    external_quantity: 25,
+    internal_quantity_uom: "packet",
+    external_quantity_uom: "Carton",
+    buy_price: 1000,
+    sales_price: 1200,
+    status: "available",
+    expiry_date: ~D[2023-02-03]
+  })
+
+Catalogue.update_for_special_cat(item16, %{
+  daily_deals_id: deals.id,
+  featured_item_id: featured.id,
+  popular_item_id: pop.id
 })
 
 RecipeClass |> Repo.delete_all()
@@ -2147,7 +2134,7 @@ CampusAgent |> Repo.delete_all()
     state_of_origin: "Rivers",
     status: "active",
     verified: true,
-    location_id: l1.id,
+    covered_institution_id: covered_institution.id,
     ecommerce_control_id: ecommerce_control.id
   })
 

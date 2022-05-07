@@ -62,9 +62,9 @@ defmodule LetorEcom.CustomerPurchases do
 
       order =
         Repo.one(
-          from(o in Order,
-            join: u in assoc(o, :user),
-            where: u.id == ^user.id and o.order_status == "cart activated"
+          from(order in Order,
+            join: user in assoc(order, :user),
+            where: user.id == ^user.id and order.order_status == "cart activated"
           )
         )
 
@@ -78,8 +78,8 @@ defmodule LetorEcom.CustomerPurchases do
 
       cart_item =
         Repo.one(
-          from(c in CartItem,
-            where: c.item_id == ^attrs.item_id and c.order_id == ^order.id,
+          from(cart_item in CartItem,
+            where: cart_item.item_id == ^attrs.item_id and cart_item.order_id == ^order.id,
             lock: "FOR UPDATE"
           )
         )
@@ -162,10 +162,10 @@ defmodule LetorEcom.CustomerPurchases do
 
   def payment_verification(order) do
     query =
-      from(o in Order,
-        join: u in assoc(o, :user),
-        join: p in assoc(o, :payment),
-        where: u.id == ^order.user_id and o.id == ^order.id,
+      from(order in Order,
+        join: u in assoc(order, :user),
+        join: p in assoc(order, :payment),
+        where: u.id == ^order.user_id and order.id == ^order.id,
         select: p.verified
       )
 
@@ -191,7 +191,8 @@ defmodule LetorEcom.CustomerPurchases do
 
   """
   def place_order(%Order{} = order) do
-    query = from p in Payment, join: o in assoc(p, :order), on: o.id == ^order.id
+    query =
+      from payment in Payment, join: order in assoc(payment, :order), on: order.id == ^order.id
 
     payment = query |> last(:inserted_at) |> Repo.one()
 
@@ -211,7 +212,7 @@ defmodule LetorEcom.CustomerPurchases do
     |> Multi.run(:user, fn _repo, %{order: order} ->
       user = Repo.get(User, order.user_id)
 
-      # Get the current users refer
+      # Get the current users referer
       code_owner =
         if is_nil(user.referers_code) == false do
           Repo.get_by(User, referal_code: user.referers_code)
@@ -222,9 +223,9 @@ defmodule LetorEcom.CustomerPurchases do
       # check if this user has already been refered
       already_refered =
         Repo.exists?(
-          from(u in User,
-            join: r in assoc(u, :refered_list),
-            where: r.refered_person_id == ^user.id
+          from(user in User,
+            join: refered_list in assoc(user, :refered_list),
+            where: refered_list.refered_person_id == ^user.id
           )
         )
 
