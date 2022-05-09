@@ -14,7 +14,8 @@ defmodule LetorEcom.Centres do
     PopularItem,
     Inventory,
     InventoryChangeHistory,
-    InventoryLocation
+    InventoryLocation,
+    InventoryMetric
   }
 
   @doc """
@@ -380,37 +381,6 @@ defmodule LetorEcom.Centres do
   def delete_inventory_change_history(%InventoryChangeHistory{} = inventory_change_history) do
     Repo.delete(inventory_change_history)
   end
-
-  alias LetorEcom.Centres.InventoryMetric
-
-  @doc """
-  Returns the list of inventory_metrics.
-
-  ## Examples
-
-      iex> list_inventory_metrics()
-      [%InventoryMetric{}, ...]
-
-  """
-  def list_inventory_metrics do
-    Repo.all(InventoryMetric)
-  end
-
-  @doc """
-  Gets a single inventory_metric.
-
-  Raises `Ecto.NoResultsError` if the Inventory metric does not exist.
-
-  ## Examples
-
-      iex> get_inventory_metric!(123)
-      %InventoryMetric{}
-
-      iex> get_inventory_metric!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_inventory_metric!(id), do: Repo.get!(InventoryMetric, id)
 
   @doc """
   Creates a inventory_metric.

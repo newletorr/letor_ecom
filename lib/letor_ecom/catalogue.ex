@@ -344,6 +344,8 @@ defmodule LetorEcom.Catalogue do
 
   """
   def delete_item(%Item{} = item) do
+    # item
+    # |> Item.deletion_changeset()
     Repo.delete(item)
   end
 
@@ -514,6 +516,8 @@ defmodule LetorEcom.Catalogue do
 
   """
   def delete_item_tagging(%ItemTagging{} = item_tagging) do
-    Repo.delete(item_tagging)
+    item_tagging
+    |> ItemTagging.deletion_changeset()
+    |> Repo.delete()
   end
 end

@@ -1,6 +1,7 @@
 defmodule LetorEcom.Catalogue.Item do
   use LetorEcom.SchemaHelper
   use Waffle.Ecto.Schema
+  alias LetorEcom.Account.ShoppingList
   alias LetorEcom.Catalogue.{ItemSubcategory, ItemTag, ItemTagging, Sku}
   alias LetorEcom.Centres.{DailyDeal, FeaturedItem, PopularItem}
   alias LetorEcom.CustomerPurchases.CartItem
@@ -27,7 +28,7 @@ defmodule LetorEcom.Catalogue.Item do
     field(:promo_price, :decimal, read_after_writes: true)
     field(:qa_cleared, :boolean, default: false, read_after_writes: true)
     # LetorEcom.Uploads.Type, read_after_writes: true)
-    field :qr_code, :string
+    field(:qr_code, :string)
     field(:regional_name, :string, read_after_writes: true)
     field(:size, :integer, read_after_writes: true)
     field(:third_party_item, :string, read_after_writes: true)
@@ -41,6 +42,8 @@ defmodule LetorEcom.Catalogue.Item do
     belongs_to(:popular_item, PopularItem)
     has_many(:cart_items, CartItem)
     has_many(:item_taggings, ItemTagging)
+
+    has_many(:shopping_lists, ShoppingList)
 
     timestamps(type: :utc_datetime)
   end
@@ -94,6 +97,8 @@ defmodule LetorEcom.Catalogue.Item do
       :type
     ])
     |> get_actual_price
+    |> assoc_constraint(:item_subcategory)
+    |> assoc_constraint(:sku)
   end
 
   @spec update_changeset(
@@ -136,6 +141,11 @@ defmodule LetorEcom.Catalogue.Item do
       :third_party_item
     ])
     |> get_actual_price
+    |> assoc_constraint(:item_subcategory)
+    |> assoc_constraint(:sku)
+    |> assoc_constraint(:daily_deal)
+    |> assoc_constraint(:featured_item)
+    |> assoc_constraint(:popular_item)
   end
 
   @spec special_category_changeset(
@@ -152,6 +162,8 @@ defmodule LetorEcom.Catalogue.Item do
     |> assoc_constraint(:daily_deal)
     |> assoc_constraint(:featured_item)
     |> assoc_constraint(:popular_item)
+    |> assoc_constraint(:item_subcategory)
+    |> assoc_constraint(:sku)
   end
 
   @spec qr_code_changeset(
@@ -167,6 +179,22 @@ defmodule LetorEcom.Catalogue.Item do
     |> cast(attrs, [:qr_code])
 
     # |> cast_attachments(attrs, [:qr_code], allow_urls: true)
+  end
+
+  def deletion_changeset(item, attrs \\ %{}) do
+    item
+    |> cast(attrs, [
+      :daily_deal_id,
+      :featured_item_id,
+      :popular_item_id,
+      :item_subcategory_id,
+      :sku_id
+    ])
+    |> assoc_constraint(:daily_deal, name: :items_daily_deal_index)
+    |> assoc_constraint(:featured_item, name: :items_featured_item_index)
+    |> assoc_constraint(:popular_item, name: :items_popular_item_index)
+    |> assoc_constraint(:item_subcategory, name: :items_item_subcategory_index)
+    |> assoc_constraint(:sku, name: :items_sku_index)
   end
 
   defp get_actual_price(changeset) do

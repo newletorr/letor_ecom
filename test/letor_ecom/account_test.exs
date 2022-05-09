@@ -242,4 +242,141 @@ defmodule LetorEcom.AccountTest do
       assert {:ok, %ReferedList{}} = Account.delete_refered_list(refered_list)
     end
   end
+
+  describe "shopping_lists" do
+    alias LetorEcom.Account.ShoppingList
+
+    import LetorEcom.AccountFixtures
+
+    @invalid_attrs %{quantity: nil, title: nil, total: nil}
+
+    test "create_shopping_list/1 with valid data creates a shopping_list" do
+      valid_attrs = %{quantity: 42, title: "some title", total: "120.5"}
+
+      assert {:ok, %ShoppingList{} = shopping_list} = Account.create_shopping_list(valid_attrs)
+      assert shopping_list.quantity == 42
+      assert shopping_list.title == "some title"
+      assert shopping_list.total == Decimal.new("120.5")
+    end
+
+    test "create_shopping_list/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Account.create_shopping_list(@invalid_attrs)
+    end
+
+    test "update_shopping_list/2 with valid data updates the shopping_list" do
+      shopping_list = shopping_list_fixture()
+      update_attrs = %{quantity: 43, title: "some updated title", total: "456.7"}
+
+      assert {:ok, %ShoppingList{} = shopping_list} =
+               Account.update_shopping_list(shopping_list, update_attrs)
+
+      assert shopping_list.quantity == 43
+      assert shopping_list.title == "some updated title"
+      assert shopping_list.total == Decimal.new("456.7")
+    end
+
+    test "update_shopping_list/2 with invalid data returns error changeset" do
+      shopping_list = shopping_list_fixture()
+
+      assert {:error, %Ecto.Changeset{}} =
+               Account.update_shopping_list(shopping_list, @invalid_attrs)
+
+      assert shopping_list == Account.get_shopping_list!(shopping_list.id)
+    end
+
+    test "delete_shopping_list/1 deletes the shopping_list" do
+      shopping_list = shopping_list_fixture()
+      assert {:ok, %ShoppingList{}} = Account.delete_shopping_list(shopping_list)
+      assert_raise Ecto.NoResultsError, fn -> Account.get_shopping_list!(shopping_list.id) end
+    end
+  end
+
+  describe "user_favs" do
+    alias LetorEcom.Account.UserFav
+
+    import LetorEcom.AccountFixtures
+
+    @invalid_attrs %{}
+
+    test "create_user_fav/1 with valid data creates a user_fav" do
+      valid_attrs = %{}
+
+      assert {:ok, %UserFav{} = user_fav} = Account.create_user_fav(valid_attrs)
+    end
+
+    test "create_user_fav/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Account.create_user_fav(@invalid_attrs)
+    end
+
+    test "update_user_fav/2 with valid data updates the user_fav" do
+      user_fav = user_fav_fixture()
+      update_attrs = %{}
+
+      assert {:ok, %UserFav{} = user_fav} = Account.update_user_fav(user_fav, update_attrs)
+    end
+
+    test "update_user_fav/2 with invalid data returns error changeset" do
+      user_fav = user_fav_fixture()
+      assert {:error, %Ecto.Changeset{}} = Account.update_user_fav(user_fav, @invalid_attrs)
+      assert user_fav == Account.get_user_fav!(user_fav.id)
+    end
+
+    test "delete_user_fav/1 deletes the user_fav" do
+      user_fav = user_fav_fixture()
+      assert {:ok, %UserFav{}} = Account.delete_user_fav(user_fav)
+      assert_raise Ecto.NoResultsError, fn -> Account.get_user_fav!(user_fav.id) end
+    end
+  end
+
+  describe "viewed_items" do
+    alias LetorEcom.Account.ViewedItem
+
+    import LetorEcom.AccountFixtures
+
+    @invalid_attrs %{}
+
+    test "list_viewed_items/0 returns all viewed_items" do
+      viewed_item = viewed_item_fixture()
+      assert Account.list_viewed_items() == [viewed_item]
+    end
+
+    test "get_viewed_item!/1 returns the viewed_item with given id" do
+      viewed_item = viewed_item_fixture()
+      assert Account.get_viewed_item!(viewed_item.id) == viewed_item
+    end
+
+    test "create_viewed_item/1 with valid data creates a viewed_item" do
+      valid_attrs = %{}
+
+      assert {:ok, %ViewedItem{} = viewed_item} = Account.create_viewed_item(valid_attrs)
+    end
+
+    test "create_viewed_item/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Account.create_viewed_item(@invalid_attrs)
+    end
+
+    test "update_viewed_item/2 with valid data updates the viewed_item" do
+      viewed_item = viewed_item_fixture()
+      update_attrs = %{}
+
+      assert {:ok, %ViewedItem{} = viewed_item} = Account.update_viewed_item(viewed_item, update_attrs)
+    end
+
+    test "update_viewed_item/2 with invalid data returns error changeset" do
+      viewed_item = viewed_item_fixture()
+      assert {:error, %Ecto.Changeset{}} = Account.update_viewed_item(viewed_item, @invalid_attrs)
+      assert viewed_item == Account.get_viewed_item!(viewed_item.id)
+    end
+
+    test "delete_viewed_item/1 deletes the viewed_item" do
+      viewed_item = viewed_item_fixture()
+      assert {:ok, %ViewedItem{}} = Account.delete_viewed_item(viewed_item)
+      assert_raise Ecto.NoResultsError, fn -> Account.get_viewed_item!(viewed_item.id) end
+    end
+
+    test "change_viewed_item/1 returns a viewed_item changeset" do
+      viewed_item = viewed_item_fixture()
+      assert %Ecto.Changeset{} = Account.change_viewed_item(viewed_item)
+    end
+  end
 end

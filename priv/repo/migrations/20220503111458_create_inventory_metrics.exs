@@ -3,7 +3,7 @@ defmodule LetorEcom.Repo.Migrations.CreateInventoryMetrics do
 
   def change do
     create table(:inventory_metrics, primary_key: false) do
-      add :id, :binary_id, primary_key: true
+      add(:id, :binary_id, primary_key: true, default: fragment("gen_random_uuid()"))
       add :re_order_level, :string
       add :fill_rate, :string
       add :accuracy, :string
@@ -20,7 +20,7 @@ defmodule LetorEcom.Repo.Migrations.CreateInventoryMetrics do
       add :spoilt_quanity, :integer
       add :inventory_id, references(:inventories, on_delete: :nothing, type: :binary_id)
 
-      timestamps()
+      timestamps(type: :timestamptz)
     end
 
     create index(:inventory_metrics, [:id])

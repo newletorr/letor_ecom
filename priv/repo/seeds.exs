@@ -11,7 +11,7 @@ alias LetorEcom.{
   Repo
 }
 
-alias LetorEcom.Account.{Address, Confirmation, User}
+alias LetorEcom.Account.{Address, Confirmation, ShoppingList, User}
 alias LetorEcom.AgentsAndSuppliers.CampusAgent
 
 alias LetorEcom.Catalogue.{
@@ -1861,6 +1861,13 @@ Catalogue.update_for_special_cat(item15, %{
     status: "available",
     expiry_date: ~D[2023-02-03]
   })
+
+ShoppingList |> Repo.delete_all()
+
+Account.create_shopping_list(%{
+  title: "Fruits Shopping list",
+  user_id: user.id
+})
 
 Catalogue.update_for_special_cat(item16, %{
   daily_deals_id: deals.id,

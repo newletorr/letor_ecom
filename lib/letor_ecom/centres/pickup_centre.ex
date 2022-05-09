@@ -11,9 +11,9 @@ defmodule LetorEcom.Centres.PickupCentre do
     PopularItem
   }
 
-  alias LetorEcom.Control.EcommerceControl
+  alias LetorEcom.Control.{EcommerceControl, Location}
 
-  alias LetorEcom.CustomerPurchases.{Order, PickUp}
+  alias LetorEcom.CustomerPurchases.PickUp
   alias LetorEcom.Delicacies.RecipeClass
   alias LetorEcom.HumanResource.Driver
   alias Geo.PostGIS.Geometry
@@ -30,7 +30,6 @@ defmodule LetorEcom.Centres.PickupCentre do
     belongs_to(:ecommerce_control, EcommerceControl)
     has_many(:item_categories, ItemCategory)
     has_many(:sku, Sku)
-    has_many(:order, Order)
     has_many(:driver, Driver)
     has_many(:inventory, Inventory)
     has_many(:inventory_location, InventoryLocation)
@@ -39,6 +38,7 @@ defmodule LetorEcom.Centres.PickupCentre do
     has_many(:popular_item, PopularItem)
     has_many(:pick_ups, PickUp)
     has_many(:recipe_class, RecipeClass)
+    has_many(:location, Location)
 
     timestamps(type: :utc_datetime)
   end

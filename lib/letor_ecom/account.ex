@@ -7,7 +7,7 @@ defmodule LetorEcom.Account do
   alias LetorEcom.Repo
   alias Ecto.Multi
 
-  alias LetorEcom.Account.{Address, User, ReferedList}
+  alias LetorEcom.Account.{Address, ReferedList, ShoppingList, User, UserFav, ViewedItem}
   alias LetorEcom.Transactions.UserWallet
 
   @doc """
@@ -126,7 +126,9 @@ defmodule LetorEcom.Account do
 
   """
   def delete_address(%Address{} = address) do
-    Repo.delete(address)
+    address
+    |> Address.deletion_changeset()
+    |> Repo.delete()
   end
 
   @doc """
@@ -179,5 +181,271 @@ defmodule LetorEcom.Account do
   """
   def delete_refered_list(%ReferedList{} = refered_list) do
     Repo.delete(refered_list)
+  end
+
+  @doc """
+  Returns the list of shopping_lists.
+
+  ## Examples
+
+      iex> list_shopping_lists()
+      [%ShoppingList{}, ...]
+
+  """
+  def list_shopping_lists do
+    Repo.all(ShoppingList)
+  end
+
+  @doc """
+  Gets a single shopping_list.
+
+  Raises `Ecto.NoResultsError` if the Shopping list does not exist.
+
+  ## Examples
+
+      iex> get_shopping_list!(123)
+      %ShoppingList{}
+
+      iex> get_shopping_list!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_shopping_list!(id), do: Repo.get!(ShoppingList, id)
+
+  @doc """
+  Creates a shopping_list.
+
+  ## Examples
+
+      iex> create_shopping_list(%{field: value})
+      {:ok, %ShoppingList{}}
+
+      iex> create_shopping_list(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_shopping_list(attrs \\ %{}) do
+    %ShoppingList{}
+    |> ShoppingList.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a shopping_list.
+
+  ## Examples
+
+      iex> update_shopping_list(shopping_list, %{field: new_value})
+      {:ok, %ShoppingList{}}
+
+      iex> update_shopping_list(shopping_list, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_shopping_list(user, %ShoppingList{} = shopping_list, attrs) do
+    update_shopping_list_changeset = shopping_list |> ShoppingList.update_changeset(attrs)
+
+    shopping_list =
+      Repo.one(
+        from(shopping_list in ShoppingList,
+          where:
+            shopping_list.user_id == ^user.id and shopping_list.title == ^shopping_list.title and
+              shopping_list.item_id == ^attrs.item_id
+        )
+      )
+
+    case shopping_list do
+      nil ->
+        Repo.update(update_shopping_list_changeset)
+
+      _ ->
+        update_shopping_list_quantity(shopping_list, %{
+          quantity: shopping_list.quantity + attrs.quantity
+        })
+    end
+  end
+
+  def update_shopping_list_quantity(%ShoppingList{} = shopping_list, attrs) do
+    shopping_list
+    |> ShoppingList.quantity_update_changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a shopping_list.
+
+  ## Examples
+
+      iex> delete_shopping_list(shopping_list)
+      {:ok, %ShoppingList{}}
+  Account
+      iex> delete_shopping_list(shopping_list)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_shopping_list(%ShoppingList{} = shopping_list) do
+    Repo.delete(shopping_list)
+  end
+
+  @doc """
+  Returns the list of user_favs.
+
+  ## Examples
+
+      iex> list_user_favs()
+      [%UserFav{}, ...]
+
+  """
+  def list_user_favs do
+    Repo.all(UserFav)
+  end
+
+  @doc """
+  Gets a single user_fav.
+
+  Raises `Ecto.NoResultsError` if the User fav does not exist.
+
+  ## Examples
+
+      iex> get_user_fav!(123)
+      %UserFav{}
+
+      iex> get_user_fav!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_user_fav!(id), do: Repo.get!(UserFav, id)
+
+  @doc """
+  Creates a user_fav.
+
+  ## Examples
+
+      iex> create_user_fav(%{field: value})
+      {:ok, %UserFav{}}
+
+      iex> create_user_fav(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_user_fav(attrs \\ %{}) do
+    %UserFav{}
+    |> UserFav.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a user_fav.
+
+  ## Examples
+
+      iex> update_user_fav(user_fav, %{field: new_value})
+      {:ok, %UserFav{}}
+
+      iex> update_user_fav(user_fav, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_user_fav(%UserFav{} = user_fav, attrs) do
+    user_fav
+    |> UserFav.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a user_fav.
+
+  ## Examples
+
+      iex> delete_user_fav(user_fav)
+      {:ok, %UserFav{}}
+
+      iex> delete_user_fav(user_fav)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_user_fav(%UserFav{} = user_fav) do
+    Repo.delete(user_fav)
+  end
+
+  @doc """
+  Returns the list of viewed_items.
+
+  ## Examples
+
+      iex> list_viewed_items()
+      [%ViewedItem{}, ...]
+
+  """
+  def list_viewed_items do
+    Repo.all(ViewedItem)
+  end
+
+  @doc """
+  Gets a single viewed_item.
+
+  Raises `Ecto.NoResultsError` if the Viewed item does not exist.
+
+  ## Examples
+
+      iex> get_viewed_item!(123)
+      %ViewedItem{}
+
+      iex> get_viewed_item!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_viewed_item!(id), do: Repo.get!(ViewedItem, id)
+
+  @doc """
+  Creates a viewed_item.
+
+  ## Examples
+
+      iex> create_viewed_item(%{field: value})
+      {:ok, %ViewedItem{}}
+
+      iex> create_viewed_item(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_viewed_item(attrs \\ %{}) do
+    %ViewedItem{}
+    |> ViewedItem.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a viewed_item.
+
+  ## Examples
+
+      iex> update_viewed_item(viewed_item, %{field: new_value})
+      {:ok, %ViewedItem{}}
+
+      iex> update_viewed_item(viewed_item, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_viewed_item(%ViewedItem{} = viewed_item, attrs) do
+    viewed_item
+    |> ViewedItem.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a viewed_item.
+
+  ## Examples
+
+      iex> delete_viewed_item(viewed_item)
+      {:ok, %ViewedItem{}}
+
+      iex> delete_viewed_item(viewed_item)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_viewed_item(%ViewedItem{} = viewed_item) do
+    Repo.delete(viewed_item)
   end
 end
