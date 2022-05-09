@@ -3,6 +3,7 @@ defmodule LetorEcom.CustomerPurchases.PickUp do
   alias LetorEcom.AgentsAndSuppliers.CampusAgent
   alias LetorEcom.Centres.PickupCentre
   alias LetorEcom.CustomerPurchases.Order
+  alias LetorEcom.HumanResource.Staff
 
   schema "pick_ups" do
     field :pick_up_time, :utc_datetime
@@ -11,6 +12,7 @@ defmodule LetorEcom.CustomerPurchases.PickUp do
     belongs_to(:order, Order)
     belongs_to(:campus_agent, CampusAgent)
     belongs_to(:pickup_centre, PickupCentre)
+    belongs_to(:staff, Staff)
 
     timestamps(type: :utc_datetime)
   end
@@ -42,8 +44,9 @@ defmodule LetorEcom.CustomerPurchases.PickUp do
         ) :: Ecto.Changeset.t()
   def instore_pickup_changeset(pick_up, attrs) do
     pick_up
-    |> cast(attrs, [:order_id, :pick_up_time, :picked, :pickup_code])
+    |> cast(attrs, [:staff_id, :order_id, :pick_up_time, :picked, :pickup_code])
     |> validate_required([:pick_up_time, :picked, :pickup_code])
     |> assoc_constraint(:order)
+    |> assoc_constraint(:staff)
   end
 end

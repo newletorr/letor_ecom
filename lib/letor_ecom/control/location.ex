@@ -3,6 +3,7 @@ defmodule LetorEcom.Control.Location do
   alias LetorEcom.Account.User
   alias LetorEcom.AgentsAndSuppliers.CampusAgent
   alias LetorEcom.Centres.PickupCentre
+  alias LetorEcom.CustomerPurchases.Order
   alias Geo.PostGIS.Geometry
 
   schema "location" do
@@ -15,6 +16,7 @@ defmodule LetorEcom.Control.Location do
     belongs_to(:pickup_centre, PickupCentre)
     has_many(:campus_agents, CampusAgent)
     has_many(:users, User)
+    has_many(:orders, Order)
     timestamps(type: :utc_datetime)
   end
 

@@ -223,7 +223,7 @@ defmodule LetorEcom.Catalogue do
     end)
     # Create item tagging for item if a tag_id is provided
     |> Multi.run(:item_tagging, fn repo, %{item: item} ->
-      if is_nil(item.id) == false do
+      if is_nil(attrs.item_tag_id) == true do
         {:ok, nil}
       else
         item_tagging_changeset =
@@ -344,6 +344,8 @@ defmodule LetorEcom.Catalogue do
 
   """
   def delete_item(%Item{} = item) do
+    # item
+    # |> Item.deletion_changeset()
     Repo.delete(item)
   end
 
@@ -514,6 +516,8 @@ defmodule LetorEcom.Catalogue do
 
   """
   def delete_item_tagging(%ItemTagging{} = item_tagging) do
-    Repo.delete(item_tagging)
+    item_tagging
+    |> ItemTagging.deletion_changeset()
+    |> Repo.delete()
   end
 end

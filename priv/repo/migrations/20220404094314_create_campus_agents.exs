@@ -24,18 +24,10 @@ defmodule LetorEcom.Repo.Migrations.CreateCampusAgents do
       add(:guarantor_phone, :string)
       add(:guarantor_residential_address, :string)
       add(:guarantor_verified, :boolean, null: false, default: false)
-      add(:location_id, references(:location, on_delete: :nothing, type: :binary_id))
-
-      add(
-        :ecommerce_control_id,
-        references(:ecommerce_controls, on_delete: :nothing, type: :binary_id)
-      )
 
       timestamps(type: :timestamptz)
     end
 
     create(index(:campus_agents, [:id]))
-    create(index(:campus_agents, [:location_id]))
-    create(index(:campus_agents, [:ecommerce_control_id]))
   end
 end

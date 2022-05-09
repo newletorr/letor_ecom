@@ -1,7 +1,7 @@
 defmodule LetorEcom.Account.User do
   use Waffle.Ecto.Schema
   use LetorEcom.SchemaHelper
-  alias LetorEcom.Account.{Address, ReferedList}
+  alias LetorEcom.Account.{Address, ReferedList, ShoppingList, UserFav}
   alias LetorEcom.Control.Location
   alias LetorEcom.Transactions.UserWallet
 
@@ -50,6 +50,8 @@ defmodule LetorEcom.Account.User do
     has_one(:addresses, Address)
     has_one(:user_wallets, UserWallet)
     has_many(:refered_lists, ReferedList)
+    has_many(:shopping_list, ShoppingList)
+    has_many(:user_fav, UserFav)
     belongs_to(:location, Location)
 
     timestamps(type: :utc_datetime)
@@ -101,6 +103,7 @@ defmodule LetorEcom.Account.User do
     |> set_role("customer")
     |> valid_phone(:phone)
     |> create_full_name()
+    |> assoc_constraint(:location)
   end
 
   @spec update_referals_earned_changeset(

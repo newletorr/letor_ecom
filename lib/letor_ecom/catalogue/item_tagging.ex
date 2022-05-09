@@ -21,8 +21,15 @@ defmodule LetorEcom.Catalogue.ItemTagging do
   def changeset(item_tagging, attrs) do
     item_tagging
     |> cast(attrs, [:item_id, :item_tag_id])
-    |> validate_required([:item_id, :item_tag_id])
-    |> assoc_constraint(:item)
-    |> assoc_constraint(:item_tag)
+    # |> validate_required([:item_id, :item_tag_id])
+    |> assoc_constraint(:item, name: :item_taggings_item_id_fkey)
+    |> assoc_constraint(:item_tag, name: :item_taggings_item_tag_id_fkey)
+  end
+
+  def deletion_changeset(item_tagging, attrs \\ %{}) do
+    item_tagging
+    |> cast(attrs, [:item_id, :item_tag_id])
+    |> assoc_constraint(:item, name: :item_taggings_item_id_fkey)
+    |> assoc_constraint(:item_tag, name: :item_taggings_item_tag_id_fkey)
   end
 end

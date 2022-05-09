@@ -365,10 +365,10 @@ defmodule LetorEcom.CentresTest do
       assert {:error, %Ecto.Changeset{}} = Centres.update_inventory(inventory, @invalid_attrs)
     end
 
-    #test "delete_inventory/1 deletes the inventory" do
-     # inventory = Repo.all(Inventory) |> List.first()
-      #assert {:ok, %Inventory{}} = Centres.delete_inventory(inventory)
-    #end
+    # test "delete_inventory/1 deletes the inventory" do
+    # inventory = Repo.all(Inventory) |> List.first()
+    # assert {:ok, %Inventory{}} = Centres.delete_inventory(inventory)
+    # end
   end
 
   describe "inventory_change_history" do
@@ -445,6 +445,73 @@ defmodule LetorEcom.CentresTest do
 
       assert {:ok, %InventoryChangeHistory{}} =
                Centres.delete_inventory_change_history(inventory_change_history)
+    end
+  end
+
+  describe "pick_ups" do
+    alias LetorEcom.Centres.PickUp
+
+    import LetorEcom.CentresFixtures
+
+    @invalid_attrs %{pick_up_code: nil, pick_up_time: nil, picked: nil}
+
+    test "list_pick_ups/0 returns all pick_ups" do
+      pick_up = pick_up_fixture()
+      assert Centres.list_pick_ups() == [pick_up]
+    end
+
+    test "get_pick_up!/1 returns the pick_up with given id" do
+      pick_up = pick_up_fixture()
+      assert Centres.get_pick_up!(pick_up.id) == pick_up
+    end
+
+    test "create_pick_up/1 with valid data creates a pick_up" do
+      valid_attrs = %{
+        pick_up_code: "some pick_up_code",
+        pick_up_time: ~U[2022-05-07 23:03:00Z],
+        picked: true
+      }
+
+      assert {:ok, %PickUp{} = pick_up} = Centres.create_pick_up(valid_attrs)
+      assert pick_up.pick_up_code == "some pick_up_code"
+      assert pick_up.pick_up_time == ~U[2022-05-07 23:03:00Z]
+      assert pick_up.picked == true
+    end
+
+    test "create_pick_up/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Centres.create_pick_up(@invalid_attrs)
+    end
+
+    test "update_pick_up/2 with valid data updates the pick_up" do
+      pick_up = pick_up_fixture()
+
+      update_attrs = %{
+        pick_up_code: "some updated pick_up_code",
+        pick_up_time: ~U[2022-05-08 23:03:00Z],
+        picked: false
+      }
+
+      assert {:ok, %PickUp{} = pick_up} = Centres.update_pick_up(pick_up, update_attrs)
+      assert pick_up.pick_up_code == "some updated pick_up_code"
+      assert pick_up.pick_up_time == ~U[2022-05-08 23:03:00Z]
+      assert pick_up.picked == false
+    end
+
+    test "update_pick_up/2 with invalid data returns error changeset" do
+      pick_up = pick_up_fixture()
+      assert {:error, %Ecto.Changeset{}} = Centres.update_pick_up(pick_up, @invalid_attrs)
+      assert pick_up == Centres.get_pick_up!(pick_up.id)
+    end
+
+    test "delete_pick_up/1 deletes the pick_up" do
+      pick_up = pick_up_fixture()
+      assert {:ok, %PickUp{}} = Centres.delete_pick_up(pick_up)
+      assert_raise Ecto.NoResultsError, fn -> Centres.get_pick_up!(pick_up.id) end
+    end
+
+    test "change_pick_up/1 returns a pick_up changeset" do
+      pick_up = pick_up_fixture()
+      assert %Ecto.Changeset{} = Centres.change_pick_up(pick_up)
     end
   end
 end
