@@ -5,15 +5,8 @@ defmodule LetorEcom.Account.User do
   alias LetorEcom.Control.Location
   alias LetorEcom.Transactions.UserWallet
 
-  @required_fields [
-    :location_id,
-    :email,
-    :first_name,
-    :last_name,
-    :address,
-    :date_of_birth,
-    :phone
-  ]
+  @required_fields ~w(location_id email first_name last_name address date_of_birth phone)a
+
   @email_regex ~r/^[A-Za-z0-9._%+-+']+@[A-Za-z0-9.-]+\.[A-Za-z]+$/
   schema "users" do
     field :address, :string, read_after_writes: true

@@ -10,9 +10,7 @@ defmodule LetorEcom.AccountFixtures do
   def viewed_item_fixture(attrs \\ %{}) do
     {:ok, viewed_item} =
       attrs
-      |> Enum.into(%{
-
-      })
+      |> Enum.into(%{})
       |> LetorEcom.Account.create_viewed_item()
 
     viewed_item

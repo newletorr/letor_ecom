@@ -359,7 +359,8 @@ defmodule LetorEcom.AccountTest do
       viewed_item = viewed_item_fixture()
       update_attrs = %{}
 
-      assert {:ok, %ViewedItem{} = viewed_item} = Account.update_viewed_item(viewed_item, update_attrs)
+      assert {:ok, %ViewedItem{} = viewed_item} =
+               Account.update_viewed_item(viewed_item, update_attrs)
     end
 
     test "update_viewed_item/2 with invalid data returns error changeset" do

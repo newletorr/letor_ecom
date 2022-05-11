@@ -1,0 +1,5 @@
+SELECT 
+   DISTINCT ON (senal.id) senal.id, port.id, ST_Distance(port."GEOMETRY", senal."GEOMETRY")  as dist
+FROM traffic_signs As senal, entrance_halls As port  
+WHERE ST_DWithin(port."GEOMETRY", senal."GEOMETRY", 10000) 
+ORDER BY senal.id, port.id, ST_Distance(port."GEOMETRY", senal."GEOMETRY");
