@@ -3,6 +3,7 @@ defmodule LetorEcom.Account.User do
   use LetorEcom.SchemaHelper
   alias LetorEcom.Account.{Address, ReferedList, ShoppingList, UserFav}
   alias LetorEcom.Control.Location
+  alias LetorEcom.Sales.InstoreSale
   alias LetorEcom.Transactions.UserWallet
 
   @required_fields ~w(location_id email first_name last_name address date_of_birth phone)a
@@ -45,6 +46,7 @@ defmodule LetorEcom.Account.User do
     has_many(:refered_lists, ReferedList)
     has_many(:shopping_list, ShoppingList)
     has_many(:user_fav, UserFav)
+    has_many(:instore_sales, InstoreSale)
     belongs_to(:location, Location)
 
     timestamps(type: :utc_datetime)

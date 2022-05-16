@@ -6,7 +6,7 @@ defmodule LetorEcom.Control.Location do
   alias LetorEcom.CustomerPurchases.Order
   alias Geo.PostGIS.Geometry
 
-  schema "location" do
+  schema "locations" do
     field :city, :string
     field :country, :string
     field :location_area, :string

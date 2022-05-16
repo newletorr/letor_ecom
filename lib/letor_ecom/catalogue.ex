@@ -236,7 +236,7 @@ defmodule LetorEcom.Catalogue do
     # create qr code for item
     |> Multi.run(:item_qr_code, fn repo, %{item: item} ->
       {:ok, qr_code} =
-        item.id
+        item.item_code
         |> QRCode.create()
         |> Result.and_then(&QRCode.Svg.save_as(&1, "/tmp/#{item.name}.svg"))
 
@@ -261,7 +261,7 @@ defmodule LetorEcom.Catalogue do
     # Create qr code for inventory item
     |> Multi.run(:inventory_qr_code, fn repo, %{inventory: inventory} ->
       {:ok, qr_code} =
-        inventory.id
+        inventory.inventory_code
         |> QRCode.create()
         |> Result.and_then(&QRCode.Svg.save_as(&1, "/tmp/#{inventory.name}.svg"))
 

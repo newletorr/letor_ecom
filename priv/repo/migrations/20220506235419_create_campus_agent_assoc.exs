@@ -12,9 +12,12 @@ defmodule LetorEcom.Repo.Migrations.CreateCampusAgentAssoc do
         :ecommerce_control_id,
         references(:ecommerce_controls, on_delete: :nothing, type: :binary_id)
       )
+
+      add(:location_id, references(:locations, on_delete: :nothing, type: :binary_id))
     end
 
     create(index(:campus_agents, [:covered_institution_id]))
     create(index(:campus_agents, [:ecommerce_control_id]))
+    create(index(:campus_agents, [:location_id]))
   end
 end

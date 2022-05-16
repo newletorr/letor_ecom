@@ -2142,7 +2142,8 @@ CampusAgent |> Repo.delete_all()
     status: "active",
     verified: true,
     covered_institution_id: covered_institution.id,
-    ecommerce_control_id: ecommerce_control.id
+    ecommerce_control_id: ecommerce_control.id,
+    location_id: l1.id
   })
 
 # Warehouse |> Repo.delete_all()

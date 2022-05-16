@@ -9,6 +9,7 @@ defmodule LetorEcom.SchemaHelper do
       use Ecto.Schema
       import Ecto.Changeset
       import Ecto.Query
+      alias LetorEcom.Repo
 
       @primary_key {:id, :binary_id, read_after_writes: true}
       @foreign_key_type :binary_id

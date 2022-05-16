@@ -99,6 +99,7 @@ defmodule LetorEcom.Catalogue.Item do
     |> get_actual_price
     |> assoc_constraint(:item_subcategory)
     |> assoc_constraint(:sku)
+    |> gen_item_code
   end
 
   @spec update_changeset(
@@ -237,6 +238,20 @@ defmodule LetorEcom.Catalogue.Item do
           )
 
         changeset |> put_change(:instore_location, item_location_name)
+
+      _ ->
+        changeset
+    end
+  end
+
+  defp gen_item_code(changeset) do
+    case changeset.valid? do
+      true ->
+        alphabet = Enum.to_list(?a..?z) ++ Enum.to_list(?0..?9)
+        length = 5
+        value = for _ <- 1..length, into: "", do: <<Enum.random(alphabet)>>
+
+        changeset |> put_change(:item_code, value)
 
       _ ->
         changeset

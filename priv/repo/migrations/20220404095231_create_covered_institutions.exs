@@ -6,7 +6,7 @@ defmodule LetorEcom.Repo.Migrations.CreateCoveredInstitutions do
       add :id, :binary_id, primary_key: true, default: fragment("gen_random_uuid()")
       add :name, :string
       add :campus_name, :string
-      add :location_id, references(:location, on_delete: :nothing, type: :binary_id)
+      add :location_id, references(:locations, on_delete: :nothing, type: :binary_id)
 
       add :ecommerce_control_id,
           references(:ecommerce_controls, on_delete: :nothing, type: :binary_id)

@@ -21,6 +21,7 @@ defmodule LetorEcom.Repo.Migrations.CreateInventories do
       add :expired, :boolean, default: false, null: false
       add :brand_name, :string
       add :qr_code, :string
+      add :inventory_code, :string
       add :pickup_centre_id, references(:pickup_centres, on_delete: :nothing, type: :binary_id)
 
       add :inventory_location_id,

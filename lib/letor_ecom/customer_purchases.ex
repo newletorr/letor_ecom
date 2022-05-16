@@ -200,44 +200,8 @@ defmodule LetorEcom.CustomerPurchases do
       end
 
     user = Repo.get(User, order.user_id)
-
-    [url, headers] = [
-      "https://api.paystack.co/transaction/initialize",
-      [
-        Authorization: "Bearer #{System.get_env("PAYSTACK_KEY")}",
-        Accept: "Application/json; Charset=utf-8"
-      ]
-    ]
-
-    grand_total_to_string = Decimal.to_string(Decimal.mult(order.grand_total, 100))
-
-    {:ok, body} =
-      Poison.encode(%{
-        email: user.email,
-        amount: grand_total_to_string,
-        custom_fields: [
-          %{display_name: "Order ID", variable_name: "Order ID", value: order.id}
-        ]
-      })
-
-    {:ok, response} = HTTPoison.post(url, body, headers)
-
-    {:ok, res_body} = response.body |> Poison.decode()
-
-    ref_code = res_body["data"]["reference"]
-
-    auth_url = res_body["data"]["authorization_url"]
-
-    payment_attrs =
-      Map.merge(attrs, %{
-        reference_code: ref_code,
-        authorization_url: auth_url,
-        amount: order.grand_total,
-        order_id: order.id,
-        user_id: order.user_id
-      })
-
-    payment_changeset = %Payment{} |> Payment.order_payment_changeset(payment_attrs)
+    attrs = payment_attributes(user, order, attrs)
+    payment_changeset = %Payment{} |> Payment.order_payment_changeset(attrs)
 
     Multi.new()
     |> Multi.update(:order, order_changeset)
@@ -290,6 +254,46 @@ defmodule LetorEcom.CustomerPurchases do
       end
     end)
     |> Repo.transaction()
+  end
+
+  defp payment_attributes(user, order, attrs) do
+    [url, headers] = [
+      "https://api.paystack.co/transaction/initialize",
+      [
+        Authorization: "Bearer #{System.get_env("PAYSTACK_KEY")}",
+        Accept: "Application/json; Charset=utf-8"
+      ]
+    ]
+
+    grand_total_to_string = Decimal.to_string(Decimal.mult(order.grand_total, 100))
+
+    {:ok, body} =
+      Poison.encode(%{
+        email: user.email,
+        amount: grand_total_to_string,
+        custom_fields: [
+          %{display_name: "Order ID", variable_name: "Order ID", value: order.id}
+        ]
+      })
+
+    {:ok, response} = HTTPoison.post(url, body, headers)
+
+    {:ok, res_body} = response.body |> Poison.decode()
+
+    ref_code = res_body["data"]["reference"]
+
+    auth_url = res_body["data"]["authorization_url"]
+
+    payment_attrs =
+      Map.merge(attrs, %{
+        reference_code: ref_code,
+        authorization_url: auth_url,
+        amount: order.grand_total,
+        order_id: order.id,
+        user_id: order.user_id
+      })
+
+    payment_attrs
   end
 
   def dispatch_order(%Order{} = order) do
@@ -596,35 +600,6 @@ defmodule LetorEcom.CustomerPurchases do
   def delete_referal_discount(%ReferalDiscount{} = referal_discount) do
     Repo.delete(referal_discount)
   end
-
-  @doc """
-  Returns the list of pick_ups.
-
-  ## Examples
-
-      iex> list_pick_ups()
-      [%PickUp{}, ...]
-
-  """
-  def list_pick_ups do
-    Repo.all(PickUp)
-  end
-
-  @doc """
-  Gets a single pick_up.
-
-  Raises `Ecto.NoResultsError` if the Pick up does not exist.
-
-  ## Examples
-
-      iex> get_pick_up!(123)
-      %PickUp{}
-
-      iex> get_pick_up!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_pick_up!(id), do: Repo.get!(PickUp, id)
 
   @doc """
   Creates a pick_up.

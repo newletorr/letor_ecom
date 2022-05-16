@@ -38,7 +38,7 @@ defmodule LetorEcom.Centres.PickupCentre do
     has_many(:popular_item, PopularItem)
     has_many(:pick_ups, PickUp)
     has_many(:recipe_class, RecipeClass)
-    has_many(:location, Location)
+    has_many(:locations, Location)
     has_many(:order_dispatches, OrderDispatch)
 
     timestamps(type: :utc_datetime)

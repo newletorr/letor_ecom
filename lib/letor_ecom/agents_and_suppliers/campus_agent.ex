@@ -1,29 +1,10 @@
 defmodule LetorEcom.AgentsAndSuppliers.CampusAgent do
   use LetorEcom.SchemaHelper
   use Waffle.Ecto.Schema
-  alias LetorEcom.Control.{CoveredInstitution, EcommerceControl}
+  alias LetorEcom.Control.{CoveredInstitution, EcommerceControl, Location}
   alias LetorEcom.CustomerPurchases.Order
 
-  @required_fields [
-    :covered_institution_id,
-    :ecommerce_control_id,
-    :residential_address,
-    :business_address,
-    :email,
-    :first_name,
-    :last_name,
-    :phone,
-    :status,
-    :verified,
-    :nationality,
-    :home_town,
-    :state_of_origin,
-    :means_of_id,
-    :guarantor_first_name,
-    :guarantor_last_name,
-    :guarantor_phone,
-    :guarantor_residential_address
-  ]
+  @required_fields ~w(covered_institution_id ecommerce_control_id location_id residential_address business_address email first_name last_name phone status verified nationality home_town state_of_origin means_of_id guarantor_first_name guarantor_last_name guarantor_phone guarantor_residential_address)a
 
   @image_fields [:agents_image, :id_image]
   @email_regex ~r/^[A-Za-z0-9._%+-+']+@[A-Za-z0-9.-]+\.[A-Za-z]+$/
@@ -53,6 +34,7 @@ defmodule LetorEcom.AgentsAndSuppliers.CampusAgent do
     field(:guarantor_verified, :boolean)
     belongs_to(:covered_institution, CoveredInstitution)
     belongs_to(:ecommerce_control, EcommerceControl)
+    belongs_to(:location, Location)
     has_many(:order, Order)
 
     timestamps(type: :utc_datetime)

@@ -28,6 +28,7 @@ defmodule LetorEcom.Centres.Inventory do
     field :sales_price, :decimal, read_after_writes: true
     field :size, :integer, read_after_writes: true
     field :status, :string, read_after_writes: true
+    field :inventory_code, :string
     belongs_to(:pickup_centre, PickupCentre)
     belongs_to(:inventory_location, InventoryLocation)
     belongs_to(:item_image, ItemImage)
@@ -58,7 +59,8 @@ defmodule LetorEcom.Centres.Inventory do
       :expiry_date,
       :expired,
       :brand_name,
-      :qr_code
+      :qr_code,
+      :inventory_code
     ])
     |> validate_required([
       :buy_price,
@@ -78,6 +80,7 @@ defmodule LetorEcom.Centres.Inventory do
     |> assoc_constraint(:inventory_location)
     |> assoc_constraint(:item_image)
     |> assoc_constraint(:sku)
+    |> gen_inventory_code
   end
 
   def update_changeset(inventory, attrs) do
@@ -159,6 +162,20 @@ defmodule LetorEcom.Centres.Inventory do
         else
           changeset
         end
+
+      _ ->
+        changeset
+    end
+  end
+
+  defp gen_inventory_code(changeset) do
+    case changeset.valid? do
+      true ->
+        alphabet = Enum.to_list(?a..?z) ++ Enum.to_list(?0..?9)
+        length = 7
+        value = for _ <- 1..length, into: "", do: <<Enum.random(alphabet)>>
+
+        changeset |> put_change(:inventory_code, value)
 
       _ ->
         changeset
