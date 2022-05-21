@@ -10,7 +10,7 @@ defmodule LetorEcom.Repo.Migrations.CreateInstoreSales do
       add :sale_id, references(:sales, on_delete: :nothing, type: :binary_id)
       add :item_id, references(:items, on_delete: :nothing, type: :binary_id)
 
-      timestamps()
+      timestamps(type: :timestamptz)
     end
 
     create index(:instore_sales, [:sale_id])

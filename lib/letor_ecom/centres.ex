@@ -4,6 +4,7 @@ defmodule LetorEcom.Centres do
   """
 
   import Ecto.Query, warn: false
+  alias Ecto.Multi
   alias LetorEcom.Repo
   # alias LetorEcom.Catalogue.{Item, Sku}
 
@@ -12,10 +13,13 @@ defmodule LetorEcom.Centres do
     FeaturedItem,
     PickupCentre,
     PopularItem,
+    Purchase,
+    PurchaseItem,
     Inventory,
     InventoryChangeHistory,
     InventoryLocation,
-    InventoryMetric
+    InventoryMetric,
+    QualityAssuranceRequirement
   }
 
   @doc """
@@ -278,6 +282,12 @@ defmodule LetorEcom.Centres do
     Repo.delete(featured_item)
   end
 
+  # def check_inventory_lead_time(inventory_id) do
+  #
+  # from inventory in Inventory, join: purchase_item in assoc(inventory, :purchase_items), join: purchase in assoc(purchase_item, :purchase),  
+
+  # end
+
   @doc """
   Creates a inventory.
 
@@ -310,7 +320,7 @@ defmodule LetorEcom.Centres do
   """
   def update_inventory(%Inventory{} = inventory, attrs) do
     inventory
-    |> Inventory.changeset(attrs)
+    |> Inventory.update_changeset(attrs)
     |> Repo.update()
   end
 
@@ -432,5 +442,257 @@ defmodule LetorEcom.Centres do
   """
   def delete_inventory_metric(%InventoryMetric{} = inventory_metric) do
     Repo.delete(inventory_metric)
+  end
+
+  @doc """
+  Returns the list of quality_assurance_requirements.
+
+  ## Examples
+
+      iex> list_quality_assurance_requirements()
+      [%QualityAssuranceRequirement{}, ...]
+
+  """
+  def list_quality_assurance_requirements do
+    Repo.all(QualityAssuranceRequirement)
+  end
+
+  @doc """
+  Gets a single quality_assurance_requirement.
+
+  Raises `Ecto.NoResultsError` if the Quality assurance requirement does not exist.
+
+  ## Examples
+
+      iex> get_quality_assurance_requirement!(123)
+      %QualityAssuranceRequirement{}
+
+      iex> get_quality_assurance_requirement!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_quality_assurance_requirement!(id), do: Repo.get!(QualityAssuranceRequirement, id)
+
+  @doc """
+  Creates a quality_assurance_requirement.
+
+  ## Examples
+
+      iex> create_quality_assurance_requirement(%{field: value})
+      {:ok, %QualityAssuranceRequirement{}}
+
+      iex> create_quality_assurance_requirement(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_quality_assurance_requirement(attrs \\ %{}) do
+    %QualityAssuranceRequirement{}
+    |> QualityAssuranceRequirement.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a quality_assurance_requirement.
+
+  ## Examples
+
+      iex> update_quality_assurance_requirement(quality_assurance_requirement, %{field: new_value})
+      {:ok, %QualityAssuranceRequirement{}}
+
+      iex> update_quality_assurance_requirement(quality_assurance_requirement, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_quality_assurance_requirement(
+        %QualityAssuranceRequirement{} = quality_assurance_requirement,
+        attrs
+      ) do
+    quality_assurance_requirement
+    |> QualityAssuranceRequirement.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a quality_assurance_requirement.
+
+  ## Examples
+
+      iex> delete_quality_assurance_requirement(quality_assurance_requirement)
+      {:ok, %QualityAssuranceRequirement{}}
+
+      iex> delete_quality_assurance_requirement(quality_assurance_requirement)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_quality_assurance_requirement(
+        %QualityAssuranceRequirement{} = quality_assurance_requirement
+      ) do
+    Repo.delete(quality_assurance_requirement)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking quality_assurance_requirement changes.
+
+  ## Examples
+
+      iex> change_quality_assurance_requirement(quality_assurance_requirement)
+      %Ecto.Changeset{data: %QualityAssuranceRequirement{}}
+
+  """
+  def change_quality_assurance_requirement(
+        %QualityAssuranceRequirement{} = quality_assurance_requirement,
+        attrs \\ %{}
+      ) do
+    QualityAssuranceRequirement.changeset(quality_assurance_requirement, attrs)
+  end
+
+  @doc """
+  Creates a purchase.
+
+  ## Examples
+
+      iex> create_purchase(%{field: value})
+      {:ok, %Purchase{}}
+
+      iex> create_purchase(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_purchase(attrs \\ %{}) do
+    %Purchase{}
+    |> Purchase.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a purchase.
+
+  ## Examples
+
+      iex> update_purchase(purchase, %{field: new_value})
+      {:ok, %Purchase{}}
+
+      iex> update_purchase(purchase, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_purchase(%Purchase{} = purchase, attrs) do
+    purchase
+    |> Purchase.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a purchase.
+
+  ## Examples
+
+      iex> delete_purchase(purchase)
+      {:ok, %Purchase{}}
+
+      iex> delete_purchase(purchase)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_purchase(%Purchase{} = purchase) do
+    Repo.delete(purchase)
+  end
+
+  def add_purchase_items_to_purchase(attrs \\ %{}) do
+    Multi.new()
+    |> Multi.run(:purchase, fn repo, _ ->
+      purchase_changeset =
+        %Purchase{}
+        |> Purchase.changeset(attrs)
+
+      purchase =
+        Repo.one(
+          from(purchase in Purchase,
+            join: staff in assoc(purchase, :staff),
+            where: staff.id == ^attrs.staff_id and purchase.status == "initialized"
+          )
+        )
+
+      case purchase do
+        nil -> repo.insert(purchase_changeset)
+        _ -> {:ok, purchase}
+      end
+    end)
+    |> Multi.run(:purchase_item, fn repo, %{purchase: purchase} ->
+      purchase_item_changeset =
+        if is_nil(attrs.inventory_id) == false do
+          %PurchaseItem{}
+          |> PurchaseItem.existing_item_changeset(Map.put(attrs, :purchase_id, purchase.id))
+        else
+          %PurchaseItem{}
+          |> PurchaseItem.unknown_item_changeset(Map.put(attrs, :purchase_id, purchase.id))
+        end
+
+      purchase_item =
+        if is_nil(attrs.inventory_id) == false do
+          Repo.one(
+            from(purchase_item in PurchaseItem,
+              where:
+                purchase_item.inventory_id == ^attrs.inventory_id and
+                  purchase_item.purchase_id == ^purchase.id,
+              lock: "FOR UPDATE"
+            )
+          )
+        else
+          Repo.one(
+            from(purchase_item in PurchaseItem,
+              where:
+                purchase_item.item_name == ^attrs.item_name and
+                  purchase_item.purchase_id == ^purchase.id,
+              lock: "FOR UPDATE"
+            )
+          )
+        end
+
+      case purchase_item do
+        nil ->
+          repo.insert(purchase_item_changeset)
+
+        _ ->
+          update_purchase_item(purchase_item, %{
+            quantity: purchase_item.quantity + attrs.quantity
+          })
+      end
+    end)
+    |> Repo.transaction()
+  end
+
+  @doc """
+  Updates a purchase_item.
+
+  ## Examples
+
+      iex> update_purchase_item(purchase_item, %{field: new_value})
+      {:ok, %PurchaseItem{}}
+
+      iex> update_purchase_item(purchase_item, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_purchase_item(%PurchaseItem{} = purchase_item, attrs) do
+    purchase_item
+    |> PurchaseItem.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a purchase_item.
+
+  ## Examples
+
+      iex> delete_purchase_item(purchase_item)
+      {:ok, %PurchaseItem{}}
+
+      iex> delete_purchase_item(purchase_item)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_purchase_item(%PurchaseItem{} = purchase_item) do
+    Repo.delete(purchase_item)
   end
 end

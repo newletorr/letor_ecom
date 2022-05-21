@@ -8,6 +8,7 @@ defmodule LetorEcom.Sales do
   alias LetorEcom.{CustomerPurchases, Repo}
   alias LetorEcom.Centres.{Inventory, InventoryChangeHistory}
   alias LetorEcom.CustomerPurchases.CartItem
+  alias LetorEcom.HumanResource.Staff
   alias LetorEcom.Sales.{CustomerInfo, InstoreSale, Sale}
 
   @spec list_all_sales(any) :: any
@@ -353,7 +354,7 @@ defmodule LetorEcom.Sales do
 
       in_store_sale =
         Repo.one(
-          from(instore_sale in InStoreSale,
+          from(instore_sale in InstoreSale,
             where: instore_sale.item_id == ^attrs.item_id and instore_sale.sales_id == ^sales.id,
             lock: "FOR UPDATE"
           )

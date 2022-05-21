@@ -7,7 +7,8 @@ defmodule LetorEcom.Centres.Inventory do
     InventoryLocation,
     InventoryChangeHistory,
     InventoryMetric,
-    PickupCentre
+    PickupCentre,
+    PurchaseItem
   }
 
   schema "inventories" do
@@ -16,25 +17,30 @@ defmodule LetorEcom.Centres.Inventory do
     field :description, :string, read_after_writes: true
     field :expired, :boolean, default: false, read_after_writes: true
     field :expiry_date, :date, read_after_writes: true
-    field :external_quantity, :integer, read_after_writes: true
-    field :external_quantity_uom, :string, read_after_writes: true
-    field :internal_quantity_uom, :string, read_after_writes: true
-    field :internal_quantity, :integer, read_after_writes: true
-    field :max_external_quantity, :integer, read_after_writes: true
-    field :max_internal_quantity, :integer, read_after_writes: true
+    field :bulk_quantity, :integer, read_after_writes: true
+    field :bulk_quantity_uom, :string, read_after_writes: true
+    field :sales_unit_quantity_uom, :string, read_after_writes: true
+    field :sales_unit_quantity, :integer, read_after_writes: true
+    field :max_bulk_quantity, :integer, read_after_writes: true
     field :name, :string, read_after_writes: true
     field :qr_code, :string, read_after_writes: true
     field :quality_assurance_status, :string, read_after_writes: true
-    field :sales_price, :decimal, read_after_writes: true
+    field :unit_sales_price, :decimal, read_after_writes: true
+    field :bulk_sales_price, :decimal, read_after_writes: true
     field :size, :integer, read_after_writes: true
     field :status, :string, read_after_writes: true
-    field :inventory_code, :string
+    field :inventory_code, :string, read_after_writes: true
+    field :re_order_level, :integer, read_after_writes: true
+    field :re_ordering_required, :boolean, read_after_writes: true
+    field :shelf_replenishment_levels, :integer, read_after_writes: true
+    field :shelf_replenishment_required, :boolean, read_after_writes: true
     belongs_to(:pickup_centre, PickupCentre)
     belongs_to(:inventory_location, InventoryLocation)
     belongs_to(:item_image, ItemImage)
     belongs_to(:sku, Sku)
     has_many(:inventory_change_history, InventoryChangeHistory)
     has_one(:inventory_metrics, InventoryMetric)
+    has_many(:purchase_items, PurchaseItem)
 
     timestamps(type: :utc_datetime)
   end
@@ -45,14 +51,14 @@ defmodule LetorEcom.Centres.Inventory do
     |> cast(attrs, [
       :buy_price,
       :description,
-      :max_external_quantity,
-      :max_internal_quantity,
+      :max_bulk_quantity,
       :name,
-      :internal_quantity,
-      :external_quantity,
-      :internal_quantity_uom,
-      :external_quantity_uom,
-      :sales_price,
+      :sales_unit_quantity,
+      :bulk_quantity,
+      :sales_unit_quantity_uom,
+      :bulk_quantity_uom,
+      :unit_sales_price,
+      :bulk_sales_price,
       :quality_assurance_status,
       :size,
       :status,
@@ -60,22 +66,24 @@ defmodule LetorEcom.Centres.Inventory do
       :expired,
       :brand_name,
       :qr_code,
-      :inventory_code
+      :inventory_code,
+      :re_order_level
     ])
     |> validate_required([
       :buy_price,
       :description,
-      :max_external_quantity,
-      :max_internal_quantity,
+      :max_bulk_quantity,
       :name,
-      :internal_quantity,
-      :external_quantity,
-      :internal_quantity_uom,
-      :external_quantity_uom,
-      :sales_price
+      :sales_unit_quantity,
+      :bulk_quantity,
+      :sales_unit_quantity_uom,
+      :bulk_quantity_uom,
+      :unit_sales_price,
+      :bulk_sales_price,
+      :re_order_level
     ])
-    |> check_external_quantity_levels
-    |> check_internal_quantity_levels
+    |> check_bulk_quantity_levels
+    |> check_sales_unit_quantity_levels
     |> assoc_constraint(:pickup_centre)
     |> assoc_constraint(:inventory_location)
     |> assoc_constraint(:item_image)
@@ -88,14 +96,14 @@ defmodule LetorEcom.Centres.Inventory do
     |> cast(attrs, [
       :buy_price,
       :description,
-      :max_external_quantity,
-      :max_internal_quantity,
+      :max_bulk_quantity,
+      :max_sales_unit_quantity,
       :name,
-      :internal_quantity,
-      :external_quantity,
-      :internal_quantity_uom,
-      :external_quantity_uom,
-      :sales_price,
+      :sales_unit_quantity,
+      :bulk_quantity,
+      :sales_unit_quantity_uom,
+      :bulk_quantity_uom,
+      :unit_sales_price,
       :quality_assurance_status,
       :size,
       :status,
@@ -104,8 +112,8 @@ defmodule LetorEcom.Centres.Inventory do
       :brand_name,
       :qr_code
     ])
-    |> check_external_quantity_levels
-    |> check_internal_quantity_levels
+    |> check_bulk_quantity_levels
+    |> check_sales_unit_quantity_levels
     |> assoc_constraint(:pickup_centre)
     |> assoc_constraint(:inventory_location)
     |> assoc_constraint(:item_image)
@@ -126,16 +134,16 @@ defmodule LetorEcom.Centres.Inventory do
     |> cast_attachments(attrs, [:qr_code])
   end
 
-  defp check_external_quantity_levels(changeset) do
+  defp check_bulk_quantity_levels(changeset) do
     case changeset.valid? do
       true ->
-        maximum_external_quantity = get_field(changeset, :maximum_external_quantity)
-        external_quantity = get_field(changeset, :external_quantity)
+        maximum_bulk_quantity = get_field(changeset, :maximum_bulk_quantity)
+        bulk_quantity = get_field(changeset, :bulk_quantity)
 
-        if external_quantity > maximum_external_quantity do
+        if bulk_quantity > maximum_bulk_quantity do
           add_error(
             changeset,
-            :external_quantity_too_high,
+            :bulk_quantity_too_high,
             "External Quantity should not be higher than Maximum External Quantity"
           )
         else
@@ -147,16 +155,16 @@ defmodule LetorEcom.Centres.Inventory do
     end
   end
 
-  defp check_internal_quantity_levels(changeset) do
+  defp check_sales_unit_quantity_levels(changeset) do
     case changeset.valid? do
       true ->
-        maximum_internal_quantity = get_field(changeset, :maximum_internal_quantity)
-        internal_quantity = get_field(changeset, :internal_quantity)
+        maximum_sales_unit_quantity = get_field(changeset, :maximum_sales_unit_quantity)
+        sales_unit_quantity = get_field(changeset, :sales_unit_quantity)
 
-        if internal_quantity > maximum_internal_quantity do
+        if sales_unit_quantity > maximum_sales_unit_quantity do
           add_error(
             changeset,
-            :internal_quantity_too_high,
+            :sales_unit_quantity_too_high,
             "Internal Quantity should not be higher than Maximum Internal Quantity"
           )
         else
@@ -176,6 +184,28 @@ defmodule LetorEcom.Centres.Inventory do
         value = for _ <- 1..length, into: "", do: <<Enum.random(alphabet)>>
 
         changeset |> put_change(:inventory_code, value)
+
+      _ ->
+        changeset
+    end
+  end
+
+  defp valid_reorder_level(changeset) do
+    case changeset.valid? do
+      true ->
+        re_order_level = get_field(changeset, :re_order_level)
+
+        max_bulk_quantity = get_field(changeset, :max_bulk_quantity)
+
+        if re_order_level >= max_bulk_quantity do
+          add_error(
+            changeset,
+            :re_order_level_too_high,
+            "re-order level should not be greater than or equal to maximum bulk quantity"
+          )
+        else
+          changeset
+        end
 
       _ ->
         changeset
