@@ -6,7 +6,7 @@ defmodule LetorEcom.Account.User do
   alias LetorEcom.Sales.InstoreSale
   alias LetorEcom.Transactions.UserWallet
 
-  @required_fields ~w(location_id email first_name last_name address date_of_birth phone)a
+  @required_fields ~w(location_id email first_name last_name address date_of_birth phone password password_confirmation)a
 
   @email_regex ~r/^[A-Za-z0-9._%+-+']+@[A-Za-z0-9.-]+\.[A-Za-z]+$/
   schema "users" do
@@ -15,7 +15,7 @@ defmodule LetorEcom.Account.User do
     field :confirmation_code, :string, read_after_writes: true
     field :confirmation_sent_at, :utc_datetime
     field :confirmed_at, :utc_datetime
-    field :current_sign_at, :utc_datetime
+    field :current_sign_in_at, :utc_datetime
     field :current_sign_in_ip, :string
     field :current_sign_in_location, :string
     field :user_image, :string, read_after_writes: true
@@ -53,7 +53,7 @@ defmodule LetorEcom.Account.User do
   end
 
   defp all_fields do
-    __MODULE__.__schema__(:fields)
+    [:password, :password_confirmation | __MODULE__.__schema__(:fields)]
   end
 
   @spec changeset(
@@ -94,11 +94,29 @@ defmodule LetorEcom.Account.User do
       message: "Password should have at list one digit or punctuation character."
     )
     |> validate_confirmation(:password, message: "password does not match")
+    |> assoc_constraint(:location)
     |> hash_password()
     |> set_role("customer")
     |> valid_phone(:phone)
     |> create_full_name()
+    |> gen_referal_code
+  end
+
+  def update_changeset(user, attrs) do
+    user
+    |> cast(attrs, all_fields())
+    |> validate_format(:email, @email_regex)
+    |> update_change(:email, &String.downcase/1)
+    |> unique_constraint(:email, message: "A user with the same email already exists")
+    |> unique_constraint(:phone, message: "Phone number has already been used")
+    |> validate_length(:address,
+      message: "Your address should be at list 15 characters long",
+      min: 15,
+      max: 40
+    )
     |> assoc_constraint(:location)
+    |> valid_phone(:phone)
+    |> create_full_name
   end
 
   @spec update_referals_earned_changeset(
@@ -118,6 +136,17 @@ defmodule LetorEcom.Account.User do
       :second_referal_earned,
       :third_referal_earned,
       :fourth_referal_earned
+    ])
+  end
+
+  def tracked_fields_changeset(user, attrs) do
+    user
+    |> cast(attrs, [
+      :current_sign_in_at,
+      :last_sign_in_at,
+      :current_sign_in_ip,
+      :last_sign_in_ip,
+      :sign_in_count
     ])
   end
 
@@ -161,11 +190,105 @@ defmodule LetorEcom.Account.User do
     |> hash_password()
   end
 
+  def staff_changeset(user, attrs) do
+    user
+    |> cast(attrs, all_fields())
+    |> validate_format(:email, @email_regex)
+    |> update_change(:email, &String.downcase/1)
+    |> unique_constraint(:staff_id,
+      message: "Email has already been used by another Staff",
+      name: :users_staff_id_email_index
+    )
+    |> unique_constraint(:staff_id,
+      message: "Phone number has already been used by another Staff",
+      name: :users_staff_id_phone_index
+    )
+    |> validate_required([
+      :staff_id,
+      :password,
+      :password_confirmation
+    ])
+    |> assoc_constraint(:staff)
+    |> valid_phone(:phone)
+    |> create_full_name
+    |> validate_length(:password, min: 6, max: 80)
+    |> validate_format(:password, ~r/[a-z]/,
+      message: "Password should have a list one lower case character."
+    )
+    |> validate_format(:password, ~r/[A-Z]/,
+      message: "Password should have at list one upper case character."
+    )
+    |> validate_format(:password, ~r/[!?@#$%^&*_0-9]/,
+      message: "Password should have at list one digit or punctuation character."
+    )
+    |> validate_confirmation(:password, message: "Password does not match")
+    |> hash_password
+    |> get_staff_first_name
+    |> get_staff_last_name
+    |> create_full_name
+    |> get_staff_email
+    |> get_staff_role
+  end
+
   # set users role
   defp set_role(changeset, role) do
     case changeset do
       %Ecto.Changeset{valid?: true} ->
         put_change(changeset, :role, role)
+
+      _ ->
+        changeset
+    end
+  end
+
+  defp get_staff_first_name(changeset) do
+    case changeset.valid? do
+      true ->
+        staff = Repo.get(Staff, get_field(changeset, :staff_id))
+        first_name = staff.first_name
+
+        changeset |> put_change(:first_name, first_name)
+
+      _ ->
+        changeset
+    end
+  end
+
+  defp get_staff_last_name(changeset) do
+    case changeset.valid? do
+      true ->
+        staff = Repo.get(Staff, get_field(changeset, :staff_id))
+        last_name = staff.last_name
+
+        changeset |> put_change(:last_name, last_name)
+
+      _ ->
+        changeset
+    end
+  end
+
+  defp get_staff_email(changeset) do
+    case changeset.valid? do
+      true ->
+        staff = Repo.get(Staff, get_field(changeset, :staff_id))
+
+        email = staff.email
+
+        changeset |> put_change(:email, email)
+
+      _ ->
+        changeset
+    end
+  end
+
+  defp get_staff_role(changeset) do
+    case changeset.valid? do
+      true ->
+        staff = Repo.get(Staff, get_field(changeset, :staff_id))
+
+        role = staff.designation
+
+        changeset |> put_change(:role, role)
 
       _ ->
         changeset
@@ -213,5 +336,36 @@ defmodule LetorEcom.Account.User do
       _ ->
         changeset
     end
+  end
+
+  defp gen_referal_code(changeset) do
+    case changeset.valid? do
+      true ->
+        name =
+          get_field(changeset, :first_name)
+          |> binary_part(0, 3)
+          |> String.downcase()
+
+        ref_code =
+          referal_code_gen2()
+          |> String.downcase()
+
+        code = name <> ref_code
+
+        changeset
+        |> put_change(:referal_code, code)
+
+      _ ->
+        changeset
+    end
+  end
+
+  @spec referal_code_gen2 :: bitstring
+  def referal_code_gen2() do
+    alphabet = Enum.to_list(?a..?z) ++ Enum.to_list(?0..?9)
+    length = 4
+    value = for _ <- 1..length, into: "", do: <<Enum.random(alphabet)>>
+
+    value
   end
 end

@@ -10,7 +10,7 @@ defmodule LetorEcom.Sms do
   alias EcomHealthService.Repo
   @twillio_number "+13187029828"
 
-  def sms_signup_code(user) do
+  def send_code(user) do
     {:ok, code, _confirmed_user} = Confirmations.generate_confirmation_code(user)
 
     body =

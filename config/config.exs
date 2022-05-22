@@ -20,6 +20,16 @@ config :letor_ecom, LetorEcomWeb.Endpoint,
   pubsub_server: LetorEcom.PubSub,
   live_view: [signing_salt: "A1cMq7z3"]
 
+config :letor_ecom, LetorEcom.Guardian,
+  issuer: "letor_ecom",
+  secret_key: System.get_env("GUARDIAN_SECRET")
+
+  config :guardian, Guardian.DB,
+  repo: LetorEcom.Repo,
+  schema_name: "guardian_tokens",
+  token_types: ["refresh_token"],
+  sweep_interval: 60
+
 config :waffle,
   storage: Waffle.Storage.S3,
   bucket: System.get_env("AWS_BUCKET_NAME"),

@@ -369,8 +369,8 @@ User |> Repo.delete_all()
     email: "dacraige@gmail.com",
     phone: "09068891827",
     address: "No 12 Agip Road Ph",
-    password: "password",
-    password_confirmation: "password"
+    password: "pass1Word*",
+    password_confirmation: "pass1Word*"
   })
 
 {:ok, code, confirmed_user} = Confirmation.generate_confirmation_code(user)
@@ -386,9 +386,9 @@ User |> Repo.delete_all()
     email: "promisekpea@gmail.com",
     address: "No 12 Agip Road Ph",
     date_of_birth: ~D[1982-02-21],
-    password: "password",
+    password: "pass1Word*",
     referers_code: user1.referal_code,
-    password_confirmation: "password"
+    password_confirmation: "pass1Word*"
   })
 
 {:ok, code, confirmed_user} = Confirmation.generate_confirmation_code(user)
@@ -398,8 +398,8 @@ User |> Repo.delete_all()
 # {:ok, unconfirmed2} =
 # Account.create_staff_user(%{
 #  staff_id: stf1.id,
-# password: "password",
-# password_confirmation: "password"
+# password: "pass1Word*",
+# password_confirmation: "pass1Word*"
 # })
 
 # {:ok, code, user} = Confirmation.generate_confirmation_code(unconfirmed2)
@@ -409,8 +409,8 @@ User |> Repo.delete_all()
 # {:ok, unconfirmed3} =
 # Account.create_staff_user(%{
 #  staff_id: stf4.id,
-# password: "password",
-# password_confirmation: "password"
+# password: "pass1Word*",
+# password_confirmation: "pass1Word*"
 # })
 
 # {:ok, code, user} = Confirmation.generate_confirmation_code(unconfirmed3)
@@ -427,8 +427,8 @@ User |> Repo.delete_all()
     address: "No 12 Agip Road Ph",
     date_of_birth: ~D[1982-02-21],
     referers_code: user1.referal_code,
-    password: "password",
-    password_confirmation: "password"
+    password: "pass1Word*",
+    password_confirmation: "pass1Word*"
   })
 
 {:ok, code, confirmed_user} = Confirmation.generate_confirmation_code(user)
@@ -445,8 +445,8 @@ User |> Repo.delete_all()
     phone: "08102390120",
     address: "No 12 Ada Road Rumueme",
     referers_code: user1.referal_code,
-    password: "password",
-    password_confirmation: "password"
+    password: "pass1Word*",
+    password_confirmation: "pass1Word*"
   })
 
 {:ok, code, confirmed_user} = Confirmation.generate_confirmation_code(user)
@@ -463,8 +463,8 @@ User |> Repo.delete_all()
     phone: "08102390000",
     address: "No 12 Ada Road Rumueme",
     referers_code: user1.referal_code,
-    password: "password",
-    password_confirmation: "password"
+    password: "pass1Word*",
+    password_confirmation: "pass1Word*"
   })
 
 {:ok, code, confirmed_user} = Confirmation.generate_confirmation_code(user)
@@ -481,8 +481,8 @@ User |> Repo.delete_all()
     address: "No 12 Ada Road Rumueme",
     date_of_birth: ~D[1982-02-21],
     referers_code: user1.referal_code,
-    password: "password",
-    password_confirmation: "password"
+    password: "pass1Word*",
+    password_confirmation: "pass1Word*"
   })
 
 {:ok, code, confirmed_user} = Confirmation.generate_confirmation_code(user)

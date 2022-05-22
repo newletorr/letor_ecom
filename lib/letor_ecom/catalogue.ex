@@ -306,7 +306,6 @@ defmodule LetorEcom.Catalogue do
     |> Repo.transaction()
   end
 
-  
   @doc """
   Updates items for special category.
 
