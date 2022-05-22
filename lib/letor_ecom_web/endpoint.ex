@@ -1,5 +1,6 @@
 defmodule LetorEcomWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :letor_ecom
+  use Absinthe.Phoenix.Endpoint
 
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
@@ -9,6 +10,10 @@ defmodule LetorEcomWeb.Endpoint do
     key: "_letor_ecom_key",
     signing_salt: "rjdQGXP8"
   ]
+
+  socket "/socket", LetorEcomWeb.UserSocket,
+    websocket: true,
+    longpoll: false
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
 

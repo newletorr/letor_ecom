@@ -10,6 +10,15 @@ defmodule LetorEcom.Account do
   alias LetorEcom.Account.{Address, ReferedList, ShoppingList, User, UserFav, ViewedItem}
   alias LetorEcom.Transactions.UserWallet
 
+  def data do
+    Dataloader.Ecto.new(Repo, query: &query/2)
+  end
+
+  @spec query(any, any) :: any
+  def query(queryable, _params) do
+    queryable
+  end
+
   @doc """
   Creates a user.
 
@@ -37,10 +46,29 @@ defmodule LetorEcom.Account do
     |> Repo.transaction()
   end
 
-  def update_cus_pat_referal_points_earned(%User{} = user, attrs) do
+  def update_customer_referal_points_earned(%User{} = user, attrs) do
     user
     |> User.update_referals_earned_changeset(attrs)
     |> Repo.update()
+  end
+
+  def update_tracked_fields(%User{} = user, remote_ip) do
+    attrs = %{
+      current_sign_in_at: Timex.now(),
+      last_sign_in_at: user.current_sign_in_at,
+      current_sign_in_ip: remote_ip,
+      sign_in_count: user.sign_in_count + 1
+    }
+
+    attrs =
+      case user.current_sign_in_ip != remote_ip do
+        true -> Map.put(attrs, :last_sign_in_ip, user.current_sign_in_ip)
+        _ -> attrs
+      end
+
+    user
+    |> User.tracked_fields_changeset(attrs)
+    |> Repo.update!()
   end
 
   @doc """
@@ -57,7 +85,7 @@ defmodule LetorEcom.Account do
   """
   def update_user(%User{} = user, attrs) do
     user
-    |> User.changeset(attrs)
+    |> User.update_changeset(attrs)
     |> Repo.update()
   end
 

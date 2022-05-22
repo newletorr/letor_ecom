@@ -258,12 +258,12 @@ defmodule LetorEcom.CentresTest do
       description: nil,
       expired: nil,
       expiry_date: nil,
-      external_quantity: nil,
-      external_quantity_uom: nil,
-      internal_quantity_uom: nil,
-      internal_quantity: nil,
-      max_external_quantity: nil,
-      max_internal_quantity: nil,
+      bulk_quantity: nil,
+      bulk_quantity_uom: nil,
+      sales_unit_quantity_uom: nil,
+      sales_unit_quantity: nil,
+      max_bulk_quantity: nil,
+      max_sales_unit_quantity: nil,
       name: nil,
       qr_code: nil,
       quality_assurance_status: nil,
@@ -279,12 +279,12 @@ defmodule LetorEcom.CentresTest do
         description: "some description",
         expired: true,
         expiry_date: ~D[2022-04-06],
-        external_quantity: 42,
-        external_quantity_uom: "some external_quantity_uom",
-        internal_quantity_uom: "some internal_quantity_uom",
-        internal_quantity: 42,
-        max_external_quantity: 42,
-        max_internal_quantity: 42,
+        bulk_quantity: 42,
+        bulk_quantity_uom: "some bulk_quantity_uom",
+        sales_unit_quantity_uom: "some sales_unit_quantity_uom",
+        sales_unit_quantity: 42,
+        max_bulk_quantity: 42,
+        max_sales_unit_quantity: 42,
         name: "some name",
         qr_code: "some qr_code",
         quality_assurance_status: "some quality_assurance_status",
@@ -299,12 +299,12 @@ defmodule LetorEcom.CentresTest do
       assert inventory.description == "some description"
       assert inventory.expired == true
       assert inventory.expiry_date == ~D[2022-04-06]
-      assert inventory.external_quantity == 42
-      assert inventory.external_quantity_uom == "some external_quantity_uom"
-      assert inventory.internal_quantity_uom == "some internal_quantity_uom"
-      assert inventory.internal_quantity == 42
-      assert inventory.max_external_quantity == 42
-      assert inventory.max_internal_quantity == 42
+      assert inventory.bulk_quantity == 42
+      assert inventory.bulk_quantity_uom == "some bulk_quantity_uom"
+      assert inventory.sales_unit_quantity_uom == "some sales_unit_quantity_uom"
+      assert inventory.sales_unit_quantity == 42
+      assert inventory.max_bulk_quantity == 42
+      assert inventory.max_sales_unit_quantity == 42
       assert inventory.name == "some name"
       assert inventory.qr_code == "some qr_code"
       assert inventory.quality_assurance_status == "some quality_assurance_status"
@@ -326,12 +326,12 @@ defmodule LetorEcom.CentresTest do
         description: "some updated description",
         expired: false,
         expiry_date: ~D[2022-04-07],
-        external_quantity: 43,
-        external_quantity_uom: "some updated external_quantity_uom",
-        internal_quantity_uom: "some updated internal_quantity_uom",
-        internal_quantity: 43,
-        max_external_quantity: 43,
-        max_internal_quantity: 43,
+        bulk_quantity: 43,
+        bulk_quantity_uom: "some updated bulk_quantity_uom",
+        sales_unit_quantity_uom: "some updated sales_unit_quantity_uom",
+        sales_unit_quantity: 43,
+        max_bulk_quantity: 43,
+        max_sales_unit_quantity: 43,
         name: "some updated name",
         qr_code: "some updated qr_code",
         quality_assurance_status: "some updated quality_assurance_status",
@@ -346,12 +346,12 @@ defmodule LetorEcom.CentresTest do
       assert inventory.description == "some updated description"
       assert inventory.expired == false
       assert inventory.expiry_date == ~D[2022-04-07]
-      assert inventory.external_quantity == 43
-      assert inventory.external_quantity_uom == "some updated external_quantity_uom"
-      assert inventory.internal_quantity_uom == "some updated internal_quantity_uom"
-      assert inventory.internal_quantity == 43
-      assert inventory.max_external_quantity == 43
-      assert inventory.max_internal_quantity == 43
+      assert inventory.bulk_quantity == 43
+      assert inventory.bulk_quantity_uom == "some updated bulk_quantity_uom"
+      assert inventory.sales_unit_quantity_uom == "some updated sales_unit_quantity_uom"
+      assert inventory.sales_unit_quantity == 43
+      assert inventory.max_bulk_quantity == 43
+      assert inventory.max_sales_unit_quantity == 43
       assert inventory.name == "some updated name"
       assert inventory.qr_code == "some updated qr_code"
       assert inventory.quality_assurance_status == "some updated quality_assurance_status"
@@ -376,8 +376,8 @@ defmodule LetorEcom.CentresTest do
 
     @invalid_attrs %{
       buy_price: nil,
-      external_quantity: nil,
-      internal_quantity: nil,
+      bulk_quantity: nil,
+      sales_unit_quantity: nil,
       sales_price: nil,
       inventory_id: nil,
       change_type: nil
@@ -388,8 +388,8 @@ defmodule LetorEcom.CentresTest do
 
       valid_attrs = %{
         buy_price: Decimal.new("120.5"),
-        external_quantity: 42,
-        internal_quantity: 42,
+        bulk_quantity: 42,
+        sales_unit_quantity: 42,
         sales_price: Decimal.new("120.5"),
         change_type: "created",
         inventory_id: inventory.id
@@ -399,8 +399,8 @@ defmodule LetorEcom.CentresTest do
                Centres.create_inventory_change_history(valid_attrs)
 
       assert inventory_change_history.buy_price == Decimal.new("120.5")
-      assert inventory_change_history.external_quantity == 42
-      assert inventory_change_history.internal_quantity == 42
+      assert inventory_change_history.bulk_quantity == 42
+      assert inventory_change_history.sales_unit_quantity == 42
       assert inventory_change_history.change_type == "created"
       assert inventory_change_history.sales_price == Decimal.new("120.5")
     end
@@ -415,8 +415,8 @@ defmodule LetorEcom.CentresTest do
 
       update_attrs = %{
         buy_price: "456.7",
-        external_quantity: 43,
-        internal_quantity: 43,
+        bulk_quantity: 43,
+        sales_unit_quantity: 43,
         sales_price: "456.7",
         change_type: "updated",
         inventory_id: inventory.id
@@ -426,8 +426,8 @@ defmodule LetorEcom.CentresTest do
                Centres.update_inventory_change_history(inventory_change_history, update_attrs)
 
       assert inventory_change_history.buy_price == Decimal.new("456.7")
-      assert inventory_change_history.external_quantity == 43
-      assert inventory_change_history.internal_quantity == 43
+      assert inventory_change_history.bulk_quantity == 43
+      assert inventory_change_history.sales_unit_quantity == 43
       assert inventory_change_history.change_type == "updated"
       assert inventory_change_history.sales_price == Decimal.new("456.7")
     end
@@ -512,6 +512,354 @@ defmodule LetorEcom.CentresTest do
     test "change_pick_up/1 returns a pick_up changeset" do
       pick_up = pick_up_fixture()
       assert %Ecto.Changeset{} = Centres.change_pick_up(pick_up)
+    end
+  end
+
+  describe "quality_assurance_requirements" do
+    alias LetorEcom.Centres.QualityAssuranceRequirement
+
+    import LetorEcom.CentresFixtures
+
+    @invalid_attrs %{
+      acceptable_quantity_of_damage_item: nil,
+      broken_seal: nil,
+      damaged_containers: nil,
+      describe_firmness: nil,
+      describe_observed_fungal_growth: nil,
+      expired: nil,
+      expiry_date: nil,
+      firmness: nil,
+      good_color: nil,
+      no_of_rusty_cans: nil,
+      number_of_damaged_containers: nil,
+      number_of_items_with_broken_seal: nil,
+      observed_fungal_growth: nil,
+      product_type: nil,
+      rusty_cans: nil
+    }
+
+    test "list_quality_assurance_requirements/0 returns all quality_assurance_requirements" do
+      quality_assurance_requirement = quality_assurance_requirement_fixture()
+      assert Centres.list_quality_assurance_requirements() == [quality_assurance_requirement]
+    end
+
+    test "get_quality_assurance_requirement!/1 returns the quality_assurance_requirement with given id" do
+      quality_assurance_requirement = quality_assurance_requirement_fixture()
+
+      assert Centres.get_quality_assurance_requirement!(quality_assurance_requirement.id) ==
+               quality_assurance_requirement
+    end
+
+    test "create_quality_assurance_requirement/1 with valid data creates a quality_assurance_requirement" do
+      valid_attrs = %{
+        acceptable_quantity_of_damage_item: true,
+        broken_seal: true,
+        damaged_containers: true,
+        describe_firmness: "some describe_firmness",
+        describe_observed_fungal_growth: "some describe_observed_fungal_growth",
+        expired: true,
+        expiry_date: ~D[2022-05-15],
+        firmness: true,
+        good_color: "some good_color",
+        no_of_rusty_cans: 42,
+        number_of_damaged_containers: 42,
+        number_of_items_with_broken_seal: 42,
+        observed_fungal_growth: true,
+        product_type: "some product_type",
+        rusty_cans: true
+      }
+
+      assert {:ok, %QualityAssuranceRequirement{} = quality_assurance_requirement} =
+               Centres.create_quality_assurance_requirement(valid_attrs)
+
+      assert quality_assurance_requirement.acceptable_quantity_of_damage_item == true
+      assert quality_assurance_requirement.broken_seal == true
+      assert quality_assurance_requirement.damaged_containers == true
+      assert quality_assurance_requirement.describe_firmness == "some describe_firmness"
+
+      assert quality_assurance_requirement.describe_observed_fungal_growth ==
+               "some describe_observed_fungal_growth"
+
+      assert quality_assurance_requirement.expired == true
+      assert quality_assurance_requirement.expiry_date == ~D[2022-05-15]
+      assert quality_assurance_requirement.firmness == true
+      assert quality_assurance_requirement.good_color == "some good_color"
+      assert quality_assurance_requirement.no_of_rusty_cans == 42
+      assert quality_assurance_requirement.number_of_damaged_containers == 42
+      assert quality_assurance_requirement.number_of_items_with_broken_seal == 42
+      assert quality_assurance_requirement.observed_fungal_growth == true
+      assert quality_assurance_requirement.product_type == "some product_type"
+      assert quality_assurance_requirement.rusty_cans == true
+    end
+
+    test "create_quality_assurance_requirement/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} =
+               Centres.create_quality_assurance_requirement(@invalid_attrs)
+    end
+
+    test "update_quality_assurance_requirement/2 with valid data updates the quality_assurance_requirement" do
+      quality_assurance_requirement = quality_assurance_requirement_fixture()
+
+      update_attrs = %{
+        acceptable_quantity_of_damage_item: false,
+        broken_seal: false,
+        damaged_containers: false,
+        describe_firmness: "some updated describe_firmness",
+        describe_observed_fungal_growth: "some updated describe_observed_fungal_growth",
+        expired: false,
+        expiry_date: ~D[2022-05-16],
+        firmness: false,
+        good_color: "some updated good_color",
+        no_of_rusty_cans: 43,
+        number_of_damaged_containers: 43,
+        number_of_items_with_broken_seal: 43,
+        observed_fungal_growth: false,
+        product_type: "some updated product_type",
+        rusty_cans: false
+      }
+
+      assert {:ok, %QualityAssuranceRequirement{} = quality_assurance_requirement} =
+               Centres.update_quality_assurance_requirement(
+                 quality_assurance_requirement,
+                 update_attrs
+               )
+
+      assert quality_assurance_requirement.acceptable_quantity_of_damage_item == false
+      assert quality_assurance_requirement.broken_seal == false
+      assert quality_assurance_requirement.damaged_containers == false
+      assert quality_assurance_requirement.describe_firmness == "some updated describe_firmness"
+
+      assert quality_assurance_requirement.describe_observed_fungal_growth ==
+               "some updated describe_observed_fungal_growth"
+
+      assert quality_assurance_requirement.expired == false
+      assert quality_assurance_requirement.expiry_date == ~D[2022-05-16]
+      assert quality_assurance_requirement.firmness == false
+      assert quality_assurance_requirement.good_color == "some updated good_color"
+      assert quality_assurance_requirement.no_of_rusty_cans == 43
+      assert quality_assurance_requirement.number_of_damaged_containers == 43
+      assert quality_assurance_requirement.number_of_items_with_broken_seal == 43
+      assert quality_assurance_requirement.observed_fungal_growth == false
+      assert quality_assurance_requirement.product_type == "some updated product_type"
+      assert quality_assurance_requirement.rusty_cans == false
+    end
+
+    test "update_quality_assurance_requirement/2 with invalid data returns error changeset" do
+      quality_assurance_requirement = quality_assurance_requirement_fixture()
+
+      assert {:error, %Ecto.Changeset{}} =
+               Centres.update_quality_assurance_requirement(
+                 quality_assurance_requirement,
+                 @invalid_attrs
+               )
+
+      assert quality_assurance_requirement ==
+               Centres.get_quality_assurance_requirement!(quality_assurance_requirement.id)
+    end
+
+    test "delete_quality_assurance_requirement/1 deletes the quality_assurance_requirement" do
+      quality_assurance_requirement = quality_assurance_requirement_fixture()
+
+      assert {:ok, %QualityAssuranceRequirement{}} =
+               Centres.delete_quality_assurance_requirement(quality_assurance_requirement)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Centres.get_quality_assurance_requirement!(quality_assurance_requirement.id)
+      end
+    end
+
+    test "change_quality_assurance_requirement/1 returns a quality_assurance_requirement changeset" do
+      quality_assurance_requirement = quality_assurance_requirement_fixture()
+
+      assert %Ecto.Changeset{} =
+               Centres.change_quality_assurance_requirement(quality_assurance_requirement)
+    end
+  end
+
+  describe "purchases" do
+    alias LetorEcom.Centres.Purchase
+
+    import LetorEcom.CentresFixtures
+
+    @invalid_attrs %{
+      approval_remark: nil,
+      code: nil,
+      creators_remark: nil,
+      delivered: nil,
+      finished: nil,
+      quality_assurance_cleared: nil,
+      status: nil
+    }
+
+    test "list_purchases/0 returns all purchases" do
+      purchase = purchase_fixture()
+      assert Centres.list_purchases() == [purchase]
+    end
+
+    test "get_purchase!/1 returns the purchase with given id" do
+      purchase = purchase_fixture()
+      assert Centres.get_purchase!(purchase.id) == purchase
+    end
+
+    test "create_purchase/1 with valid data creates a purchase" do
+      valid_attrs = %{
+        approval_remark: "some approval_remark",
+        code: "some code",
+        creators_remark: "some creators_remark",
+        delivered: true,
+        finished: true,
+        quality_assurance_cleared: true,
+        status: "some status"
+      }
+
+      assert {:ok, %Purchase{} = purchase} = Centres.create_purchase(valid_attrs)
+      assert purchase.approval_remark == "some approval_remark"
+      assert purchase.code == "some code"
+      assert purchase.creators_remark == "some creators_remark"
+      assert purchase.delivered == true
+      assert purchase.finished == true
+      assert purchase.quality_assurance_cleared == true
+      assert purchase.status == "some status"
+    end
+
+    test "create_purchase/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Centres.create_purchase(@invalid_attrs)
+    end
+
+    test "update_purchase/2 with valid data updates the purchase" do
+      purchase = purchase_fixture()
+
+      update_attrs = %{
+        approval_remark: "some updated approval_remark",
+        code: "some updated code",
+        creators_remark: "some updated creators_remark",
+        delivered: false,
+        finished: false,
+        quality_assurance_cleared: false,
+        status: "some updated status"
+      }
+
+      assert {:ok, %Purchase{} = purchase} = Centres.update_purchase(purchase, update_attrs)
+      assert purchase.approval_remark == "some updated approval_remark"
+      assert purchase.code == "some updated code"
+      assert purchase.creators_remark == "some updated creators_remark"
+      assert purchase.delivered == false
+      assert purchase.finished == false
+      assert purchase.quality_assurance_cleared == false
+      assert purchase.status == "some updated status"
+    end
+
+    test "update_purchase/2 with invalid data returns error changeset" do
+      purchase = purchase_fixture()
+      assert {:error, %Ecto.Changeset{}} = Centres.update_purchase(purchase, @invalid_attrs)
+      assert purchase == Centres.get_purchase!(purchase.id)
+    end
+
+    test "delete_purchase/1 deletes the purchase" do
+      purchase = purchase_fixture()
+      assert {:ok, %Purchase{}} = Centres.delete_purchase(purchase)
+      assert_raise Ecto.NoResultsError, fn -> Centres.get_purchase!(purchase.id) end
+    end
+
+    test "change_purchase/1 returns a purchase changeset" do
+      purchase = purchase_fixture()
+      assert %Ecto.Changeset{} = Centres.change_purchase(purchase)
+    end
+  end
+
+  describe "purchase_items" do
+    alias LetorEcom.Centres.PurchaseItem
+
+    import LetorEcom.CentresFixtures
+
+    @invalid_attrs %{
+      item_name: nil,
+      quantity: nil,
+      suppliers_email: nil,
+      suppliers_name: nil,
+      suppliers_phone: nil,
+      total: nil,
+      unit_price: nil
+    }
+
+    test "list_purchase_items/0 returns all purchase_items" do
+      purchase_item = purchase_item_fixture()
+      assert Centres.list_purchase_items() == [purchase_item]
+    end
+
+    test "get_purchase_item!/1 returns the purchase_item with given id" do
+      purchase_item = purchase_item_fixture()
+      assert Centres.get_purchase_item!(purchase_item.id) == purchase_item
+    end
+
+    test "create_purchase_item/1 with valid data creates a purchase_item" do
+      valid_attrs = %{
+        item_name: "some item_name",
+        quantity: 42,
+        suppliers_email: "some suppliers_email",
+        suppliers_name: "some suppliers_name",
+        suppliers_phone: "some suppliers_phone",
+        total: "120.5",
+        unit_price: "some unit_price"
+      }
+
+      assert {:ok, %PurchaseItem{} = purchase_item} = Centres.create_purchase_item(valid_attrs)
+      assert purchase_item.item_name == "some item_name"
+      assert purchase_item.quantity == 42
+      assert purchase_item.suppliers_email == "some suppliers_email"
+      assert purchase_item.suppliers_name == "some suppliers_name"
+      assert purchase_item.suppliers_phone == "some suppliers_phone"
+      assert purchase_item.total == Decimal.new("120.5")
+      assert purchase_item.unit_price == "some unit_price"
+    end
+
+    test "create_purchase_item/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Centres.create_purchase_item(@invalid_attrs)
+    end
+
+    test "update_purchase_item/2 with valid data updates the purchase_item" do
+      purchase_item = purchase_item_fixture()
+
+      update_attrs = %{
+        item_name: "some updated item_name",
+        quantity: 43,
+        suppliers_email: "some updated suppliers_email",
+        suppliers_name: "some updated suppliers_name",
+        suppliers_phone: "some updated suppliers_phone",
+        total: "456.7",
+        unit_price: "some updated unit_price"
+      }
+
+      assert {:ok, %PurchaseItem{} = purchase_item} =
+               Centres.update_purchase_item(purchase_item, update_attrs)
+
+      assert purchase_item.item_name == "some updated item_name"
+      assert purchase_item.quantity == 43
+      assert purchase_item.suppliers_email == "some updated suppliers_email"
+      assert purchase_item.suppliers_name == "some updated suppliers_name"
+      assert purchase_item.suppliers_phone == "some updated suppliers_phone"
+      assert purchase_item.total == Decimal.new("456.7")
+      assert purchase_item.unit_price == "some updated unit_price"
+    end
+
+    test "update_purchase_item/2 with invalid data returns error changeset" do
+      purchase_item = purchase_item_fixture()
+
+      assert {:error, %Ecto.Changeset{}} =
+               Centres.update_purchase_item(purchase_item, @invalid_attrs)
+
+      assert purchase_item == Centres.get_purchase_item!(purchase_item.id)
+    end
+
+    test "delete_purchase_item/1 deletes the purchase_item" do
+      purchase_item = purchase_item_fixture()
+      assert {:ok, %PurchaseItem{}} = Centres.delete_purchase_item(purchase_item)
+      assert_raise Ecto.NoResultsError, fn -> Centres.get_purchase_item!(purchase_item.id) end
+    end
+
+    test "change_purchase_item/1 returns a purchase_item changeset" do
+      purchase_item = purchase_item_fixture()
+      assert %Ecto.Changeset{} = Centres.change_purchase_item(purchase_item)
     end
   end
 end

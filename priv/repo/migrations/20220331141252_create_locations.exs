@@ -1,10 +1,10 @@
-defmodule LetorEcom.Repo.Migrations.CreateLocation do
+defmodule LetorEcom.Repo.Migrations.CreateLocations do
   use Ecto.Migration
 
   def up do
     execute("CREATE EXTENSION IF NOT EXISTS postgis")
 
-    create table(:location, primary_key: false) do
+    create table(:locations, primary_key: false) do
       add :id, :binary_id, primary_key: true, default: fragment("gen_random_uuid()")
       add :country, :string, null: false
       add :city, :string, null: false
@@ -16,14 +16,14 @@ defmodule LetorEcom.Repo.Migrations.CreateLocation do
       timestamps(type: :timestamptz)
     end
 
-    create index(:location, [:id])
-    create index(:location, :pickup_centre_id)
-    create(unique_index(:location, [:location_area]))
+    create index(:locations, [:id])
+    create index(:locations, :pickup_centre_id)
+    create(unique_index(:locations, [:location_area]))
 
-    execute("SELECT AddGeometryColumn('location', 'location_coordinates', 4326, 'POINT', 2)")
+    execute("SELECT AddGeometryColumn('locations', 'location_coordinates', 4326, 'POINT', 2)")
 
     execute(
-      "CREATE INDEX location_location_coordinates_index on location USING gist (location_coordinates)"
+      "CREATE INDEX location_location_coordinates_index on locations USING gist (location_coordinates)"
     )
   end
 

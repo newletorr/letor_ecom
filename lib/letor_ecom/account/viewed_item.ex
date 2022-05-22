@@ -25,10 +25,10 @@ defmodule LetorEcom.Account.ViewedItem do
 
         count =
           Repo.all(
-            from view_item in ViewItem, where: view_item.user_id == ^user_id, select: count("*")
+            from view_item in __MODULE__, where: view_item.user_id == ^user_id, select: count("*")
           )
 
-        query1 = from(view_item in ViewItem, where: view_item.user_id == ^user_id)
+        query1 = from(view_item in __MODULE__, where: view_item.user_id == ^user_id)
         item = query1 |> first(:inserted_at) |> Repo.one()
 
         case count >= 20 do

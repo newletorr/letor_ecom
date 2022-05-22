@@ -18,14 +18,14 @@ defmodule LetorEcom.Repo.Migrations.CreateUsers do
       add :role, :string
       add :user_image, :string
       add :current_sign_in_location, :string
-      add :current_sign_at, :utc_datetime
-      add :last_sign_in_at, :utc_datetime
-      add :sign_in_count, :integer
+      add :current_sign_in_at, :timestamptz
+      add :last_sign_in_at, :timestamptz
+      add :sign_in_count, :integer, default: 0
       add :current_sign_in_ip, :string
       add :last_sign_in_ip, :string
       add :confirmation_code, :string
-      add :confirmed_at, :utc_datetime
-      add :confirmation_sent_at, :utc_datetime
+      add :confirmed_at, :timestamptz
+      add :confirmation_sent_at, :timestamptz
       add :referal_code, :string
       add :first_referal_earned, :boolean, default: false, null: false
       add :second_referal_earned, :string

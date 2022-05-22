@@ -11,14 +11,27 @@ defmodule LetorEcomWeb.Router do
   end
 
   pipeline :api do
-    plug :accepts, ["json"]
+    plug CORSPlug, origin: "*"
+    plug(:accepts, ["json"])
+    plug(LetorEcomWeb.Context)
   end
 
-  scope "/admin", LetorEcomWeb do
-    pipe_through :browser
+  scope "/" do
+    pipe_through(:api)
 
-    get "/", PageController, :index
-    resources "/sku", SkuController
+    forward("/api", Absinthe.Plug,
+      schema: LetorEcomWeb.Schema,
+      socket: LetorEcomWeb.UserSocket,
+      analyze_complexity: true,
+      max_complexity: 1000
+    )
+
+    forward("/introspect", Absinthe.Plug.GraphiQL,
+      schema: LetorEcomWeb.Schema,
+      socket: LetorEcomWeb.UserSocket,
+      analyze_complexity: true,
+      max_complexity: 1000
+    )
   end
 
   # Other scopes may use custom stacks.

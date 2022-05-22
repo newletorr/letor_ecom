@@ -22,35 +22,6 @@ defmodule LetorEcom.CustomerPurchases do
   alias LetorEcom.Repo
 
   @doc """
-  Returns the list of cart_items.
-
-  ## Examples
-
-      iex> list_cart_items()
-      [%CartItem{}, ...]
-
-  """
-  def list_cart_items do
-    Repo.all(CartItem)
-  end
-
-  @doc """
-  Gets a single cart_item.
-
-  Raises `Ecto.NoResultsError` if the Cart item does not exist.
-
-  ## Examples
-
-      iex> get_cart_item!(123)
-      %CartItem{}
-
-      iex> get_cart_item!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_cart_item!(id), do: Repo.get!(CartItem, id)
-
-  @doc """
   Creates a cart_items.
   """
   def create_cart_items(user, attrs \\ %{}) do
@@ -130,35 +101,6 @@ defmodule LetorEcom.CustomerPurchases do
   def delete_cart_item(%CartItem{} = cart_item) do
     Repo.delete(cart_item)
   end
-
-  @doc """
-  Returns the list of orders.
-
-  ## Examples
-
-      iex> list_orders()
-      [%Order{}, ...]
-
-  """
-  def list_orders do
-    Repo.all(Order)
-  end
-
-  @doc """
-  Gets a single order.
-
-  Raises `Ecto.NoResultsError` if the Order does not exist.
-
-  ## Examples
-
-      iex> get_order!(123)
-      %Order{}
-
-      iex> get_order!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_order!(id), do: Repo.get!(Order, id)
 
   def payment_verification(order) do
     query =
@@ -258,44 +200,8 @@ defmodule LetorEcom.CustomerPurchases do
       end
 
     user = Repo.get(User, order.user_id)
-
-    [url, headers] = [
-      "https://api.paystack.co/transaction/initialize",
-      [
-        Authorization: "Bearer #{System.get_env("PAYSTACK_KEY")}",
-        Accept: "Application/json; Charset=utf-8"
-      ]
-    ]
-
-    grand_total_to_string = Decimal.to_string(Decimal.mult(order.grand_total, 100))
-
-    {:ok, body} =
-      Poison.encode(%{
-        email: user.email,
-        amount: grand_total_to_string,
-        custom_fields: [
-          %{display_name: "Order ID", variable_name: "Order ID", value: order.id}
-        ]
-      })
-
-    {:ok, response} = HTTPoison.post(url, body, headers)
-
-    {:ok, res_body} = response.body |> Poison.decode()
-
-    ref_code = res_body["data"]["reference"]
-
-    auth_url = res_body["data"]["authorization_url"]
-
-    payment_attrs =
-      Map.merge(attrs, %{
-        reference_code: ref_code,
-        authorization_url: auth_url,
-        amount: order.grand_total,
-        order_id: order.id,
-        user_id: order.user_id
-      })
-
-    payment_changeset = %Payment{} |> Payment.order_payment_changeset(payment_attrs)
+    attrs = payment_attributes(user, order, attrs)
+    payment_changeset = %Payment{} |> Payment.order_payment_changeset(attrs)
 
     Multi.new()
     |> Multi.update(:order, order_changeset)
@@ -348,6 +254,46 @@ defmodule LetorEcom.CustomerPurchases do
       end
     end)
     |> Repo.transaction()
+  end
+
+  defp payment_attributes(user, order, attrs) do
+    [url, headers] = [
+      "https://api.paystack.co/transaction/initialize",
+      [
+        Authorization: "Bearer #{System.get_env("PAYSTACK_KEY")}",
+        Accept: "Application/json; Charset=utf-8"
+      ]
+    ]
+
+    grand_total_to_string = Decimal.to_string(Decimal.mult(order.grand_total, 100))
+
+    {:ok, body} =
+      Poison.encode(%{
+        email: user.email,
+        amount: grand_total_to_string,
+        custom_fields: [
+          %{display_name: "Order ID", variable_name: "Order ID", value: order.id}
+        ]
+      })
+
+    {:ok, response} = HTTPoison.post(url, body, headers)
+
+    {:ok, res_body} = response.body |> Poison.decode()
+
+    ref_code = res_body["data"]["reference"]
+
+    auth_url = res_body["data"]["authorization_url"]
+
+    payment_attrs =
+      Map.merge(attrs, %{
+        reference_code: ref_code,
+        authorization_url: auth_url,
+        amount: order.grand_total,
+        order_id: order.id,
+        user_id: order.user_id
+      })
+
+    payment_attrs
   end
 
   def dispatch_order(%Order{} = order) do
@@ -410,35 +356,6 @@ defmodule LetorEcom.CustomerPurchases do
   end
 
   @doc """
-  Returns the list of order_dispatch.
-
-  ## Examples
-
-      iex> list_order_dispatch()
-      [%OrderDispatch{}, ...]
-
-  """
-  def list_order_dispatch do
-    Repo.all(OrderDispatch)
-  end
-
-  @doc """
-  Gets a single order_dispatch.
-
-  Raises `Ecto.NoResultsError` if the Order dispatch does not exist.
-
-  ## Examples
-
-      iex> get_order_dispatch!(123)
-      %OrderDispatch{}
-
-      iex> get_order_dispatch!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_order_dispatch!(id), do: Repo.get!(OrderDispatch, id)
-
-  @doc """
   Creates a order_dispatch.
 
   ## Examples
@@ -472,6 +389,38 @@ defmodule LetorEcom.CustomerPurchases do
     order_dispatch
     |> OrderDispatch.changeset(attrs)
     |> Repo.update()
+  end
+
+  @doc """
+  dispatch an order_dispatch.
+
+  ## Examples
+
+      iex> dispatch_order_dispatch(order_dispatch, %{field: new_value})
+      {:ok, %OrderDispatch{}}
+
+      iex> dispatch_order_dispatch(order_dispatch, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def dispatch_order_dispatch(%OrderDispatch{} = order_dispatch) do
+    order_dispatch_changeset =
+      order_dispatch |> OrderDispatch.dispatch_changeset(%{dispatched: true})
+
+    {:ok, order_dispatch} = Repo.update(order_dispatch_changeset)
+
+    orders =
+      Repo.all(
+        from o in Order,
+          join: od in assoc(o, :order_dispatch),
+          where: o.order_dispatch_id == ^order_dispatch.id
+      )
+
+    for order <- orders, do: dispatch_order(order)
+
+    # for order <- orders, do: Sms.text_user_confirmation_code(order)
+
+    {:ok, order_dispatch}
   end
 
   @doc """
@@ -651,35 +600,6 @@ defmodule LetorEcom.CustomerPurchases do
   def delete_referal_discount(%ReferalDiscount{} = referal_discount) do
     Repo.delete(referal_discount)
   end
-
-  @doc """
-  Returns the list of pick_ups.
-
-  ## Examples
-
-      iex> list_pick_ups()
-      [%PickUp{}, ...]
-
-  """
-  def list_pick_ups do
-    Repo.all(PickUp)
-  end
-
-  @doc """
-  Gets a single pick_up.
-
-  Raises `Ecto.NoResultsError` if the Pick up does not exist.
-
-  ## Examples
-
-      iex> get_pick_up!(123)
-      %PickUp{}
-
-      iex> get_pick_up!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_pick_up!(id), do: Repo.get!(PickUp, id)
 
   @doc """
   Creates a pick_up.

@@ -215,41 +215,6 @@ defmodule LetorEcom.Catalogue do
     Multi.new()
     # insert items stock keeping unit
     |> Multi.insert(:sku, sku_changeset)
-    # Create an item with the stock keeping unit above
-    |> Multi.run(:item, fn repo, %{sku: sku} ->
-      item_changeset = %Item{} |> Item.changeset(Map.put(attrs, :sku_id, sku.id))
-
-      repo.insert(item_changeset)
-    end)
-    # Create item tagging for item if a tag_id is provided
-    |> Multi.run(:item_tagging, fn repo, %{item: item} ->
-      if is_nil(attrs.item_tag_id) == true do
-        {:ok, nil}
-      else
-        item_tagging_changeset =
-          %ItemTagging{}
-          |> ItemTagging.changeset(%{item_tag_id: attrs.item_tag_id, item_id: item.id})
-
-        repo.insert(item_tagging_changeset)
-      end
-    end)
-    # create qr code for item
-    |> Multi.run(:item_qr_code, fn repo, %{item: item} ->
-      {:ok, qr_code} =
-        item.id
-        |> QRCode.create()
-        |> Result.and_then(&QRCode.Svg.save_as(&1, "/tmp/#{item.name}.svg"))
-
-      item_qr_code =
-        qr_code
-        |> Mogrify.open()
-        |> format("png")
-        |> save(path: "/tmp/#{item.name}.png")
-
-      qr_code_changeset = item |> Item.qr_code_changeset(%{qr_code: item_qr_code.path})
-
-      repo.update(qr_code_changeset)
-    end)
     # Create an inventory item for the item created above
     |> Multi.run(:inventory, fn repo, %{sku: sku} ->
       inventory_changeset =
@@ -261,7 +226,7 @@ defmodule LetorEcom.Catalogue do
     # Create qr code for inventory item
     |> Multi.run(:inventory_qr_code, fn repo, %{inventory: inventory} ->
       {:ok, qr_code} =
-        inventory.id
+        inventory.inventory_code
         |> QRCode.create()
         |> Result.and_then(&QRCode.Svg.save_as(&1, "/tmp/#{inventory.name}.svg"))
 
@@ -283,14 +248,60 @@ defmodule LetorEcom.Catalogue do
         %InventoryChangeHistory{}
         |> InventoryChangeHistory.changeset(%{
           buy_price: inventory.buy_price,
-          external_quantity: inventory.external_quantity,
-          internal_quantity: inventory.internal_quantity,
-          sales_price: inventory.sales_price,
+          bulk_quantity: inventory.bulk_quantity,
+          sales_unit_quantity: inventory.sales_unit_quantity,
+          unit_sales_price: inventory.unit_sales_price,
+          bulk_sales_price: inventory.bulk_sales_price,
           inventory_id: inventory.id,
           change_type: "created"
         })
 
       repo.insert(inventory_history_changeset)
+    end)
+    # Create an item with the stock keeping unit above
+    |> Multi.run(:item, fn repo, %{sku: sku, inventory: inventory} ->
+      unit_price = inventory.unit_sales_price
+      bulk_price = inventory.bulk_sales_price
+
+      item_changeset =
+        if is_nil(attrs[:bulk]) == false do
+          bulk_sku_and_price = %{sku_id: sku.id, main_price: bulk_price}
+          %Item{} |> Item.changeset(Map.merge(attrs, bulk_sku_and_price))
+        else
+          unit_sku_and_price = %{sku_id: sku.id, main_price: unit_price}
+          %Item{} |> Item.changeset(Map.merge(attrs, unit_sku_and_price))
+        end
+
+      repo.insert(item_changeset)
+    end)
+    # Create item tagging for item if a tag_id is provided
+    |> Multi.run(:item_tagging, fn repo, %{item: item} ->
+      if is_nil(attrs.item_tag_id) == true do
+        {:ok, nil}
+      else
+        item_tagging_changeset =
+          %ItemTagging{}
+          |> ItemTagging.changeset(%{item_tag_id: attrs.item_tag_id, item_id: item.id})
+
+        repo.insert(item_tagging_changeset)
+      end
+    end)
+    # create qr code for item
+    |> Multi.run(:item_qr_code, fn repo, %{item: item} ->
+      {:ok, qr_code} =
+        item.item_code
+        |> QRCode.create()
+        |> Result.and_then(&QRCode.Svg.save_as(&1, "/tmp/#{item.name}.svg"))
+
+      item_qr_code =
+        qr_code
+        |> Mogrify.open()
+        |> format("png")
+        |> save(path: "/tmp/#{item.name}.png")
+
+      qr_code_changeset = item |> Item.qr_code_changeset(%{qr_code: item_qr_code.path})
+
+      repo.update(qr_code_changeset)
     end)
     |> Repo.transaction()
   end

@@ -201,12 +201,12 @@ defmodule LetorEcom.Factory do
       description: "some description",
       expired: true,
       expiry_date: ~D[2022-04-06],
-      external_quantity: 42,
-      external_quantity_uom: "some external_quantity_uom",
-      internal_quantity_uom: "some intenal_quantity_uom",
-      internal_quantity: 42,
-      max_external_quantity: 42,
-      max_internal_quantity: 42,
+      bulk_quantity: 42,
+      bulk_quantity_uom: "some bulk_quantity_uom",
+      sales_unit_quantity_uom: "some intenal_quantity_uom",
+      sales_unit_quantity: 42,
+      max_bulk_quantity: 42,
+      max_sales_unit_quantity: 42,
       name: "some name",
       qr_code: "some qr_code",
       quality_assurance_status: "some quality_assurance_status",
@@ -219,8 +219,8 @@ defmodule LetorEcom.Factory do
   def build(:inventory_change_history) do
     %InventoryChangeHistory{
       buy_price: Decimal.new("120.5"),
-      external_quantity: 42,
-      internal_quantity: 42,
+      bulk_quantity: 42,
+      sales_unit_quantity: 42,
       sales_price: Decimal.new("120.5"),
       change_type: "created"
     }
