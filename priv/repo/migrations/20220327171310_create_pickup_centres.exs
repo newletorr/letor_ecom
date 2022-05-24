@@ -1,9 +1,7 @@
 defmodule LetorEcom.Repo.Migrations.CreatePickupCentres do
   use Ecto.Migration
 
-  def up do
-    execute("CREATE EXTENSION IF NOT EXISTS postgis")
-
+  def change do
     create table(:pickup_centres, primary_key: false) do
       add :id, :binary_id, primary_key: true, default: fragment("gen_random_uuid()")
       add :address, :string, null: false
@@ -33,10 +31,5 @@ defmodule LetorEcom.Repo.Migrations.CreatePickupCentres do
     execute(
       "CREATE INDEX pickup_centres_location_coordinates_index on pickup_centres USING gist (location_coordinates)"
     )
-  end
-
-  def down do
-    drop table(:pickup_centres)
-    execute("DROP EXTENSION IF EXISTS postgis")
   end
 end

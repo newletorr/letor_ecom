@@ -9,10 +9,8 @@ defmodule LetorEcomWeb.Context do
   import Plug.Conn
   alias Absinthe.Plug
 
-  @spec init(any()) :: any()
   def init(opts), do: opts
 
-  @spec call(Plug.Conn.t(), any) :: Plug.Conn.t()
   def call(conn, _) do
     context = build_context(conn)
     Plug.put_options(conn, context: context)

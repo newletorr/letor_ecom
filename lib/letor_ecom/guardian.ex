@@ -8,7 +8,6 @@ defmodule LetorEcom.Guardian do
   alias LetorEcom.Account.User
   alias LetorEcom.Repo
 
-  @spec subject_for_token(any, any) :: {:error, :reason_for_error} | {:ok, binary}
   def subject_for_token(%User{} = user, _claims) do
     {:ok, to_string(user.id)}
   end
@@ -17,14 +16,12 @@ defmodule LetorEcom.Guardian do
     {:error, :reason_for_error}
   end
 
-  @spec resource_from_claims(any()) ::
-          {:error, :reason_for_error | :resources_not_found} | {:ok, any()}
   def resource_from_claims(%{"sub" => id}) do
-    {:ok, user} = Repo.get(User, id)
+    user = Repo.get(User, id)
 
     case user do
       nil -> {:error, :resources_not_found}
-      users -> {:ok, users}
+      user -> {:ok, user}
     end
   end
 
