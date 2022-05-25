@@ -15,6 +15,7 @@ defmodule LetorEcomWeb.Schema.Types.ShoppingListType do
     field(:id, :id)
     field(:quantity, :integer)
     field(:title, :string)
+    field(:item_price, :decimal)
     field(:total, :decimal)
     field(:inserted_at, :datetime)
     field(:updated_at, :datetime)
@@ -37,8 +38,9 @@ defmodule LetorEcomWeb.Schema.Types.ShoppingListType do
 
       middleware(Middleware.Authorize, "customer")
 
-      resolve(fn %{input: input}, %{context: %{current_user: current_user}} ->
-        main_input = Map.put(input, :user_id, current_user.id)
+      resolve(fn %{input: input}, %{context: context} ->
+        IO.inspect(context)
+        main_input = Map.put(input, :user_id, context[:current_user].id)
 
         case Account.create_shopping_list(main_input) do
           {:error, changeset} ->
@@ -56,15 +58,15 @@ defmodule LetorEcomWeb.Schema.Types.ShoppingListType do
       middleware(Middleware.Authorize, "customer")
 
       resolve(fn %{input: params} = args, %{context: %{current_user: current_user}} ->
+        actual_params = Map.put(params, :user_id, current_user.id)
         shopping_list =
           ShoppingList
           |> preload([:item, :user])
           |> Repo.get!(args[:shopping_list_id])
 
         case Account.update_shopping_list(
-               current_user,
                shopping_list,
-               params
+               actual_params
              ) do
           {:error, changeset} ->
             {:error, transform_errors(changeset)}

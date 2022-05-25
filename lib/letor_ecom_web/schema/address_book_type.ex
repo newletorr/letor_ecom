@@ -39,6 +39,7 @@ defmodule LetorEcomWeb.Schema.Types.AddressBookType do
       middleware(Middleware.Authorize, "customer")
 
       resolve(fn %{input: input}, %{context: %{current_user: current_user}} ->
+      
         case Account.create_address_book(Map.put(input, :user_id, current_user.id)) do
           {:error, changeset} ->
             {:error, details: transform_errors(changeset)}

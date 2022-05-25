@@ -241,14 +241,14 @@ defmodule LetorEcom.Account do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_shopping_list(user, %ShoppingList{} = shopping_list, attrs) do
+  def update_shopping_list(%ShoppingList{} = shopping_list, attrs) do
     update_shopping_list_changeset = shopping_list |> ShoppingList.update_changeset(attrs)
 
     shopping_list =
       Repo.one(
         from(shopping_list in ShoppingList,
           where:
-            shopping_list.user_id == ^user.id and shopping_list.title == ^shopping_list.title and
+            shopping_list.user_id == ^attrs.user_id and shopping_list.title == ^shopping_list.title and
               shopping_list.item_id == ^attrs.item_id
         )
       )
