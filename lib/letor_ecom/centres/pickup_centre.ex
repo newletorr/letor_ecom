@@ -15,7 +15,7 @@ defmodule LetorEcom.Centres.PickupCentre do
 
   alias LetorEcom.CustomerPurchases.{OrderDispatch, PickUp}
   alias LetorEcom.Delicacies.RecipeClass
-  alias LetorEcom.HumanResource.Driver
+  alias LetorEcom.HumanResource.{Driver, StaffPosting}
   alias Geo.PostGIS.Geometry
 
   schema "pickup_centres" do
@@ -40,6 +40,7 @@ defmodule LetorEcom.Centres.PickupCentre do
     has_many(:recipe_class, RecipeClass)
     has_many(:locations, Location)
     has_many(:order_dispatches, OrderDispatch)
+    has_many(:staff_postings, StaffPosting)
 
     timestamps(type: :utc_datetime)
   end

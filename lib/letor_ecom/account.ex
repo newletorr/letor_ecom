@@ -160,6 +160,21 @@ defmodule LetorEcom.Account do
   end
 
   @doc """
+  Get longitude value for pickup centre
+  """
+  def get_address_coordinates(coord) do
+    {:ok, json} = Geo.JSON.encode(coord)
+
+    case json do
+      nil ->
+        {:error, "Error getting value"}
+
+      _ ->
+        {:ok, json["coordinates"]}
+    end
+  end
+
+  @doc """
   Creates a refered_list.
 
   ## Examples
@@ -248,7 +263,8 @@ defmodule LetorEcom.Account do
       Repo.one(
         from(shopping_list in ShoppingList,
           where:
-            shopping_list.user_id == ^attrs.user_id and shopping_list.title == ^shopping_list.title and
+            shopping_list.user_id == ^attrs.user_id and
+              shopping_list.title == ^shopping_list.title and
               shopping_list.item_id == ^attrs.item_id
         )
       )

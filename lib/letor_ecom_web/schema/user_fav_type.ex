@@ -17,14 +17,14 @@ defmodule LetorEcomWeb.Schema.Types.UserFavType do
     field :updated_at, :datetime
     field :error, list_of(:mutation_error)
 
-    #field :items, list_of(:items_type) do
-     # arg(:limit, :integer, default_value: 30)
-      #arg(:offset, :integer, default_value: 0)
-      #arg(:keywords, :string, default_value: nil)
-      #arg(:filters, :all_items_filter_input_type)
-      #arg(:order, :sort_order, default_value: :asc)
-      #resolve(dataloader(Catalogue, :item))
-    #end
+    # field :items, list_of(:items_type) do
+    # arg(:limit, :integer, default_value: 30)
+    # arg(:offset, :integer, default_value: 0)
+    # arg(:keywords, :string, default_value: nil)
+    # arg(:filters, :all_items_filter_input_type)
+    # arg(:order, :sort_order, default_value: :asc)
+    # resolve(dataloader(Catalogue, :item))
+    # end
 
     field(:user, :users_type, resolve: dataloader(Account, :user, args: %{deleted: false}))
   end

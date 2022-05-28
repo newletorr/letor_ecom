@@ -1,6 +1,7 @@
 defmodule LetorEcom.Account.AddressBook do
   use LetorEcom.SchemaHelper
   alias LetorEcom.Account.User
+  alias LetorEcom.CustomerPurchases.Order
   alias Geo.PostGIS.Geometry
 
   schema "address_books" do
@@ -21,6 +22,10 @@ defmodule LetorEcom.Account.AddressBook do
     address
     |> cast(attrs, [:user_id, :address, :city, :state, :zip_code, :area, :coordinates])
     |> validate_required([:address, :city, :area, :state])
+    |> unique_constraint(:address,
+      message: "You already have a address with the same name",
+      name: :address_books_address_user_id_ix
+    )
     |> assoc_constraint(:user)
   end
 

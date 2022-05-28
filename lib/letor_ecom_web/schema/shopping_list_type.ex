@@ -59,6 +59,7 @@ defmodule LetorEcomWeb.Schema.Types.ShoppingListType do
 
       resolve(fn %{input: params} = args, %{context: %{current_user: current_user}} ->
         actual_params = Map.put(params, :user_id, current_user.id)
+
         shopping_list =
           ShoppingList
           |> preload([:item, :user])

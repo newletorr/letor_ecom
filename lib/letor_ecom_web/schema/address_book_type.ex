@@ -18,6 +18,7 @@ defmodule LetorEcomWeb.Schema.Types.AddressBookType do
     field :area, :string
     field :state, :string
     field :zip_code, :string
+    field :coordinates, :coordinates_type
     field :inserted_at, :datetime
     field :updated_at, :datetime
     field :error, list_of(:mutation_error)
@@ -30,6 +31,17 @@ defmodule LetorEcomWeb.Schema.Types.AddressBookType do
     field :area, non_null(:string)
     field :state, non_null(:string)
     field :zip_code, :string
+    field :longitude, non_null(:float)
+    field :latitude, non_null(:float)
+  end
+
+  object :coordinates_type do
+    field :coordinates, list_of(:float),
+      resolve: fn query, _, _ ->
+        Account.get_address_coordinates(query)
+      end
+
+    field(:srid, :integer, default_value: 4326)
   end
 
   object :address_book_mutation do
@@ -39,10 +51,20 @@ defmodule LetorEcomWeb.Schema.Types.AddressBookType do
       middleware(Middleware.Authorize, "customer")
 
       resolve(fn %{input: input}, %{context: %{current_user: current_user}} ->
-      
-        case Account.create_address_book(Map.put(input, :user_id, current_user.id)) do
+        location_coord = %Geo.Point{
+          coordinates: {input[:longitude], input[:latitude]},
+          srid: 4326
+        }
+
+        actual_input =
+          Map.merge(
+            %{user_id: current_user.id, coordinates: location_coord},
+            input
+          )
+
+        case Account.create_address_book(actual_input) do
           {:error, changeset} ->
-            {:error, details: transform_errors(changeset)}
+            {:error, transform_errors(changeset)}
 
           {:ok, address_book} ->
             {:ok, address_book}

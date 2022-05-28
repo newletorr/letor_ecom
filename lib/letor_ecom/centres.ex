@@ -22,6 +22,19 @@ defmodule LetorEcom.Centres do
     QualityAssuranceRequirement
   }
 
+  def get_users_pickup_centre(staff_user) do
+    pickup_centre =
+      Repo.one(
+        from user in User,
+          join: staff in assoc(user, :staff),
+          join: staff_postings in assoc(staff, :staff_postings),
+          join: pickup_centre in assoc(staff_postings, :pickup_centres),
+          where: user.id == ^staff_user.id
+      )
+
+    pickup_centre
+  end
+
   @doc """
   Creates a pickup_centre.
 
