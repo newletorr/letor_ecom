@@ -281,10 +281,10 @@ defmodule LetorEcomWeb.Schema.Types.UserType do
           {:ok, %{user: user, token: jwt_token}}
         else
           {:error, :no_yet_confirmed, user_with_new_code} ->
-            user_with_new_code |> Email.welcome() |> Mailer.deliver_now()
+            Sms.send_code(user_with_new_code)
 
             {:error,
-             "Your email has not been confirmed. A confirmation code has been sent to your email"}
+             "Your email has not been confirmed. A confirmation code has been sent to you phone"}
 
           {:error, message} ->
             {:error, message}
@@ -304,10 +304,10 @@ defmodule LetorEcomWeb.Schema.Types.UserType do
           {:ok, %{user: user, token: jwt_token}}
         else
           {:error, :no_yet_confirmed, user_with_new_code} ->
-            user_with_new_code |> Email.welcome() |> Mailer.deliver_now()
+            Sms.send_code(user_with_new_code)
 
             {:error,
-             "Your email has not been confirmed. A confirmation code has been sent to your email"}
+             "Your email has not been confirmed. A confirmation code has been sent to you phone"}
 
           {:error, message} ->
             {:error, message}

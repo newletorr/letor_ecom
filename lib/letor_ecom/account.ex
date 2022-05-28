@@ -7,7 +7,7 @@ defmodule LetorEcom.Account do
   alias LetorEcom.Repo
   alias Ecto.Multi
 
-  alias LetorEcom.Account.{Address, ReferedList, ShoppingList, User, UserFav, ViewedItem}
+  alias LetorEcom.Account.{AddressBook, ReferedList, ShoppingList, User, UserFav, ViewedItem}
   alias LetorEcom.Transactions.UserWallet
 
   def data do
@@ -106,57 +106,72 @@ defmodule LetorEcom.Account do
   end
 
   @doc """
-  Creates a address.
+  Creates a address_book.
 
   ## Examples
 
-      iex> create_address(%{field: value})
-      {:ok, %Address{}}
+      iex> create_address_book(%{field: value})
+      {:ok, %AddressBook{}}
 
-      iex> create_address(%{field: bad_value})
+      iex> create_address_book(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_address(attrs \\ %{}) do
-    %Address{}
-    |> Address.changeset(attrs)
+  def create_address_book(attrs \\ %{}) do
+    %AddressBook{}
+    |> AddressBook.changeset(attrs)
     |> Repo.insert()
   end
 
   @doc """
-  Updates a address.
+  Updates a address_book.
 
   ## Examples
 
-      iex> update_address(address, %{field: new_value})
-      {:ok, %Address{}}
+      iex> update_address_book(address_book, %{field: new_value})
+      {:ok, %AddressBook{}}
 
-      iex> update_address(address, %{field: bad_value})
+      iex> update_address_book(address_book, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_address(%Address{} = address, attrs) do
-    address
-    |> Address.changeset(attrs)
+  def update_address_book(%AddressBook{} = address_book, attrs) do
+    address_book
+    |> AddressBook.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a address.
+  Deletes a address_book.
 
   ## Examples
 
-      iex> delete_address(address)
-      {:ok, %Address{}}
+      iex> delete_address_book(address_book)
+      {:ok, %AddressBook{}}
 
-      iex> delete_address(address)
+      iex> delete_address_book(address_book)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_address(%Address{} = address) do
-    address
-    |> Address.deletion_changeset()
+  def delete_address_book(%AddressBook{} = address_book) do
+    address_book
+    |> AddressBook.deletion_changeset()
     |> Repo.delete()
+  end
+
+  @doc """
+  Get longitude value for pickup centre
+  """
+  def get_address_coordinates(coord) do
+    {:ok, json} = Geo.JSON.encode(coord)
+
+    case json do
+      nil ->
+        {:error, "Error getting value"}
+
+      _ ->
+        {:ok, json["coordinates"]}
+    end
   end
 
   @doc """
@@ -212,35 +227,6 @@ defmodule LetorEcom.Account do
   end
 
   @doc """
-  Returns the list of shopping_lists.
-
-  ## Examples
-
-      iex> list_shopping_lists()
-      [%ShoppingList{}, ...]
-
-  """
-  def list_shopping_lists do
-    Repo.all(ShoppingList)
-  end
-
-  @doc """
-  Gets a single shopping_list.
-
-  Raises `Ecto.NoResultsError` if the Shopping list does not exist.
-
-  ## Examples
-
-      iex> get_shopping_list!(123)
-      %ShoppingList{}
-
-      iex> get_shopping_list!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_shopping_list!(id), do: Repo.get!(ShoppingList, id)
-
-  @doc """
   Creates a shopping_list.
 
   ## Examples
@@ -270,14 +256,15 @@ defmodule LetorEcom.Account do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_shopping_list(user, %ShoppingList{} = shopping_list, attrs) do
+  def update_shopping_list(%ShoppingList{} = shopping_list, attrs) do
     update_shopping_list_changeset = shopping_list |> ShoppingList.update_changeset(attrs)
 
     shopping_list =
       Repo.one(
         from(shopping_list in ShoppingList,
           where:
-            shopping_list.user_id == ^user.id and shopping_list.title == ^shopping_list.title and
+            shopping_list.user_id == ^attrs.user_id and
+              shopping_list.title == ^shopping_list.title and
               shopping_list.item_id == ^attrs.item_id
         )
       )

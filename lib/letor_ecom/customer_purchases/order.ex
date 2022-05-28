@@ -1,6 +1,6 @@
 defmodule LetorEcom.CustomerPurchases.Order do
   use LetorEcom.SchemaHelper
-  alias LetorEcom.Account.User
+  alias LetorEcom.Account.{AddressBook, User}
   alias LetorEcom.AgentsAndSuppliers.CampusAgent
   alias LetorEcom.Control.Location
   alias LetorEcom.CustomerPurchases.{CartItem, DeliveryCharge, OrderDispatch, PickUp}
@@ -44,6 +44,7 @@ defmodule LetorEcom.CustomerPurchases.Order do
     belongs_to(:location, Location)
     belongs_to(:campus_agent, CampusAgent)
     belongs_to(:order_dispatch, OrderDispatch)
+    belongs_to(:address_book, AddressBook)
     has_many(:cart_items, CartItem)
     has_many(:pick_ups, PickUp)
 
@@ -63,7 +64,7 @@ defmodule LetorEcom.CustomerPurchases.Order do
     |> cast(attrs, [
       :location_id,
       :order_number,
-      :address,
+      :address_book_id,
       :delivery_charge,
       :delivery_date,
       :fifteen_to_thirty_minutes,
@@ -108,6 +109,7 @@ defmodule LetorEcom.CustomerPurchases.Order do
     )
     |> assoc_constraint(:location)
     |> assoc_constraint(:pickup_centre)
+    |> assoc_constraint(:address_book)
     |> valid_delivery_date_on_completion
     |> create_order_number
     |> location_area_in_address
@@ -125,6 +127,7 @@ defmodule LetorEcom.CustomerPurchases.Order do
       :location_id,
       :order_number,
       :address,
+      :address_book_id,
       :delivery_charge,
       :delivery_date,
       :one_to_two_hours,

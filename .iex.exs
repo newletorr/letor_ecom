@@ -73,5 +73,5 @@ alias LetorEcom.Centres.{
 }
 
 alias LetorEcom.Control.{CoveredInstitution, EcommerceControl, Location}
-alias LetorEcom.CustomerPurchases.{DeliveryCharge, ReferalDiscount}
+alias LetorEcom.CustomerPurchases.{Order, DeliveryCharge, ReferalDiscount}
 alias LetorEcom.HumanResource.{Driver, Staff, StaffPosting}

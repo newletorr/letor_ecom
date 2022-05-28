@@ -14,7 +14,7 @@ defmodule LetorEcom.Sms do
     {:ok, code, _confirmed_user} = Confirmations.generate_confirmation_code(user)
 
     body =
-      "Hello #{user.first_name}, your confirmation code is #{code}. This code expires after 1 hour"
+      "Hello #{user.first_name}, your confirmation code is #{code}. This code expires in 1 hour time"
 
     ExTwilio.Message.create(to: user.phone, from: @twillio_number, body: body)
   end

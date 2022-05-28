@@ -7,5 +7,8 @@ defmodule LetorEcomWeb.Schema.Types do
   use Absinthe.Schema.Notation
   alias LetorEcomWeb.Schema.Types
 
+  import_types(Types.AddressBookType)
+  import_types(Types.UserFavType)
+  import_types(Types.ShoppingListType)
   import_types(Types.UserType)
 end

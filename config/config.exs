@@ -24,7 +24,7 @@ config :letor_ecom, LetorEcom.Guardian,
   issuer: "letor_ecom",
   secret_key: System.get_env("GUARDIAN_SECRET")
 
-  config :guardian, Guardian.DB,
+config :guardian, Guardian.DB,
   repo: LetorEcom.Repo,
   schema_name: "guardian_tokens",
   token_types: ["refresh_token"],

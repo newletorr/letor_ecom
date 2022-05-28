@@ -33,10 +33,16 @@ defmodule LetorEcomWeb.Schema do
   end
 
   query do
+    import_fields(:address_book_query)
+    import_fields(:shopping_list_query)
     import_fields(:user_query)
+    import_fields(:user_fav_items_query)
   end
 
   mutation do
+    import_fields(:address_book_mutation)
+    import_fields(:shopping_list_mutation)
     import_fields(:user_mutation)
+    import_fields(:user_fav_items_mutation)
   end
 end
