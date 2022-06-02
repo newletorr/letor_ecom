@@ -6,7 +6,7 @@ defmodule LetorEcom.Catalogue do
   import Ecto.Query, warn: false
   import Mogrify
   alias Ecto.Multi
-  alias LetorEcom.Repo
+  alias LetorEcom.{Centres, Repo}
 
   alias LetorEcom.Catalogue.{
     Item,
@@ -19,6 +19,48 @@ defmodule LetorEcom.Catalogue do
   }
 
   alias LetorEcom.Centres.{Inventory, InventoryChangeHistory}
+
+  def data do
+    Dataloader.Ecto.new(Repo, query: &query/2)
+  end
+
+  def query(FeaturedItem, %{scope: :pickup_centre, limit: limit, offset: offset}) do
+    FeaturedItem
+    |> order_by(desc: :inserted_at)
+    |> limit(^limit)
+    |> offset(^offset)
+  end
+
+  def query(DailyDeals, %{scope: :pickup_centre, limit: limit, offset: offset}) do
+    DailyDeals
+    |> order_by(desc: :inserted_at)
+    |> limit(^limit)
+    |> offset(^offset)
+  end
+
+  def query(PopularItem, %{scope: :pickup_centre, limit: limit, offset: offset}) do
+    PopularItem
+    |> order_by(desc: :inserted_at)
+    |> limit(^limit)
+    |> offset(^offset)
+  end
+
+  def query(ViewItem, %{scope: :user, limit: limit, offset: offset}) do
+    ViewItem
+    |> order_by(desc: :inserted_at)
+    |> limit(^limit)
+    |> offset(^offset)
+  end
+
+  def query(Item, args) do
+    args
+    |> query_items
+  end
+
+  @spec query(any, any) :: any
+  def query(queryable, _params) do
+    queryable
+  end
 
   @doc """
   Creates a item_category.
@@ -205,6 +247,235 @@ defmodule LetorEcom.Catalogue do
     Repo.delete(sku)
   end
 
+  @doc """
+  Return an item by name
+  """
+  def item_by_name(name) do
+    Repo.one(from item in Item, where: item.name == ^name)
+  end
+
+  @doc """
+  Return an item by barcode
+  """
+  def item_by_barcode(barcode) do
+    Repo.one(from item in Item, where: item.barcode == ^barcode)
+  end
+
+  @doc """
+  Returns the list of all items, with searching by keywords, pagination, filtering and ordering possible.
+
+  ## Examples
+
+      iex> list_all_items()
+      [%Item{}, ...]
+
+  """
+  def list_all_items(args) do
+    args
+    |> query_items
+    |> Repo.all()
+  end
+
+  @spec list_groceries_items(any) :: any
+  @doc """
+  Returns the list of all Groceries and house hold items, with searching by keywords, pagination, filtering and ordering possible.
+
+  ## Examples
+
+      iex> list_groceries_items()
+      [%Item{}, ...]
+  """
+  def list_groceries_items(args) do
+    args
+    |> query_groceries_items
+    |> Repo.all()
+  end
+
+  @spec query_groceries_items(any) :: any
+  def query_groceries_items(args) do
+    item_query =
+      from i in Item,
+        where: i.type == "Groceries" and i.out_of_stock == false and i.expired == false
+
+    args
+    |> Enum.reduce(item_query, fn
+      {:keywords, term}, query ->
+        pattern = "%#{term}%"
+
+        from(q in query,
+          join: it in assoc(q, :item_tag),
+          join: r in assoc(q, :recipes),
+          join: i in assoc(q, :item_subcategory),
+          join: c in assoc(i, :item_category),
+          where:
+            ilike(q.name, ^pattern) or ilike(q.barcode, ^pattern) or ilike(i.name, ^pattern) or
+              ilike(c.name, ^pattern) or
+              ilike(q.description, ^pattern) or ilike(it.name, ^pattern) or
+              ilike(r.name, ^pattern)
+        )
+
+      {:filters, filters}, query ->
+        filters_with(filters, query)
+
+      {:limit, limit}, query ->
+        from(p in query, limit: ^limit)
+
+      {:offset, offset}, query ->
+        from(p in query, offset: ^offset)
+
+      {:order, order}, query ->
+        from(q in query, order_by: [{^order, :actual_price}])
+    end)
+  end
+
+  @spec list_health_items(any) :: any
+  @doc """
+  Returns the list of all Drugs and medical consumables items, with searching by keywords, pagination, filtering and ordering possible.
+
+  ## Examples
+
+      iex> list_health_items()
+      [%Item{}, ...]
+  """
+  def list_health_items(args) do
+    args
+    |> query_health_items
+    |> Repo.all()
+  end
+
+  @spec query_health_items(any) :: any
+  def query_health_items(args) do
+    item_query =
+      from i in Item, where: i.type == "Health" and i.out_of_stock == false and i.expired == false
+
+    args
+    |> Enum.reduce(item_query, fn
+      {:keywords, term}, query ->
+        pattern = "%#{term}%"
+
+        from(q in query,
+          join: it in assoc(q, :item_tag),
+          join: r in assoc(q, :recipe),
+          join: i in assoc(q, :item_subcategory),
+          join: c in assoc(i, :item_category),
+          where:
+            ilike(q.name, ^pattern) or ilike(q.barcode, ^pattern) or ilike(i.name, ^pattern) or
+              ilike(c.name, ^pattern) or
+              ilike(q.description, ^pattern) or ilike(it.name, ^pattern) or
+              ilike(r.name, ^pattern)
+        )
+
+      {:filters, filters}, query ->
+        filters_with(filters, query)
+
+      {:limit, limit}, query ->
+        from(p in query, limit: ^limit)
+
+      {:offset, offset}, query ->
+        from(p in query, offset: ^offset)
+
+      {:order, order}, query ->
+        from(q in query, order_by: [{^order, :actual_price}])
+    end)
+  end
+
+  @spec list_household_items(any) :: any
+  @doc """
+  Returns the list of all Drugs and medical consumables items, with searching by keywords, pagination, filtering and ordering possible.
+
+  ## Examples
+
+      iex> list_items()
+      [%Item{}, ...]
+  """
+  def list_household_items(args) do
+    args
+    |> query_household_items
+    |> Repo.all()
+  end
+
+  def query_household_items(args) do
+    item_query =
+      from i in Item,
+        where:
+          i.type == "Household and Personal Care" and i.out_of_stock == false and
+            i.expired == false
+
+    args
+    |> Enum.reduce(item_query, fn
+      {:keywords, term}, query ->
+        pattern = "%#{term}%"
+
+        from(q in query,
+          join: it in assoc(q, :item_tag),
+          join: r in assoc(q, :recipe),
+          join: i in assoc(q, :item_subcategory),
+          join: c in assoc(i, :item_category),
+          where:
+            ilike(q.name, ^pattern) or ilike(q.barcode, ^pattern) or ilike(i.name, ^pattern) or
+              ilike(c.name, ^pattern) or
+              ilike(q.description, ^pattern) or ilike(it.name, ^pattern) or
+              ilike(r.name, ^pattern)
+        )
+
+      {:filters, filters}, query ->
+        filters_with(filters, query)
+
+      {:limit, limit}, query ->
+        from(p in query, limit: ^limit)
+
+      {:offset, offset}, query ->
+        from(p in query, offset: ^offset)
+
+      {:order, order}, query ->
+        from(q in query, order_by: [{^order, :actual_price}])
+    end)
+  end
+
+  def query_items(args) do
+    item_query = from i in Item, where: i.out_of_stock == false and i.expired == false
+
+    args
+    |> Enum.reduce(item_query, fn
+      {:keywords, term}, query ->
+        pattern = "%#{term}%"
+
+        from(q in query,
+          join: i in assoc(q, :item_subcategory),
+          join: c in assoc(i, :item_category),
+          where:
+            ilike(q.name, ^pattern) or ilike(q.barcode, ^pattern) or ilike(i.name, ^pattern) or
+              ilike(c.name, ^pattern) or
+              ilike(q.description, ^pattern)
+        )
+
+      {:filters, filters}, query ->
+        filters_with(filters, query)
+
+      {:limit, limit}, query ->
+        from(p in query, limit: ^limit)
+
+      {:offset, offset}, query ->
+        from(p in query, offset: ^offset)
+
+      {:order, order}, query ->
+        from(q in query, order_by: [{^order, :actual_price}])
+    end)
+  end
+
+  defp filters_with(filters, query) do
+    Enum.reduce(filters, query, fn
+      {:tag, tag_names}, query ->
+        from q in query,
+          join: i in assoc(q, :item_tag),
+          where: i.name in ^tag_names
+
+      {:brand_name, brand_names}, query ->
+        from q in query,
+          where: q.brand_name in ^brand_names
+    end)
+  end
+
   @spec create_sku_inventory_and_item(
           atom
           | %{:name => any, :pickup_centre_id => any, optional(any) => any}
@@ -264,7 +535,7 @@ defmodule LetorEcom.Catalogue do
       bulk_price = inventory.bulk_sales_price
 
       item_changeset =
-        if is_nil(attrs[:bulk]) == false do
+        if attrs[:bulk] == true do
           bulk_sku_and_price = %{sku_id: sku.id, main_price: bulk_price}
           %Item{} |> Item.changeset(Map.merge(attrs, bulk_sku_and_price))
         else
@@ -304,6 +575,80 @@ defmodule LetorEcom.Catalogue do
       repo.update(qr_code_changeset)
     end)
     |> Repo.transaction()
+  end
+
+  @doc """
+  Add items to list of featured items.
+
+  ## Examples
+
+      iex> add_item_to_featured(item, pickup_centre_id)
+      {:ok, %FeaturedItem{}}
+  """
+  def add_item_to_featured(item, attrs \\ %{}) do
+    existing_featured_item =
+      Repo.one(
+        from featured_item in FeaturedItem,
+          join: pickup_centre in assoc(featured_item, :pickup_centre),
+          where: pickup_centre.id == ^attrs.pickup_centre_id
+      )
+
+    case existing_featured_item do
+      nil ->
+        {:ok, featured_item} = Centres.create_featured_item(attrs)
+
+        {:ok, item} = update_for_special_cat(item, %{featured_item_id: featured_item.id})
+
+        {:ok, item}
+
+      _ ->
+        {:ok, item} = update_for_special_cat(item, %{featured_item_id: existing_featured_item.id})
+
+        {:ok, item}
+    end
+  end
+
+  @doc """
+  Add items to list of featured items.
+
+  ## Examples
+
+      iex> add_item_to_featured(item, pickup_centre_id)
+      {:ok, %FeaturedItem{}}
+  """
+  def add_item_to_daily_deals(item, attrs \\ %{}) do
+    existing_daily_deal =
+      Repo.one(
+        from daily_deal in DailyDeal,
+          join: pickup_centre in assoc(daily_deal, :pickup_centre),
+          where: pickup_centre.id == ^attrs.pickup_centre_id
+      )
+
+    case existing_daily_deal do
+      nil ->
+        {:ok, daily_deal} = Centres.create_featured_item(attrs)
+
+        {:ok, item} = update_for_special_cat(item, %{daily_deal_id: daily_deal.id})
+
+        {:ok, item}
+
+      _ ->
+        {:ok, item} = update_for_special_cat(item, %{featured_item_id: existing_daily_deal.id})
+
+        {:ok, item}
+    end
+  end
+
+  def remove_item_from_featured(item) do
+    item
+    |> Item.special_category_changeset(%{featured_item_id: nil})
+    |> Repo.update()
+  end
+
+  def remove_item_from_daily_deals(item) do
+    item
+    |> Item.special_category_changeset(%{daily_deal_id: nil})
+    |> Repo.update()
   end
 
   @doc """

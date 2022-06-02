@@ -12,7 +12,7 @@ defmodule LetorEcom.Repo.Migrations.CreateItems do
       add :name, :string
       add :regional_name, :string
       add :out_of_stock, :boolean, default: false, null: false
-      add :package_size, :string
+      add :package_uom, :string
       add :promo_price, :decimal
       add :brand_name, :string
       add :type, :string

@@ -106,6 +106,15 @@ defmodule LetorEcom.Account do
   end
 
   @doc """
+  Change users password
+  """
+  def change_password(user, attrs) do
+    user
+    |> User.password_changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
   Creates a address_book.
 
   ## Examples
@@ -424,10 +433,30 @@ defmodule LetorEcom.Account do
       {:error, %Ecto.Changeset{}}
 
   """
+
   def create_viewed_item(attrs \\ %{}) do
-    %ViewedItem{}
-    |> ViewedItem.changeset(attrs)
-    |> Repo.insert()
+    viewed_item_changeset = %ViewedItem{} |> ViewedItem.changeset(attrs)
+
+    Multi.new()
+    |> Multi.insert(:viewed_item, viewed_item_changeset)
+    |> Multi.run(:viewed_item_update, fn repo, _ ->
+      count =
+        Repo.one(
+          from view_item in ViewedItem,
+            where: view_item.user_id == ^attrs.user_id,
+            select: count("*")
+        )
+
+      query = from(view_item in ViewedItem, where: view_item.user_id == ^attrs.user_id)
+      oldest_viewed_item = query |> first(:inserted_at) |> Repo.one()
+
+      if count >= 11 do
+        repo.delete(oldest_viewed_item)
+      else
+        {:ok, nil}
+      end
+    end)
+    |> Repo.transaction()
   end
 
   @doc """

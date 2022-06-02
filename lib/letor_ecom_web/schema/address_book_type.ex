@@ -125,7 +125,7 @@ defmodule LetorEcomWeb.Schema.Types.AddressBookType do
     field :address_book, list_of(:address_book_type), description: "Get list of address books" do
       arg(:offset, :integer, default_value: 0)
       arg(:limit, :integer, default_value: 10)
-      middleware(Middleware.Authorize, "customer")
+      # middleware(Middleware.Authorize, "customer")
 
       resolve(fn args, _ ->
         address_book =

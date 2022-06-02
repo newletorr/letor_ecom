@@ -7,7 +7,7 @@ defmodule LetorEcomWeb.Schema.Types.ItemCategoryType do
   import Ecto.Query, warn: false
   import Absinthe.Resolution.Helpers
   import LetorEcomWeb.Schema.ChangesetErrors, only: [transform_errors: 1]
-  alias LetorEcom.{Catalogue, Repo}
+  alias LetorEcom.{Catalogue, Centres, Repo}
   alias LetorEcom.Account.User
   alias LetorEcom.Catalogue.ItemCategory
   alias LetorEcomWeb.Schema.Middleware
