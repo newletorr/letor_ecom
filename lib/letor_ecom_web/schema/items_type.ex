@@ -41,15 +41,16 @@ defmodule LetorEcomWeb.Schema.Types.ItemsType do
     field(:type, :string)
     field(:instore_location, :string)
 
-    field :qr_code_url, :string,
+    field(:qr_code_url, :string,
       resolve: fn query, _, _ ->
         Catalogue.get_qr_code_url(query)
       end
+    )
 
-    field :inserted_at, :datetime
-    field :updated_at, :datetime
+    field(:inserted_at, :datetime)
+    field(:updated_at, :datetime)
 
-    # field :sku, :sku_type, resolve: dataloader(Control, :sku, args: %{deleted: false})
+    field(:sku, :sku_type, resolve: dataloader(Control, :sku, args: %{deleted: false}))
 
     # field(:recipes, list_of(:recipe_type),
     # resolve: dataloader(Delicacies, :recipe, args: %{deleted: false})
@@ -85,43 +86,63 @@ defmodule LetorEcomWeb.Schema.Types.ItemsType do
     # resolve(dataloader(Ordering, :cart_items))
     # end
 
-    field :error, list_of(:mutation_error)
+    field(:error, list_of(:mutation_error))
+  end
+
+  object :sku_type do
+    field(:code, :string)
+    field(:name, :string)
+
+    # field(:pickup_centre, :pickup_centre_type,
+    # resolve: dataloader(Centres, :pickup_centre, args: %{deleted: false})
+    # )
+
+    field :items, list_of(:items_type) do
+      arg(:limit, :integer, default_value: 30)
+      arg(:offset, :integer, default_value: 0)
+      arg(:keywords, :string, default_value: nil)
+      arg(:filters, :all_items_filter_input_type)
+      arg(:order, :sort_order, default_value: :asc)
+      resolve(dataloader(Catalogue, :item))
+    end
+
+    # has_many(:inventories, Inventory)
   end
 
   input_object :items_input_type do
-    field :barcode, :string
-    field :item_tag_id, :id
-    field :details, :string
-    field :item_subcategory_id, non_null(:id)
-    field :type, non_null(:string)
-    field :brand_name, :string
-    field :package_uom, :string
-    field :item_image_id, non_null(:id)
-    field :pickup_centre_id, non_null(:id)
-    field :inventory_location_id, non_null(:id)
-    field :description, non_null(:string)
-    field :max_bulk_quantity, non_null(:integer)
-    field :name, non_null(:string)
-    field :re_order_level, :integer
-    field :sales_unit_quantity, :integer
-    field :bulk_quantity, :integer
-    field :sales_unit_quantity_uom, :string
-    field :bulk_quantity_uom, :string
-    field :buy_price, non_null(:decimal)
-    field :unit_sales_price, non_null(:decimal)
-    field :bulk_sales_price, non_null(:decimal)
-    field :status, :string
-    field :expiry_date, :date
+    field(:barcode, :string)
+    field(:item_tag_id, :id)
+    field(:details, :string)
+    field(:item_subcategory_id, non_null(:id))
+    field(:type, non_null(:string))
+    field(:brand_name, :string)
+    field(:package_uom, :string)
+    field(:item_image_id, non_null(:id))
+    field(:pickup_centre_id, non_null(:id))
+    field(:inventory_location_id, non_null(:id))
+    field(:description, non_null(:string))
+    field(:max_bulk_quantity, non_null(:integer))
+    field(:name, non_null(:string))
+    field(:re_order_level, :integer)
+    field(:sales_unit_quantity, :integer)
+    field(:bulk_quantity, :integer)
+    field(:sales_unit_quantity_uom, :string)
+    field(:bulk_quantity_uom, :string)
+    field(:buy_price, non_null(:decimal))
+    field(:unit_sales_price, non_null(:decimal))
+    field(:bulk_sales_price, non_null(:decimal))
+    field(:status, :string)
+    field(:expiry_date, :date)
   end
 
   input_object :food_vendor_input_type do
-    field :type, non_null(:string)
-    field :name, non_null(:string)
-    field :details, non_null(:string)
-    field :main_price, non_null(:decimal)
-    field :package_size, :string
-    field :description, :string
-    field :food_vendor_id, non_null(:id)
+    field(:type, non_null(:string))
+    field(:name, non_null(:string))
+    field(:details, non_null(:string))
+    field(:main_price, non_null(:decimal))
+    field(:package_size, :string)
+    field(:description, :string)
+    field(:food_vendor_id, non_null(:id))
   end
 
   input_object :add_promo_type do
@@ -145,8 +166,8 @@ defmodule LetorEcomWeb.Schema.Types.ItemsType do
   end
 
   input_object :special_cat_items_input_type do
-    field :item_id, non_null(:id)
-    field :pickup_centre_id, non_null(:id)
+    field(:item_id, non_null(:id))
+    field(:pickup_centre_id, non_null(:id))
   end
 
   object :items_mutation do

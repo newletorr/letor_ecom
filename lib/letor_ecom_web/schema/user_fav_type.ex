@@ -17,14 +17,14 @@ defmodule LetorEcomWeb.Schema.Types.UserFavType do
     field :updated_at, :datetime
     field :error, list_of(:mutation_error)
 
-    # field :items, list_of(:items_type) do
-    # arg(:limit, :integer, default_value: 30)
-    # arg(:offset, :integer, default_value: 0)
-    # arg(:keywords, :string, default_value: nil)
-    # arg(:filters, :all_items_filter_input_type)
-    # arg(:order, :sort_order, default_value: :asc)
-    # resolve(dataloader(Catalogue, :item))
-    # end
+    field :items, list_of(:items_type) do
+      arg(:limit, :integer, default_value: 30)
+      arg(:offset, :integer, default_value: 0)
+      arg(:keywords, :string, default_value: nil)
+      arg(:filters, :all_items_filter_input_type)
+      arg(:order, :sort_order, default_value: :asc)
+      resolve(dataloader(Catalogue, :item))
+    end
 
     field(:user, :users_type, resolve: dataloader(Account, :user, args: %{deleted: false}))
   end
@@ -34,7 +34,7 @@ defmodule LetorEcomWeb.Schema.Types.UserFavType do
   end
 
   object :user_fav_items_mutation do
-    field :create_user_fav_items, :user_fav_items_type, description: "Add a new user's dependants" do
+    field :create_user_fav_items, :user_fav_items_type, description: "create user favourite item" do
       arg(:input, non_null(:user_fav_items_input_type))
 
       middleware(Middleware.Authorize, "customer")

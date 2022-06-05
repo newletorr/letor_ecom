@@ -36,6 +36,7 @@ defmodule LetorEcomWeb.Schema do
   query do
     import_fields(:address_book_query)
     import_fields(:items_query)
+    import_fields(:item_image_query)
     import_fields(:shopping_list_query)
     import_fields(:user_query)
     import_fields(:user_fav_items_query)
@@ -45,6 +46,7 @@ defmodule LetorEcomWeb.Schema do
   mutation do
     import_fields(:address_book_mutation)
     import_fields(:items_mutation)
+    import_fields(:item_image_mutation)
     import_fields(:shopping_list_mutation)
     import_fields(:user_mutation)
     import_fields(:user_fav_items_mutation)

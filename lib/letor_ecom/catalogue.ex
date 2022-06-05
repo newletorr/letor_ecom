@@ -18,7 +18,7 @@ defmodule LetorEcom.Catalogue do
     Sku
   }
 
-  alias LetorEcom.Centres.{Inventory, InventoryChangeHistory}
+  alias LetorEcom.Centres.{DailyDeal, FeaturedItem, Inventory, InventoryChangeHistory}
 
   def data do
     Dataloader.Ecto.new(Repo, query: &query/2)
@@ -725,12 +725,7 @@ defmodule LetorEcom.Catalogue do
     |> Multi.run(:image_uploads, fn repo, %{item_image: item_image} ->
       uploads_changeset =
         item_image
-        |> ItemImage.image_uploads_changeset(%{
-          item_image1: attrs.item_image1,
-          item_image2: attrs.item_image2,
-          item_image3: attrs.item_image3,
-          item_image4: attrs.item_image4
-        })
+        |> ItemImage.image_uploads_changeset(attrs)
 
       repo.update(uploads_changeset)
     end)
@@ -769,6 +764,54 @@ defmodule LetorEcom.Catalogue do
   """
   def delete_item_image(%ItemImage{} = item_image) do
     Repo.delete(item_image)
+  end
+
+  def get_item_image1(item_image) do
+    case is_nil(item_image.item_image1) == false do
+      true ->
+        image_url = LetorEcom.Uploads.url({item_image.item_image1.file_name, item_image}, :thumb)
+
+        {:ok, image_url}
+
+      _ ->
+        {:ok, nil}
+    end
+  end
+
+  def get_item_image2(item_image) do
+    case is_nil(item_image.item_image1) == false do
+      true ->
+        image_url = LetorEcom.Uploads.url({item_image.item_image2.file_name, item_image}, :thumb)
+
+        {:ok, image_url}
+
+      _ ->
+        {:ok, nil}
+    end
+  end
+
+  def get_item_image3(item_image) do
+    case is_nil(item_image.item_image1) == false do
+      true ->
+        image_url = LetorEcom.Uploads.url({item_image.item_image3.file_name, item_image}, :thumb)
+
+        {:ok, image_url}
+
+      _ ->
+        {:ok, nil}
+    end
+  end
+
+  def get_item_image4(item_image) do
+    case is_nil(item_image.item_image1) == false do
+      true ->
+        image_url = LetorEcom.Uploads.url({item_image.item_image4.file_name, item_image}, :thumb)
+
+        {:ok, image_url}
+
+      _ ->
+        {:ok, nil}
+    end
   end
 
   @doc """

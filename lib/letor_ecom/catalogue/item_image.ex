@@ -6,10 +6,10 @@ defmodule LetorEcom.Catalogue.ItemImage do
   alias LetorEcom.Control.EcommerceControl
 
   schema "item_images" do
-    field :item_image1, :string, read_after_writes: true
-    field :item_image2, :string, read_after_writes: true
-    field :item_image3, :string, read_after_writes: true
-    field :item_image4, :string, read_after_writes: true
+    field :item_image1, LetorEcom.Uploads.Type, read_after_writes: true
+    field :item_image2, LetorEcom.Uploads.Type, read_after_writes: true
+    field :item_image3, LetorEcom.Uploads.Type, read_after_writes: true
+    field :item_image4, LetorEcom.Uploads.Type, read_after_writes: true
     field(:item_name, :string, read_after_writes: true)
     field(:video_url, :string, read_after_writes: true)
     belongs_to(:ecommerce_control, EcommerceControl)
