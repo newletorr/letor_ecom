@@ -6,6 +6,7 @@ defmodule LetorEcom.Centres do
   import Ecto.Query, warn: false
   alias Ecto.Multi
   alias LetorEcom.Repo
+  alias LetorEcom.Account.User
   # alias LetorEcom.Catalogue.{Item, Sku}
 
   alias LetorEcom.Centres.{

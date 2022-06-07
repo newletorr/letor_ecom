@@ -6,7 +6,7 @@ defmodule LetorEcom.Centres.InventoryLocation do
     field :name, :string, read_after_writes: true
     field :type, :string, read_after_writes: true
     belongs_to(:pickup_centre, PickupCentre)
-    has_many(:inventory, Inventory)
+    has_many(:inventories, Inventory)
 
     timestamps(type: :utc_datetime)
   end

@@ -10,5 +10,6 @@ defmodule LetorEcom.Repo.Migrations.CreatePopularItems do
     end
 
     create index(:popular_items, [:pickup_centre_id])
+    create index(:popular_items, [:id])
   end
 end

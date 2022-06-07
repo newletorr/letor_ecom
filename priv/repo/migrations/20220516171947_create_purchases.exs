@@ -17,6 +17,7 @@ defmodule LetorEcom.Repo.Migrations.CreatePurchases do
       timestamps(type: :timestamptz)
     end
 
+    create index(:purchases, [:id])
     create index(:purchases, [:staff_id])
     create index(:purchases, [:pickup_centre_id])
   end

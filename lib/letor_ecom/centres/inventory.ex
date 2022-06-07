@@ -49,6 +49,10 @@ defmodule LetorEcom.Centres.Inventory do
   def changeset(inventory, attrs) do
     inventory
     |> cast(attrs, [
+      :inventory_location_id,
+      :item_image_id,
+      :pickup_centre_id,
+      :sku_id,
       :buy_price,
       :description,
       :max_bulk_quantity,
@@ -70,6 +74,9 @@ defmodule LetorEcom.Centres.Inventory do
       :re_order_level
     ])
     |> validate_required([
+      :inventory_location_id,
+      :item_image_id,
+      :sku_id,
       :buy_price,
       :description,
       :max_bulk_quantity,
@@ -131,7 +138,8 @@ defmodule LetorEcom.Centres.Inventory do
   def qr_code_changeset(item, attrs) do
     item
     |> cast(attrs, [:qr_code])
-    |> cast_attachments(attrs, [:qr_code])
+
+    # |> cast_attachments(attrs, [:qr_code])
   end
 
   defp check_bulk_quantity_levels(changeset) do

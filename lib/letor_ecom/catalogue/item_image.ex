@@ -6,19 +6,15 @@ defmodule LetorEcom.Catalogue.ItemImage do
   alias LetorEcom.Control.EcommerceControl
 
   schema "item_images" do
-    # LetorEcom.Uploads.Type, read_after_writes: true)
-    field :item_image1, :string
-    # LetorEcom.Uploads.Type, read_after_writes: true)
-    field :item_image2, :string
-    # LetorEcom.Uploads.Type, read_after_writes: true)
-    field :item_image3, :string
-    # LetorEcom.Uploads.Type, read_after_writes: true)
-    field :item_image4, :string
+    field :item_image1, LetorEcom.Uploads.Type, read_after_writes: true
+    field :item_image2, LetorEcom.Uploads.Type, read_after_writes: true
+    field :item_image3, LetorEcom.Uploads.Type, read_after_writes: true
+    field :item_image4, LetorEcom.Uploads.Type, read_after_writes: true
     field(:item_name, :string, read_after_writes: true)
     field(:video_url, :string, read_after_writes: true)
     belongs_to(:ecommerce_control, EcommerceControl)
-    has_many(:item, Item)
-    has_many(:inventory, Inventory)
+    has_many(:items, Item)
+    has_many(:inventories, Inventory)
 
     timestamps(type: :utc_datetime)
   end
@@ -79,7 +75,7 @@ defmodule LetorEcom.Catalogue.ItemImage do
     |> cast(attrs, [:item_image1, :item_image2, :item_image3, :item_image4])
 
     # |> cast_attachments(attrs, [:item_image1, :item_image2, :item_image3, :item_image4],
-    #  allow_urls: true
-    # )
+    #   allow_urls: true
+    #  )
   end
 end

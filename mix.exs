@@ -75,7 +75,6 @@ defmodule LetorEcom.MixProject do
       {:ex_aws_s3, "~> 2.3"},
       {:prom_ex, "~> 1.7"},
       {:oban, "~> 2.11"},
-
       # testing, phone and email
       {:ex_twilio, "~> 0.9.1"},
       {:ex_phone_number, "~> 0.2.1"},

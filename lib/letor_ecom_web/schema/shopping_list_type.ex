@@ -80,7 +80,7 @@ defmodule LetorEcomWeb.Schema.Types.ShoppingListType do
 
     field :delete_shopping_list, :shopping_list_type, description: "Delete a shopping list" do
       arg(:shopping_list_id, non_null(:id))
-      middleware(Middleware.Authorize, ["customer"])
+      middleware(Middleware.Authorize, :any)
 
       resolve(fn args, _ ->
         shopping_list =

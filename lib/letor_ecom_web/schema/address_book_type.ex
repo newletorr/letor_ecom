@@ -22,7 +22,7 @@ defmodule LetorEcomWeb.Schema.Types.AddressBookType do
     field :inserted_at, :datetime
     field :updated_at, :datetime
     field :error, list_of(:mutation_error)
-    field :user, :users_type, resolve: dataloader(Account, :user, args: %{deleted: false})
+    field :user, :user_type, resolve: dataloader(Account, :user, args: %{deleted: false})
   end
 
   input_object :address_book_input_type do
@@ -125,7 +125,7 @@ defmodule LetorEcomWeb.Schema.Types.AddressBookType do
     field :address_book, list_of(:address_book_type), description: "Get list of address books" do
       arg(:offset, :integer, default_value: 0)
       arg(:limit, :integer, default_value: 10)
-      middleware(Middleware.Authorize, "customer")
+      # middleware(Middleware.Authorize, "customer")
 
       resolve(fn args, _ ->
         address_book =

@@ -34,8 +34,7 @@ defmodule LetorEcom.CustomerPurchases do
       order =
         Repo.one(
           from(order in Order,
-            join: user in assoc(order, :user),
-            where: user.id == ^user.id and order.order_status == "cart activated"
+            where: order.user_id == ^user.id and order.order_status == "cart activated"
           )
         )
 
@@ -193,7 +192,7 @@ defmodule LetorEcom.CustomerPurchases do
     order_changeset =
       case is_nil(attrs[:address]) == true or attrs[:address] == "" do
         true ->
-          order |> Order.campus_agent_pickup_changeset(attrs)
+          order |> Order.pickup_changeset(attrs)
 
         _ ->
           order |> Order.door_step_delivery_changeset(attrs)

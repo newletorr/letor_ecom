@@ -9,6 +9,7 @@ defmodule LetorEcom.Repo.Migrations.CreateFeaturedItems do
       timestamps(type: :timestamptz)
     end
 
+    create index(:featured_items, [:id])
     create index(:featured_items, [:pickup_centre_id])
   end
 end

@@ -1,4 +1,4 @@
-defmodule LetorEcomWeb.Schema.Types.UserFavType do
+defmodule LetorEcomWeb.Schema.Types.ViewedItemType do
   @moduledoc """
   Copyright © 2019 Letorr Nigeria Limited.
   All rights reserved.
@@ -8,10 +8,10 @@ defmodule LetorEcomWeb.Schema.Types.UserFavType do
   import Absinthe.Resolution.Helpers
   import LetorEcomWeb.Schema.ChangesetErrors, only: [transform_errors: 1]
   alias LetorEcom.{Account, Catalogue, Repo}
-  alias LetorEcom.Account.UserFav
+  alias LetorEcom.Account.ViewedItem
   alias LetorEcomWeb.Schema.Middleware
 
-  object :user_fav_items_type do
+  object :viewed_item_type do
     field :id, :id
     field :inserted_at, :datetime
     field :updated_at, :datetime
@@ -29,53 +29,29 @@ defmodule LetorEcomWeb.Schema.Types.UserFavType do
     field(:user, :user_type, resolve: dataloader(Account, :user, args: %{deleted: false}))
   end
 
-  input_object :user_fav_items_input_type do
+  input_object :viewed_items_input_type do
     field(:item_id, non_null(:id))
   end
 
-  object :user_fav_items_mutation do
-    field :create_user_fav_items, :user_fav_items_type, description: "create user favourite item" do
-      arg(:input, non_null(:user_fav_items_input_type))
-
+  object :viewed_items_mutation do
+    field :create_viewed_item, :viewed_item_type, description: "create viewed items" do
+      arg(:input, non_null(:viewed_items_input_type))
       middleware(Middleware.Authorize, "customer")
 
       resolve(fn %{input: input}, %{context: %{current_user: current_user}} ->
-        case Account.create_user_fav(Map.put(input, :user_id, current_user.id)) do
-          {:error, changeset} ->
+        case Account.create_viewed_item(Map.put(input, :user_id, current_user.id)) do
+          {:error, :viewed_item, changeset, _} ->
             {:error, transform_errors(changeset)}
 
-          {:ok, user_fav} ->
-            {:ok, user_fav}
-        end
-      end)
-    end
-
-    field :remove_favourite, :user_fav_items_type, description: "Update a user dependants info" do
-      arg(:user_fav_items_id, non_null(:id))
-
-      middleware(Middleware.Authorize, "customer")
-
-      resolve(fn args, _ ->
-        user_fav_items =
-          UserFav
-          |> preload([:user, :item])
-          |> Repo.get!(args[:user_fav_items_id])
-
-        case Account.delete_user_fav(user_fav_items) do
-          {:error, changeset} ->
-            {:error,
-             message: "Something went wrong, please try again",
-             details: transform_errors(changeset)}
-
-          success ->
-            success
+          {:ok, %{viewed_item: viewed_item}} ->
+            {:ok, viewed_item}
         end
       end)
     end
   end
 
-  object :user_fav_items_query do
-    field :user_fav_items, list_of(:user_fav_items_type), description: "Get list of centre codes" do
+  object :viewed_items_query do
+    field :viewed_item, list_of(:viewed_item_type), description: "Get list of viewed items" do
       arg(:offset, :integer, default_value: 0)
       arg(:limit, :integer, default_value: 10)
       arg(:keywords, :string, default_value: nil)
@@ -83,13 +59,13 @@ defmodule LetorEcomWeb.Schema.Types.UserFavType do
       middleware(Middleware.Authorize, "customer")
 
       resolve(fn args, _ ->
-        user_fav_items =
-          UserFav
+        viewed_item =
+          ViewedItem
           |> order_by(asc: :inserted_at)
           |> Repo.paginate(args[:offset], args[:limit])
           |> Repo.all()
 
-        {:ok, user_fav_items}
+        {:ok, viewed_item}
       end)
     end
   end

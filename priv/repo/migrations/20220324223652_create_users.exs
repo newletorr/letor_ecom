@@ -31,7 +31,7 @@ defmodule LetorEcom.Repo.Migrations.CreateUsers do
       add :second_referal_earned, :string
       add :third_referal_earned, :string
       add :fourth_referal_earned, :string
-      add :referal_points_earned, :string
+      add :referal_points_earned, :integer, default: 0
 
       timestamps(type: :timestamptz)
     end

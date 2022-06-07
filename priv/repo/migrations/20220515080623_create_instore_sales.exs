@@ -13,6 +13,8 @@ defmodule LetorEcom.Repo.Migrations.CreateInstoreSales do
       timestamps(type: :timestamptz)
     end
 
+    create index(:instore_sales, [:id])
+
     create index(:instore_sales, [:sale_id])
     create index(:instore_sales, [:item_id])
   end

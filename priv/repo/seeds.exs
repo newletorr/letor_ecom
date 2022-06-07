@@ -489,6 +489,30 @@ User |> Repo.delete_all()
 
 {:ok, user7} = Confirmation.confirm_account(confirmed_user, code)
 
+{:ok, %{user: user}} =
+  Account.register_supplier(%{
+    address: "No 12 Agip Road",
+    status: "active",
+    type: "individual",
+    means_of_id: "National Id",
+    id_image: "/home/dumadi/Downloads/WhatsApp Image 2021-11-04 at 12.49.11 AM.jpeg",
+    first_name: "Nathan",
+    last_name: "John",
+    email: "nathanjohn@gmail.com",
+    phone: "08179901920",
+    city: "Port Harcourt",
+    state: "Rivers State",
+    country: "Nigeria",
+    password: "pass1Word*",
+    password_confirmation: "pass1Word*",
+    location_id: l1.id,
+    ecommerce_id: ecommerce_control.id
+  })
+
+{:ok, code, confirmed_user} = Confirmation.generate_confirmation_code(user)
+
+{:ok, user8} = Confirmation.confirm_account(confirmed_user, code)
+
 ItemImage |> Repo.delete_all()
 
 {:ok, %{image_uploads: image1}} =
@@ -1266,7 +1290,7 @@ InventoryLocation |> Repo.delete_all()
     pickup_centre_id: pickup_centre.id
   })
 
-{:ok, inv_loc10} =
+{:ok, inv_loc9} =
   Centres.create_inventory_location(%{
     name: "Pasta Shelf",
     type: "Shelf",
@@ -1371,7 +1395,7 @@ InventoryChangeHistory |> Repo.delete_all()
     type: "Groceries",
     details: "",
     brand_name: "",
-    package_size: "Hand",
+    package_uom: "Hand",
     barcode: "",
     brand_name: "",
     details: "Fresh Banana sourced from the land of Ekpeye",
@@ -1405,7 +1429,7 @@ Catalogue.update_for_special_cat(item1, %{daily_deals_id: deals.id})
     type: "Groceries",
     details: "",
     brand_name: "",
-    package_size: "Packet",
+    package_uom: "Packet",
     item_image_id: image2.id,
     pickup_centre_id: pickup_centre.id,
     inventory_location_id: inv_loc2.id,
@@ -1434,7 +1458,7 @@ Catalogue.update_for_special_cat(item2, %{daily_deals_id: deals.id, featured_ite
     type: "Groceries",
     details: "",
     brand_name: "",
-    package_size: "Piece",
+    package_uom: "Piece",
     description: "Fresh Cray Fish",
     item_image_id: image3.id,
     pickup_centre_id: pickup_centre.id,
@@ -1463,7 +1487,7 @@ Catalogue.update_for_special_cat(item3, %{daily_deals_id: deals.id, featured_ite
     type: "Groceries",
     details: "",
     brand_name: "",
-    package_size: "Crate",
+    package_uom: "Crate",
     description: "Fresh Eggs",
     item_image_id: image4.id,
     pickup_centre_id: pickup_centre.id,
@@ -1492,7 +1516,7 @@ Catalogue.update_for_special_cat(item4, %{daily_deals_id: deals.id, featured_ite
     type: "Groceries",
     details: "",
     brand_name: "",
-    package_size: "Crate",
+    package_uom: "Crate",
     item_image_id: image5.id,
     pickup_centre_id: pickup_centre.id,
     inventory_location_id: inv_loc2.id,
@@ -1522,7 +1546,7 @@ Catalogue.update_for_special_cat(item5, %{daily_deals_id: deals.id, featured_ite
     type: "Groceries",
     details: "",
     brand_name: "",
-    package_size: "Piece",
+    package_uom: "Piece",
     item_image_id: image6.id,
     pickup_centre_id: pickup_centre.id,
     inventory_location_id: inv_loc2.id,
@@ -1551,7 +1575,7 @@ Catalogue.update_for_special_cat(item6, %{daily_deals_id: deals.id, featured_ite
     item_tag_id: "",
     details: "",
     brand_name: "",
-    package_size: "Sachet",
+    package_uom: "Sachet",
     item_image_id: image7.id,
     pickup_centre_id: pickup_centre.id,
     inventory_location_id: inv_loc2.id,
@@ -1584,7 +1608,7 @@ Catalogue.update_for_special_cat(item7, %{
     details: "",
     item_tag_id: "",
     brand_name: "",
-    package_size: "Sachet",
+    package_uom: "Sachet",
     item_image_id: image8.id,
     pickup_centre_id: pickup_centre.id,
     inventory_location_id: inv_loc2.id,
@@ -1611,7 +1635,7 @@ Catalogue.update_for_special_cat(item8, %{daily_deals_id: deals.id, popular_item
     type: "Groceries",
     details: "",
     brand_name: "",
-    package_size: "Bowl",
+    package_uom: "Bowl",
     item_tag_id: "",
     item_image_id: image9.id,
     item_subcategory_id: sub1.id,
@@ -1639,7 +1663,7 @@ Catalogue.update_for_special_cat(item8, %{daily_deals_id: deals.id, popular_item
     type: "Groceries",
     details: "",
     brand_name: "",
-    package_size: "Bowl",
+    package_uom: "Bowl",
     item_tag_id: tag1.id,
     item_image_id: image10.id,
     pickup_centre_id: pickup_centre.id,
@@ -1673,7 +1697,7 @@ Catalogue.update_for_special_cat(item10, %{
     details: "",
     item_tag_id: tag1.id,
     brand_name: "",
-    package_size: "Bowl",
+    package_uom: "Bowl",
     item_image_id: image11.id,
     pickup_centre_id: pickup_centre.id,
     inventory_location_id: inv_loc5.id,
@@ -1704,7 +1728,7 @@ Catalogue.update_for_special_cat(item11, %{
     details: "",
     item_tag_id: "",
     brand_name: "",
-    package_size: "Bowl",
+    package_uom: "Bowl",
     item_image_id: image12.id,
     pickup_centre_id: pickup_centre.id,
     inventory_location_id: inv_loc6.id,
@@ -1736,7 +1760,7 @@ Catalogue.update_for_special_cat(item12, %{
     details: "",
     item_tag_id: "",
     brand_name: "",
-    package_size: "tin",
+    package_uom: "tin",
     brand_name: "Nestle",
     pickup_centre_id: pickup_centre.id,
     inventory_location_id: inv_loc7.id,
@@ -1767,7 +1791,7 @@ inv14 =
     brand_name: "",
     barcode: "",
     item_tag_id: "",
-    package_size: "Tin",
+    package_uom: "Tin",
     item_subcategory_id: sub46.id,
     item_image_id: image14.id,
     pickup_centre_id: pickup_centre.id,
@@ -1796,7 +1820,7 @@ inv14 =
     details: "",
     brand_name: "",
     item_tag_id: "",
-    package_size: "sachet",
+    package_uom: "sachet",
     brand_name: "Golden Penni",
     item_image_id: image15.id,
     pickup_centre_id: pickup_centre.id,
@@ -1828,7 +1852,7 @@ Catalogue.update_for_special_cat(item15, %{
     type: "Health",
     name: "Supradin",
     item_tag_id: tag3.id,
-    package_size: "Packet",
+    package_uom: "Packet",
     description: "Supradin Capsules",
     brand_name: "Emzor",
     item_image_id: image17.id,
@@ -2104,10 +2128,10 @@ Driver |> Repo.delete_all()
     staff_id: stf5.id
   })
 
-CampusAgent |> Repo.delete_all()
+Agent |> Repo.delete_all()
 
 {:ok, campus_agent} =
-  AgentsAndSuppliers.create_campus_agent(%{
+  AgentsAndSuppliers.create_agent(%{
     business_address: "No 12 Agip Road Rumueme",
     agents_image: "/home/dumadi/Downloads/WhatsApp Image 2022-04-11 at 1.35.14 PM.jpeg",
     email: "nneka@gmail.com",
@@ -2130,6 +2154,8 @@ CampusAgent |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id,
     location_id: l1.id
   })
+
+Supplier |> Repo.delete_all()
 
 # Warehouse |> Repo.delete_all()
 

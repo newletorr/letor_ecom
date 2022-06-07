@@ -14,35 +14,6 @@ defmodule LetorEcom.Account.ViewedItem do
     |> cast(attrs, [:user_id, :item_id])
     |> validate_required([:item_id])
     |> assoc_constraint(:user)
-    |> assoc_constraint(:item)
-    |> delete_old_viewed_item
-  end
-
-  defp delete_old_viewed_item(changeset) do
-    case changeset.valid? do
-      true ->
-        user_id = get_field(changeset, :user_id)
-
-        count =
-          Repo.all(
-            from view_item in __MODULE__, where: view_item.user_id == ^user_id, select: count("*")
-          )
-
-        query1 = from(view_item in __MODULE__, where: view_item.user_id == ^user_id)
-        item = query1 |> first(:inserted_at) |> Repo.one()
-
-        case count >= 20 do
-          true ->
-            Repo.delete(item)
-
-            changeset
-
-          _ ->
-            changeset
-        end
-
-      _ ->
-        changeset
-    end
+    |> assoc_constraint(:item, message: "Sorry! this item has been removed")
   end
 end

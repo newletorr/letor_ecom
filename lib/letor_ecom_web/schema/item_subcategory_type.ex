@@ -1,4 +1,4 @@
-defmodule LetorEcomWeb.Schema.Types.ItemCategoryType do
+defmodule LetorEcomWeb.Schema.Types.ItemSubcategoryType do
   @moduledoc """
   Copyright © 2019 Letorr Nigeria Limited.
   All rights reserved.
@@ -9,10 +9,10 @@ defmodule LetorEcomWeb.Schema.Types.ItemCategoryType do
   import LetorEcomWeb.Schema.ChangesetErrors, only: [transform_errors: 1]
   alias LetorEcom.{Catalogue, Centres, Repo}
   alias LetorEcom.Account.User
-  alias LetorEcom.Catalogue.ItemCategory
+  alias LetorEcom.Catalogue.ItemSubcategory
   alias LetorEcomWeb.Schema.Middleware
 
-  object :item_category_type do
+  object :item_subcategory_type do
     field :id, :id
     field(:name, :string)
     field(:description, :string)
@@ -20,26 +20,17 @@ defmodule LetorEcomWeb.Schema.Types.ItemCategoryType do
     field :updated_at, :datetime
 
     field(:error, list_of(:mutation_error))
-
-    field :item_subcategories, list_of(:item_subcategory_type) do
-      arg(:limit, :integer)
-      arg(:offset, :integer, default_value: 0)
-      arg(:category_name, :string, default_value: nil)
-      arg(:order, :sort_order, default_value: :asc)
-
-      resolve(dataloader(Catalogue, :item_subcategories))
-    end
   end
 
-  input_object :item_category_input_type do
+  input_object :item_subcategory_input_type do
     field(:name, non_null(:string))
     field(:description, non_null(:string))
   end
 
-  object :item_category_mutation do
-    field :create_item_category, :item_category_type,
+  object :item_subcategory_mutation do
+    field :create_item_subcategory, :item_subcategory_type,
       description: "Create a new item category for items" do
-      arg(:input, non_null(:item_category_input_type))
+      arg(:input, non_null(:item_subcategory_input_type))
 
       middleware(Middleware.Authorize, [
         "data analyst",
@@ -52,7 +43,9 @@ defmodule LetorEcomWeb.Schema.Types.ItemCategoryType do
         pickup_centre = Centres.get_users_pickup_centre(current_user)
 
         if is_nil(pickup_centre) == false do
-          case Catalogue.create_item_category(Map.put(input, :pickup_centre_id, pickup_centre.id)) do
+          case Catalogue.create_item_subcategory(
+                 Map.put(input, :pickup_centre_id, pickup_centre.id)
+               ) do
             {:error, changeset} ->
               {:error, transform_errors(changeset)}
 
@@ -65,9 +58,9 @@ defmodule LetorEcomWeb.Schema.Types.ItemCategoryType do
       end)
     end
 
-    field :update_item_category, :item_category_type, description: "Update an item category" do
-      arg(:item_category_id, non_null(:id))
-      arg(:input, non_null(:item_category_input_type))
+    field :update_item_subcategory, :item_subcategory_type, description: "Update an item category" do
+      arg(:item_subcategory_id, non_null(:id))
+      arg(:input, non_null(:item_subcategory_input_type))
 
       middleware(Middleware.Authorize, [
         "data analyst",
@@ -77,13 +70,12 @@ defmodule LetorEcomWeb.Schema.Types.ItemCategoryType do
       ])
 
       resolve(fn %{input: params} = args, _ ->
-        item_category =
-          ItemCategory
-          |> preload(:item_category_image)
-          |> Repo.get!(args[:item_category_id])
+        item_subcategory =
+          ItemSubcategory
+          |> Repo.get!(args[:item_subcategory_id])
 
         case Catalogue.update_item_category(
-               item_category,
+               item_subcategory,
                params
              ) do
           {:error, changeset} ->
@@ -95,26 +87,21 @@ defmodule LetorEcomWeb.Schema.Types.ItemCategoryType do
       end)
     end
 
-    field :delete_item_category, :item_category_type, description: "Delete item category" do
-      arg(:item_category_id, non_null(:id))
+    field :delete_item_subcategory, :item_subcategory_type, description: "Delete item subcategory" do
+      arg(:item_subcategory_id, non_null(:id))
 
       middleware(Middleware.Authorize, [
-        "ceo",
-        "cto",
-        "cfo",
-        "accountant",
-        "senior developer",
-        "junior developer",
+        "store manager",
         "data analyst",
         "store manager"
       ])
 
       resolve(fn args, _ ->
-        item_category =
-          ItemCategory
-          |> Repo.get!(args[:item_category_id])
+        item_subcategory =
+          ItemSubcategory
+          |> Repo.get!(args[:item_subcategory_id])
 
-        case Catalogue.delete_item_category(item_category) do
+        case Catalogue.delete_item_subcategory(item_subcategory) do
           {:error, changeset} ->
             {:error, transform_errors(changeset)}
 
@@ -125,42 +112,45 @@ defmodule LetorEcomWeb.Schema.Types.ItemCategoryType do
     end
   end
 
-  object :item_category_query do
-    field :item_category, list_of(:item_category_type), description: "Get list of item categories" do
+  object :item_subcategory_query do
+    field :item_subcategory, list_of(:item_subcategory_type),
+      description: "Get list of item subcategories" do
       arg(:offset, :integer, default_value: 0)
       arg(:limit, :integer)
       arg(:keywords, :string, default_value: nil)
       middleware(Middleware.Authorize, :any)
 
       resolve(fn args, _ ->
-        item_category =
-          ItemCategory
+        item_subcategory =
+          ItemSubcategory
           |> Catalogue.search_item_categories(args[:keywords])
           |> order_by(asc: :inserted_at)
           |> Repo.paginate(args[:offset], args[:limit])
           |> Repo.all()
 
-        {:ok, item_category}
+        {:ok, item_subcategory}
       end)
     end
 
-    field :item_category_by_id, :item_category_type, description: "fetch a Item Category by id" do
-      arg(:item_category_id, non_null(:id))
+    field :item_subcategory_by_id, :item_subcategory_type,
+      description: "fetch a Item Category by id" do
+      arg(:item_subcategory_id, non_null(:id))
       middleware(Middleware.Authorize, :any)
 
       resolve(fn args, _ ->
-        item_category = ItemCategory |> Repo.get!(args[:item_category_id])
-        {:ok, item_category}
+        item_subcategory = ItemSubcategory |> Repo.get!(args[:item_subcategory_id])
+        {:ok, item_subcategory}
       end)
     end
 
-    field :item_category_by_name, :item_category_type, description: "fetch Item Category by Name" do
+    field :item_subcategory_by_name, :item_subcategory_type,
+      description: "fetch Item Subcategory by Name" do
       arg(:name, non_null(:string))
       middleware(Middleware.Authorize, :any)
 
       resolve(fn %{name: name}, _ ->
-        {:ok, item_category} = Catalogue.item_category_by_name(name)
-        {:ok, item_category}
+        {:ok, item_subcategory} = Catalogue.item_subcategory_by_name(name)
+        {:ok, item_subcategory}
       end)
     end
   end

@@ -8,8 +8,8 @@ defmodule LetorEcom.Catalogue.Sku do
     field(:code, :string)
     field(:name, :string)
     belongs_to(:pickup_centre, PickupCentre)
-    has_many(:item, Item)
-    has_many(:inventory, Inventory)
+    has_many(:items, Item)
+    has_many(:inventories, Inventory)
 
     timestamps(type: :utc_datetime)
   end

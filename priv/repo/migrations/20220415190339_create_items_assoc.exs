@@ -13,14 +13,14 @@ defmodule LetorEcom.Repo.Migrations.CreateItemsAssoc do
 
       add :featured_item_id, references(:featured_items, on_delete: :nothing, type: :binary_id)
 
-      add :popular_item_id,
-          references(:popular_items, on_delete: :nothing, type: :binary_id)
+      add :item_image_id,
+          references(:item_images, on_delete: :nothing, type: :binary_id)
     end
 
     create index(:items, [:item_subcategory_id])
     create index(:items, [:sku_id])
     create index(:items, [:daily_deal_id])
     create index(:items, [:featured_item_id])
-    create index(:items, [:popular_item_id])
+    create index(:items, [:item_image_id])
   end
 end

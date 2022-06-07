@@ -60,7 +60,7 @@ alias LetorEcom.{
 }
 
 alias LetorEcom.Account.{Address, User, ShoppingList}
-alias LetorEcom.AgentsAndSuppliers.CampusAgent
+alias LetorEcom.AgentsAndSuppliers.{Agent, Supplier}
 alias LetorEcom.Catalogue.{Item, ItemCategory, ItemImage, ItemSubcategory, ItemTag, Sku}
 
 alias LetorEcom.Centres.{

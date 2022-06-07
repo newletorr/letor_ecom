@@ -3,7 +3,7 @@ defmodule LetorEcom.Repo.Migrations.CreatePurchaseItems do
 
   def change do
     create table(:purchase_items, primary_key: false) do
-      add :id, :binary_id, primary_key: true
+      add(:id, :binary_id, primary_key: true, default: fragment("gen_random_uuid()"))
       add :unit_price, :decimal
       add :item_name, :string
       add :suppliers_email, :string

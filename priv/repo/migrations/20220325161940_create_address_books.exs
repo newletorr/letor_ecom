@@ -18,7 +18,11 @@ defmodule LetorEcom.Repo.Migrations.CreateAddressBook do
 
     create index(:address_books, [:id])
     create index(:address_books, [:user_id])
-    create unique_index(:address_books, [:address, :user_id], name: "address_books_address_user_id_ix")
+
+    create unique_index(:address_books, [:address, :user_id],
+             name: "address_books_address_user_id_index"
+           )
+
     execute("SELECT AddGeometryColumn('address_books', 'coordinates', 4326, 'POINT', 2)")
 
     execute(

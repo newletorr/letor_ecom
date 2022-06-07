@@ -1,7 +1,8 @@
-defmodule LetorEcom.AgentsAndSuppliers.CampusAgent do
+defmodule LetorEcom.AgentsAndSuppliers.Agent do
   use LetorEcom.SchemaHelper
   use Waffle.Ecto.Schema
-  alias LetorEcom.Control.{CoveredInstitution, EcommerceControl, Location}
+  alias LetorEcom.Account.User
+  alias LetorEcom.Control.{EcommerceControl, Location}
   alias LetorEcom.CustomerPurchases.Order
 
   @required_fields ~w(covered_institution_id ecommerce_control_id location_id residential_address business_address email first_name last_name phone status verified nationality home_town state_of_origin means_of_id guarantor_first_name guarantor_last_name guarantor_phone guarantor_residential_address)a
@@ -9,7 +10,7 @@ defmodule LetorEcom.AgentsAndSuppliers.CampusAgent do
   @image_fields [:agents_image, :id_image]
   @email_regex ~r/^[A-Za-z0-9._%+-+']+@[A-Za-z0-9.-]+\.[A-Za-z]+$/
 
-  schema "campus_agents" do
+  schema "agents" do
     field(:business_address, :string)
     field(:email, :string)
     # LetorEcom.Uploads.Type)
@@ -32,10 +33,10 @@ defmodule LetorEcom.AgentsAndSuppliers.CampusAgent do
     field(:status, :string)
     field(:verified, :boolean)
     field(:guarantor_verified, :boolean)
-    belongs_to(:covered_institution, CoveredInstitution)
     belongs_to(:ecommerce_control, EcommerceControl)
     belongs_to(:location, Location)
     has_many(:order, Order)
+    has_many(:users, User)
 
     timestamps(type: :utc_datetime)
   end
@@ -53,8 +54,8 @@ defmodule LetorEcom.AgentsAndSuppliers.CampusAgent do
           :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
         ) :: Ecto.Changeset.t()
   @doc false
-  def changeset(campus_agent, attrs) do
-    campus_agent
+  def changeset(agent, attrs) do
+    agent
     |> cast(attrs, all_fields())
     |> validate_format(:email, @email_regex, message: "Email must have the @ sign and no spaces")
     |> update_change(:email, &String.downcase/1)
@@ -76,15 +77,15 @@ defmodule LetorEcom.AgentsAndSuppliers.CampusAgent do
             },
           :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
         ) :: Ecto.Changeset.t()
-  def update_changeset(campus_agent, attrs) do
-    campus_agent
+  def update_changeset(agent, attrs) do
+    agent
     |> cast(attrs, all_fields())
     |> assoc_constraint(:covered_institution)
     |> assoc_constraint(:ecommerce_control)
   end
 
-  def images_upload_changeset(campus_agent, attrs) do
-    campus_agent
+  def images_upload_changeset(agent, attrs) do
+    agent
     |> cast(attrs, @image_fields)
     |> validate_required(@image_fields)
     |> cast_attachments(attrs, @image_fields, allow_urls: true)

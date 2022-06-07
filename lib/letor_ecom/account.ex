@@ -8,6 +8,7 @@ defmodule LetorEcom.Account do
   alias Ecto.Multi
 
   alias LetorEcom.Account.{AddressBook, ReferedList, ShoppingList, User, UserFav, ViewedItem}
+  alias LetorEcom.AgentsAndSuppliers.{Agent, Supplier}
   alias LetorEcom.Transactions.UserWallet
 
   def data do
@@ -42,6 +43,61 @@ defmodule LetorEcom.Account do
         |> UserWallet.changeset(%{user_id: user.id})
 
       repo.insert(user_wallet_changeset)
+    end)
+    |> Repo.transaction()
+  end
+
+  def register_agent(attrs \\ %{}) do
+    agent_changeset = %Agent{} |> Agent.changeset(attrs)
+
+    Multi.new()
+    |> Multi.insert(:agent, agent_changeset)
+    |> Multi.run(:user, fn repo, %{agent: agent} ->
+      user_changeset =
+        %User{}
+        |> User.agent_changeset(Map.put(attrs, :agent_id, agent.id))
+
+      repo.insert(user_changeset)
+    end)
+    |> Repo.transaction()
+  end
+
+  def register_supplier(attrs \\ %{}) do
+    supplier_changeset =
+      if attrs.type == "individual" do
+        %Supplier{} |> Supplier.individual_supplier_changeset(attrs)
+      else
+        %Supplier{} |> Supplier.corporate_supplier_changeset(attrs)
+      end
+
+    Multi.new()
+    |> Multi.insert(:supplier, supplier_changeset)
+    |> Multi.run(:user, fn repo, %{supplier: supplier} ->
+      user_changeset =
+        %User{}
+        |> User.supplier_changeset(Map.put(attrs, :supplier_id, supplier.id))
+
+      repo.insert(user_changeset)
+    end)
+    |> Repo.transaction()
+  end
+
+  def update_supplier_profile(supplier_user, attrs) do
+    user_changeset = supplier_user |> User.update_changeset(attrs)
+
+    supplier =
+      Repo.one(
+        from supplier in Supplier,
+          join: user in assoc(supplier, :users),
+          where: user.id == ^supplier_user.id
+      )
+
+    supplier_changeset = supplier |> Supplier.update_changeset(attrs)
+
+    Multi.new()
+    |> Multi.update(:user, user_changeset)
+    |> Multi.run(:supplier, fn repo, _ ->
+      repo.update(supplier_changeset)
     end)
     |> Repo.transaction()
   end
@@ -103,6 +159,15 @@ defmodule LetorEcom.Account do
   """
   def delete_user(%User{} = user) do
     Repo.delete(user)
+  end
+
+  @doc """
+  Change users password
+  """
+  def change_password(user, attrs) do
+    user
+    |> User.password_changeset(attrs)
+    |> Repo.update()
   end
 
   @doc """
@@ -424,10 +489,30 @@ defmodule LetorEcom.Account do
       {:error, %Ecto.Changeset{}}
 
   """
+
   def create_viewed_item(attrs \\ %{}) do
-    %ViewedItem{}
-    |> ViewedItem.changeset(attrs)
-    |> Repo.insert()
+    viewed_item_changeset = %ViewedItem{} |> ViewedItem.changeset(attrs)
+
+    Multi.new()
+    |> Multi.insert(:viewed_item, viewed_item_changeset)
+    |> Multi.run(:viewed_item_update, fn repo, _ ->
+      count =
+        Repo.one(
+          from view_item in ViewedItem,
+            where: view_item.user_id == ^attrs.user_id,
+            select: count("*")
+        )
+
+      query = from(view_item in ViewedItem, where: view_item.user_id == ^attrs.user_id)
+      oldest_viewed_item = query |> first(:inserted_at) |> Repo.one()
+
+      if count >= 11 do
+        repo.delete(oldest_viewed_item)
+      else
+        {:ok, nil}
+      end
+    end)
+    |> Repo.transaction()
   end
 
   @doc """
