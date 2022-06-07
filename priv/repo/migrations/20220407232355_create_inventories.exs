@@ -37,6 +37,7 @@ defmodule LetorEcom.Repo.Migrations.CreateInventories do
       timestamps(type: :timestamptz)
     end
 
+    create index(:inventories, [:id])
     create index(:inventories, [:pickup_centre_id])
     create index(:inventories, [:inventory_location_id])
     create index(:inventories, [:item_image_id])

@@ -1,7 +1,7 @@
 defmodule LetorEcom.CustomerPurchases.Order do
   use LetorEcom.SchemaHelper
   alias LetorEcom.Account.{AddressBook, User}
-  alias LetorEcom.AgentsAndSuppliers.CampusAgent
+  alias LetorEcom.AgentsAndSuppliers.Agent
   alias LetorEcom.Catalogue.Item
   alias LetorEcom.Control.Location
   alias LetorEcom.CustomerPurchases.{CartItem, DeliveryCharge, OrderDispatch, PickUp}
@@ -44,7 +44,7 @@ defmodule LetorEcom.CustomerPurchases.Order do
     belongs_to(:item, Item)
     belongs_to(:user, User)
     belongs_to(:location, Location)
-    belongs_to(:campus_agent, CampusAgent)
+    belongs_to(:agent, Agent)
     belongs_to(:order_dispatch, OrderDispatch)
     belongs_to(:address_book, AddressBook)
     has_many(:cart_items, CartItem)
@@ -179,7 +179,6 @@ defmodule LetorEcom.CustomerPurchases.Order do
       :location_id,
       :curbside_agent_id,
       :order_number,
-      :address,
       :delivery_date,
       :order_instructions,
       :order_status,
@@ -196,9 +195,8 @@ defmodule LetorEcom.CustomerPurchases.Order do
       :delivery_option,
       :grand_total
     ])
-    |> validate_required([:location_id, :phone, :pickup_centre_id])
+    |> validate_required([:location_id, :phone, :contact_person])
     |> assoc_constraint(:location)
-    |> assoc_constraint(:pickup_centre)
     |> assoc_constraint(:curbside_agent)
     |> valid_delivery_date_on_completion
     |> create_order_number
@@ -232,7 +230,7 @@ defmodule LetorEcom.CustomerPurchases.Order do
     |> validate_required([:location_id, :phone, :pickup_centre_id, :curbside_agent_id])
     |> assoc_constraint(:location)
     |> assoc_constraint(:pickup_centre)
-    |> assoc_constraint(:campus_agent)
+    |> assoc_constraint(:agent)
     |> create_order_number
     |> calculate_grand_total
     |> get_delivery_option

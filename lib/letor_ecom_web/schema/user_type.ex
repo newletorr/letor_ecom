@@ -5,7 +5,7 @@ defmodule LetorEcomWeb.Schema.Types.UserType do
   """
   use Absinthe.Schema.Notation
   import Ecto.Query, warn: false
-  # import Absinthe.Resolution.Helpers
+  import Absinthe.Resolution.Helpers
   import LetorEcomWeb.Schema.ChangesetErrors, only: [transform_errors: 1]
   alias LetorEcom.{Account, Guardian, Repo, Sms}
   alias LetorEcom.Account.{Confirmation, User, Session}
@@ -13,7 +13,7 @@ defmodule LetorEcomWeb.Schema.Types.UserType do
   # alias EcomHealthServiceWeb.Email
   alias LetorEcomWeb.Schema.Middleware
 
-  object :users_type do
+  object :user_type do
     field :id, :id
     field :email, :string
     field :address, :string
@@ -48,7 +48,7 @@ defmodule LetorEcomWeb.Schema.Types.UserType do
   end
 
   object :session_type do
-    field(:user, non_null(:users_type))
+    field(:user, non_null(:user_type))
     field(:token, non_null(:string))
     field(:error, list_of(:mutation_error))
   end
@@ -86,11 +86,80 @@ defmodule LetorEcomWeb.Schema.Types.UserType do
   end
 
   input_object :suppliers_user_input_type do
-    field(:business_name, :string)
+  end
+
+  input_object :agent_input_type do
+    field(:business_address, :string)
     field(:email, :string)
-    field(:password, :string)
-    field(:password_confirmation, :string)
-    field(:supplier_id, :id)
+    field :agents_image, :upload
+    field(:first_name, :string)
+    field(:guarantor_first_name, :string)
+    field(:guarantor_phone, :string)
+    field(:guarantor_residential_address, :string)
+    field(:guarantor_last_name, :string)
+    field(:home_town, :string)
+    field :id_image, :upload
+    field(:last_name, :string)
+    field(:means_of_id, :string)
+    field(:nationality, :string)
+    field(:phone, :string)
+    field(:residential_address, :string)
+    field(:state_of_origin, :string)
+    field(:ecommerce_control_id, :id)
+    field(:location, non_null(:id))
+    field :password, non_null(:string)
+    field :password_confirmation, non_null(:string)
+  end
+
+  input_object :supplier_user_input_type do
+    field :address, non_null(:string)
+    field :business_name, :string
+    field :city, non_null(:string)
+    field :contact_person, non_null(:string)
+    field :country, non_null(:string)
+    field :email, non_null(:string)
+    field :first_name, :string
+    field :full_name, :string
+    field :last_name, :string
+    field :means_of_id, :string
+    field :logo, :upload
+    field :image, :upload
+    field :id_image, :upload
+    field :national_supplier, :boolean
+    field :phone, non_null(:string)
+    field :rc_number, :string
+    field :regional_supplier, :boolean
+    field :state, non_null(:string)
+    field :type, :string
+    field :password, non_null(:string)
+    field :password_confirmation, non_null(:string)
+    field :ecommerce_control_id, :id
+    field :location_id, :id
+  end
+
+  input_object :supplier_user_update_input_type do
+    field :address, :string
+    field :business_name, :string
+    field :city, :string
+    field :contact_person, :string
+    field :country, :string
+    field :email, :string
+    field :first_name, :string
+    field :full_name, :string
+    field :last_name, :string
+    field :means_of_id, :string
+    field :logo, :upload
+    field :image, :upload
+    field :id_image, :upload
+    field :national_supplier, :boolean
+    field :phone, :string
+    field :rc_number, :string
+    field :regional_supplier, :boolean
+    field :state, :string
+    field :type, :string
+    field :password, :string
+    field :password_confirmation, :string
+    field :location_id, :id
   end
 
   input_object :login_input_type do
@@ -107,7 +176,7 @@ defmodule LetorEcomWeb.Schema.Types.UserType do
   end
 
   object :user_mutation do
-    field :register_customer_pat, :users_type,
+    field :register_customer_pat, :user_type,
       description: "Create Users/Patients user account information" do
       arg(:input, non_null(:customer_input_type))
 
@@ -122,7 +191,7 @@ defmodule LetorEcomWeb.Schema.Types.UserType do
       end)
     end
 
-    field :update_customer, :users_type,
+    field :update_customer, :user_type,
       description: "Update Customers/Patients user account information" do
       arg(:input, :staff_user_input_type)
       middleware(Middleware.Authorize, :any)
@@ -138,7 +207,7 @@ defmodule LetorEcomWeb.Schema.Types.UserType do
       end)
     end
 
-    field :register_staff_user, :users_type,
+    field :register_staff_user, :user_type,
       description: "Create Users/Patients user account information" do
       arg(:input, non_null(:staff_user_input_type))
 
@@ -193,7 +262,7 @@ defmodule LetorEcomWeb.Schema.Types.UserType do
       end)
     end
 
-    field :update_staff_user, :users_type, description: "Update Staff User account information" do
+    field :update_staff_user, :user_type, description: "Update Staff User account information" do
       arg(:input, :staff_user_input_type)
 
       middleware(Middleware.Authorize, [
@@ -219,50 +288,46 @@ defmodule LetorEcomWeb.Schema.Types.UserType do
       end)
     end
 
-    field :register_supplier, :users_type, description: "Create Supplier user account information" do
-      arg(:input, non_null(:suppliers_user_input_type))
+    field :register_agent, :user_type, description: "Create Agent user account information" do
+      arg(:input, non_null(:agent_input_type))
 
-      middleware(Middleware.Authorize, [
-        "super admin",
-        "admin",
-        "first level control",
-        "second level control",
-        "third level control"
-      ])
-
-      resolve(fn %{input: input}, %{context: context} ->
-        case Account.create_supplier_user(input) do
-          {:error, changeset} ->
+      resolve(fn %{input: input}, _ ->
+        with {:ok, %{user: user}} <- Account.register_agent(input),
+             {:ok, _sms} <- Sms.send_code(user) do
+          {:ok, user}
+        else
+          {:error, :user, changeset, _} ->
             {:error, transform_errors(changeset)}
-
-          {:ok, user} ->
-            {:ok, jwt_token, _} = Guardian.encode_and_sign(user)
-            user |> Account.update_tracked_fields(context[:remote_ip])
-
-            {:ok, %{user: user, token: jwt_token}}
         end
       end)
     end
 
-    field :update_supplier_registration, :users_type,
-      description: "Update Suppliers User account information" do
-      arg(:input, :suppliers_user_input_type)
+    field :register_supplier, :user_type, description: "Create Supplier user account information" do
+      arg(:input, non_null(:supplier_user_input_type))
 
-      middleware(Middleware.Authorize, [
-        "super admin",
-        "admin",
-        "supplier",
-        "first level control",
-        "second level control",
-        "third level control"
-      ])
+      resolve(fn %{input: input}, _ ->
+        with {:ok, %{user: user}} <- Account.register_supplier(input),
+             {:ok, _sms} <- Sms.send_code(user) do
+          {:ok, user}
+        else
+          {:error, :user, changeset, _} ->
+            {:error, transform_errors(changeset)}
+        end
+      end)
+    end
+
+    field :update_supplier_profile, :user_type,
+      description: "Update Staff User account information" do
+      arg(:input, :supplier_user_update_input_type)
+
+      middleware(Middleware.Authorize, "supplier")
 
       resolve(fn %{input: params}, %{context: %{current_user: current_user}} ->
-        case Account.update_supplier_user(current_user, params) do
+        case Account.update_supplier_profile(current_user, params) do
           {:error, changeset} ->
             {:error, transform_errors(changeset)}
 
-          {:ok, user} ->
+          {:ok, %{user: user}} ->
             {:ok, user}
         end
       end)
@@ -379,7 +444,7 @@ defmodule LetorEcomWeb.Schema.Types.UserType do
     end
 
     @desc "Upload user image"
-    field :upload_user_image, :users_type do
+    field :upload_user_image, :user_type do
       arg(:input, non_null(:image_upload_type))
       # middleware(Middleware.Authorize, :any)
 
@@ -396,7 +461,7 @@ defmodule LetorEcomWeb.Schema.Types.UserType do
   end
 
   object :user_query do
-    field :users, list_of(:users_type), description: "Get list of users" do
+    field :users, list_of(:user_type), description: "Get list of users" do
       arg(:offset, :integer, default_value: 0)
       arg(:limit, :integer, default_value: 10)
       arg(:keywords, :string, default_value: nil)
@@ -413,7 +478,7 @@ defmodule LetorEcomWeb.Schema.Types.UserType do
       end)
     end
 
-    field :me, :users_type do
+    field :me, :user_type do
       middleware(Middleware.Authorize, :any)
 
       resolve(fn _, %{context: %{current_user: current_user}} ->

@@ -9,6 +9,7 @@ defmodule LetorEcom.Repo.Migrations.CreateDailyDeals do
       timestamps(type: :timestamptz)
     end
 
+    create index(:daily_deals, [:id])
     create index(:daily_deals, [:pickup_centre_id])
   end
 end

@@ -12,6 +12,7 @@ defmodule LetorEcomWeb.Schema.Types do
   import_types(Types.ItemImageType)
   import_types(Types.UserFavType)
   import_types(Types.ShoppingListType)
+  import_types(Types.SupplierType)
   import_types(Types.UserType)
   import_types(Types.ViewedItemType)
 end

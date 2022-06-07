@@ -26,7 +26,7 @@ defmodule LetorEcomWeb.Schema.Types.UserFavType do
       resolve(dataloader(Catalogue, :item))
     end
 
-    field(:user, :users_type, resolve: dataloader(Account, :user, args: %{deleted: false}))
+    field(:user, :user_type, resolve: dataloader(Account, :user, args: %{deleted: false}))
   end
 
   input_object :user_fav_items_input_type do

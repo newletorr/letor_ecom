@@ -2,12 +2,15 @@ defmodule LetorEcom.Account.User do
   use Waffle.Ecto.Schema
   use LetorEcom.SchemaHelper
   alias LetorEcom.Account.{Address, ReferedList, ShoppingList, UserFav}
+  alias LetorEcom.AgentsAndSuppliers.{Agent, Supplier}
   alias LetorEcom.Control.Location
   alias LetorEcom.CustomerPurchases.Order
   alias LetorEcom.Sales.InstoreSale
   alias LetorEcom.Transactions.UserWallet
 
-  @required_fields ~w(location_id email first_name last_name address date_of_birth phone password password_confirmation)a
+  @user_required_fields ~w(location_id email first_name last_name address  phone password password_confirmation)a
+  @agents_required_fields ~w(password password_confirmation)a
+  @supplier_required_fields ~w(password password_confirmation)a
 
   @email_regex ~r/^[A-Za-z0-9._%+-+']+@[A-Za-z0-9.-]+\.[A-Za-z]+$/
   schema "users" do
@@ -36,7 +39,7 @@ defmodule LetorEcom.Account.User do
     field :password_confirmation, :string, virtual: true
     field :phone, :string, read_after_writes: true
     field :referal_code, :string
-    field :referal_points_earned, :string
+    field :referal_points_earned, :integer
     field :role, :string, read_after_writes: true
     field :second_referal_earned, :string
     field :sign_in_count, :integer
@@ -50,6 +53,8 @@ defmodule LetorEcom.Account.User do
     has_many(:instore_sales, InstoreSale)
     has_many(:orders, Order)
     belongs_to(:location, Location)
+    belongs_to(:agent, Agent)
+    belongs_to(:supplier, Supplier)
 
     timestamps(type: :utc_datetime)
   end
@@ -70,7 +75,7 @@ defmodule LetorEcom.Account.User do
   def changeset(user, attrs) do
     user
     |> cast(attrs, all_fields())
-    |> validate_required(@required_fields)
+    |> validate_required(@user_required_fields)
     |> validate_format(:email, @email_regex, message: "Email must have the @ sign and no spaces")
     |> update_change(:email, &String.downcase/1)
     |> validate_length(:email, min: 5, max: 160)
@@ -78,7 +83,7 @@ defmodule LetorEcom.Account.User do
     |> unique_constraint(:phone, message: "A user with the same phone number already exists")
     |> unique_constraint(:referal_code)
     |> validate_length(:address,
-      message: "Your address should be at list 15 characters long",
+      message: "Your address should be at least 15 characters long",
       min: 15
     )
     |> validate_length(:first_name, min: 4, max: 40)
@@ -87,13 +92,13 @@ defmodule LetorEcom.Account.User do
     |> validate_format(:last_name, ~r/^[a-zA-Z_-]+$/, message: "Name must only contain letters")
     |> validate_length(:password, min: 6, max: 80)
     |> validate_format(:password, ~r/[a-z]/,
-      message: "Password should have at list one lower case character."
+      message: "Password should have at least one lower case character."
     )
     |> validate_format(:password, ~r/[A-Z]/,
-      message: "Password should have at list one upper case character."
+      message: "Password should have at least one upper case character."
     )
     |> validate_format(:password, ~r/[!?@#$%^&*_0-9]/,
-      message: "Password should have at list one digit or punctuation character."
+      message: "Password should have at least one digit or punctuation character."
     )
     |> validate_confirmation(:password, message: "password does not match")
     |> assoc_constraint(:location)
@@ -104,6 +109,77 @@ defmodule LetorEcom.Account.User do
     |> gen_referal_code
   end
 
+  def agents_changeset(user, attrs) do
+    user
+    |> cast(attrs, all_fields())
+    |> validate_required(@agents_required_fields)
+    |> validate_format(:email, @email_regex, message: "Email must have the @ sign and no spaces")
+    |> update_change(:email, &String.downcase/1)
+    |> validate_length(:email, min: 5, max: 160)
+    |> unique_constraint(:email, message: "A user with the same email already exists")
+    |> unique_constraint(:phone, message: "A user with the same phone number already exists")
+    |> unique_constraint(:referal_code)
+    |> validate_length(:address,
+      message: "Your address should be at least 15 characters long",
+      min: 15
+    )
+    |> validate_length(:first_name, min: 4, max: 40)
+    |> validate_format(:first_name, ~r/^[a-zA-Z_-]+$/, message: "Name must only contain letters")
+    |> validate_length(:last_name, min: 4, max: 40)
+    |> validate_format(:last_name, ~r/^[a-zA-Z_-]+$/, message: "Name must only contain letters")
+    |> validate_length(:password, min: 6, max: 80)
+    |> validate_format(:password, ~r/[a-z]/,
+      message: "Password should have at least one lower case character."
+    )
+    |> validate_format(:password, ~r/[A-Z]/,
+      message: "Password should have at least one upper case character."
+    )
+    |> validate_format(:password, ~r/[!?@#$%^&*_0-9]/,
+      message: "Password should have at least one digit or punctuation character."
+    )
+    |> validate_confirmation(:password, message: "password does not match")
+    |> assoc_constraint(:location)
+    |> hash_password()
+    |> valid_phone(:phone)
+    |> create_full_name()
+    |> assoc_constraint(:agent)
+  end
+
+  def supplier_changeset(user, attrs) do
+    user
+    |> cast(attrs, all_fields())
+    |> validate_required(@supplier_required_fields)
+    |> validate_format(:email, @email_regex, message: "Email must have the @ sign and no spaces")
+    |> update_change(:email, &String.downcase/1)
+    |> validate_length(:email, min: 5, max: 160)
+    |> unique_constraint(:email, message: "A user with the same email already exists")
+    |> unique_constraint(:phone, message: "A user with the same phone number already exists")
+    |> validate_length(:address,
+      message: "Your address should be at least 15 characters long",
+      min: 15
+    )
+    |> validate_length(:first_name, min: 4, max: 40)
+    |> validate_format(:first_name, ~r/^[a-zA-Z_-]+$/, message: "Name must only contain letters")
+    |> validate_length(:last_name, min: 4, max: 40)
+    |> validate_format(:last_name, ~r/^[a-zA-Z_-]+$/, message: "Name must only contain letters")
+    |> validate_length(:password, min: 6, max: 80)
+    |> validate_format(:password, ~r/[a-z]/,
+      message: "Password should have at least one lower case character."
+    )
+    |> validate_format(:password, ~r/[A-Z]/,
+      message: "Password should have at least one upper case character."
+    )
+    |> validate_format(:password, ~r/[!?@#$%^&*_0-9]/,
+      message: "Password should have at least one digit or punctuation character."
+    )
+    |> validate_confirmation(:password, message: "password does not match")
+    |> assoc_constraint(:location)
+    |> hash_password()
+    |> valid_phone(:phone)
+    |> assoc_constraint(:supplier)
+    |> set_role("supplier")
+  end
+
   def update_changeset(user, attrs) do
     user
     |> cast(attrs, all_fields())
@@ -112,7 +188,7 @@ defmodule LetorEcom.Account.User do
     |> unique_constraint(:email, message: "A user with the same email already exists")
     |> unique_constraint(:phone, message: "Phone number has already been used")
     |> validate_length(:address,
-      message: "Your address should be at list 15 characters long",
+      message: "Your address should be at least 15 characters long",
       min: 15,
       max: 40
     )
@@ -180,13 +256,13 @@ defmodule LetorEcom.Account.User do
     |> validate_required([:password, :password_confirmation])
     |> validate_length(:password, min: 6, max: 80)
     |> validate_format(:password, ~r/[a-z]/,
-      message: "Password should have at list one lower case character."
+      message: "Password should have at least one lower case character."
     )
     |> validate_format(:password, ~r/[A-Z]/,
-      message: "Password should have at list one upper case character."
+      message: "Password should have at least one upper case character."
     )
     |> validate_format(:password, ~r/[!?@#$%^&*_0-9]/,
-      message: "Password should have at list one digit or punctuation character."
+      message: "Password should have at least one digit or punctuation character."
     )
     |> validate_confirmation(:password, message: "password does not match")
     |> hash_password()
@@ -215,13 +291,13 @@ defmodule LetorEcom.Account.User do
     |> create_full_name
     |> validate_length(:password, min: 6, max: 80)
     |> validate_format(:password, ~r/[a-z]/,
-      message: "Password should have a list one lower case character."
+      message: "Password should have a least one lower case character."
     )
     |> validate_format(:password, ~r/[A-Z]/,
-      message: "Password should have at list one upper case character."
+      message: "Password should have at least one upper case character."
     )
     |> validate_format(:password, ~r/[!?@#$%^&*_0-9]/,
-      message: "Password should have at list one digit or punctuation character."
+      message: "Password should have at least one digit or punctuation character."
     )
     |> validate_confirmation(:password, message: "Password does not match")
     |> hash_password

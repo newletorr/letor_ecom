@@ -10,7 +10,7 @@ defmodule LetorEcom.CustomerPurchases.PickUp do
     field :picked, :boolean, default: false
     field :pickup_code, :string
     belongs_to(:order, Order)
-    belongs_to(:campus_agent, CampusAgent)
+    belongs_to(:agent, Agent)
     belongs_to(:pickup_centre, PickupCentre)
     belongs_to(:staff, Staff)
 
@@ -31,7 +31,7 @@ defmodule LetorEcom.CustomerPurchases.PickUp do
     |> cast(attrs, [:order_id, :campus_agent_id, :pick_up_time, :picked, :pickup_code])
     |> validate_required([:pick_up_time, :picked, :pickup_code])
     |> assoc_constraint(:order)
-    |> assoc_constraint(:campus_agent)
+    |> assoc_constraint(:agent)
   end
 
   @spec instore_pickup_changeset(

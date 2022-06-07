@@ -24,7 +24,7 @@ defmodule LetorEcom.Account.AddressBook do
     |> validate_required([:address, :city, :area, :state])
     |> unique_constraint(:address,
       message: "You have already added this address",
-      name: :address_books_address_user_id_ix
+      name: :address_books_address_user_id_index
     )
     |> assoc_constraint(:user)
   end

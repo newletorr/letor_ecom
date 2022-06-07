@@ -489,6 +489,30 @@ User |> Repo.delete_all()
 
 {:ok, user7} = Confirmation.confirm_account(confirmed_user, code)
 
+{:ok, %{user: user}} =
+  Account.register_supplier(%{
+    address: "No 12 Agip Road",
+    status: "active",
+    type: "individual",
+    means_of_id: "National Id",
+    id_image: "/home/dumadi/Downloads/WhatsApp Image 2021-11-04 at 12.49.11 AM.jpeg",
+    first_name: "Nathan",
+    last_name: "John",
+    email: "nathanjohn@gmail.com",
+    phone: "08179901920",
+    city: "Port Harcourt",
+    state: "Rivers State",
+    country: "Nigeria",
+    password: "pass1Word*",
+    password_confirmation: "pass1Word*",
+    location_id: l1.id,
+    ecommerce_id: ecommerce_control.id
+  })
+
+{:ok, code, confirmed_user} = Confirmation.generate_confirmation_code(user)
+
+{:ok, user8} = Confirmation.confirm_account(confirmed_user, code)
+
 ItemImage |> Repo.delete_all()
 
 {:ok, %{image_uploads: image1}} =
@@ -2104,10 +2128,10 @@ Driver |> Repo.delete_all()
     staff_id: stf5.id
   })
 
-CampusAgent |> Repo.delete_all()
+Agent |> Repo.delete_all()
 
 {:ok, campus_agent} =
-  AgentsAndSuppliers.create_campus_agent(%{
+  AgentsAndSuppliers.create_agent(%{
     business_address: "No 12 Agip Road Rumueme",
     agents_image: "/home/dumadi/Downloads/WhatsApp Image 2022-04-11 at 1.35.14 PM.jpeg",
     email: "nneka@gmail.com",
@@ -2130,6 +2154,8 @@ CampusAgent |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id,
     location_id: l1.id
   })
+
+Supplier |> Repo.delete_all()
 
 # Warehouse |> Repo.delete_all()
 

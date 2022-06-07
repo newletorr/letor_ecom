@@ -2,7 +2,7 @@ defmodule LetorEcom.Repo.Migrations.CreateCampusAgents do
   use Ecto.Migration
 
   def change do
-    create table(:campus_agents, primary_key: false) do
+    create table(:agents, primary_key: false) do
       add(:id, :binary_id, primary_key: true, default: fragment("gen_random_uuid()"))
       add(:residential_address, :string)
       add(:agents_image, :string)
@@ -28,6 +28,6 @@ defmodule LetorEcom.Repo.Migrations.CreateCampusAgents do
       timestamps(type: :timestamptz)
     end
 
-    create(index(:campus_agents, [:id]))
+    create(index(:agents, [:id]))
   end
 end

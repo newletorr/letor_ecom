@@ -5,9 +5,9 @@ defmodule LetorEcom.AgentsAndSuppliersTest do
   alias LetorEcom.Control.{EcommerceControl, Location}
 
   describe "campus_agents" do
-    alias LetorEcom.AgentsAndSuppliers.CampusAgent
+    alias LetorEcom.AgentsAndSuppliers.Agent
 
-    test "create_campus_agent/1 with valid data creates a campus_agent" do
+    test "create_agent/1 with valid data creates a agent" do
       location = Repo.all(Location) |> List.first()
       ecommerce_control = Repo.all(EcommerceControl) |> List.first()
 
@@ -35,35 +35,33 @@ defmodule LetorEcom.AgentsAndSuppliersTest do
         ecommerce_control_id: ecommerce_control.id
       }
 
-      assert {:ok, %{campus_agent: campus_agent}} =
-               AgentsAndSuppliers.create_campus_agent(valid_attrs)
+      assert {:ok, %{agent: agent}} = AgentsAndSuppliers.create_agent(valid_attrs)
 
-      assert campus_agent.business_address == "some business_address"
-      assert campus_agent.email == "first_name@gmail.com"
-      assert campus_agent.first_name == "some first_name"
-      assert campus_agent.guarantor_first_name == "some guarantor_first_name"
-      assert campus_agent.guarantor_phone == "08179901928"
-      assert campus_agent.guarantor_residential_address == "some guarantor_residential_address"
-      assert campus_agent.guarantor_last_name == "some guarantor_last_name"
-      assert campus_agent.home_town == "some home_town"
-      assert campus_agent.last_name == "some last_name"
-      assert campus_agent.means_of_id == "some means_of_id"
-      assert campus_agent.nationality == "some nationality"
-      assert campus_agent.phone == "09051182726"
-      assert campus_agent.residential_address == "some residential_address"
-      assert campus_agent.secret_code == "some secret_code"
-      assert campus_agent.state_of_origin == "some state_of_origin"
-      assert campus_agent.status == "some status"
-      assert campus_agent.verified == true
+      assert agent.business_address == "some business_address"
+      assert agent.email == "first_name@gmail.com"
+      assert agent.first_name == "some first_name"
+      assert agent.guarantor_first_name == "some guarantor_first_name"
+      assert agent.guarantor_phone == "08179901928"
+      assert agent.guarantor_residential_address == "some guarantor_residential_address"
+      assert agent.guarantor_last_name == "some guarantor_last_name"
+      assert agent.home_town == "some home_town"
+      assert agent.last_name == "some last_name"
+      assert agent.means_of_id == "some means_of_id"
+      assert agent.nationality == "some nationality"
+      assert agent.phone == "09051182726"
+      assert agent.residential_address == "some residential_address"
+      assert agent.secret_code == "some secret_code"
+      assert agent.state_of_origin == "some state_of_origin"
+      assert agent.status == "some status"
+      assert agent.verified == true
     end
 
-    test "update_campus_agent/2 with valid data updates the campus_agent" do
+    test "update_agent/2 with valid data updates the agent" do
       ecommerce_control = build(:ecommerce_control, name: "new_name")
       pickup_centre = insert!(:pickup_centre, ecommerce_control: ecommerce_control)
       location = insert!(:location, pickup_centre: pickup_centre)
 
-      campus_agent =
-        insert!(:campus_agent, location: location, ecommerce_control: ecommerce_control)
+      agent = insert!(:agent, location: location, ecommerce_control: ecommerce_control)
 
       update_attrs = %{
         business_address: "some updated business_address",
@@ -85,42 +83,191 @@ defmodule LetorEcom.AgentsAndSuppliersTest do
         verified: true
       }
 
-      assert {:ok, %CampusAgent{} = campus_agent} =
-               AgentsAndSuppliers.update_campus_agent(campus_agent, update_attrs)
+      assert {:ok, %Agent{} = agent} = AgentsAndSuppliers.update_agent(agent, update_attrs)
 
-      assert campus_agent.business_address == "some updated business_address"
-      assert campus_agent.email == "some updated email"
+      assert agent.business_address == "some updated business_address"
+      assert agent.email == "some updated email"
 
-      assert campus_agent.first_name == "some updated first_name"
-      assert campus_agent.guarantor_first_name == "some updated guarantor_first_name"
-      assert campus_agent.guarantor_phone == "some updated guarantor_phone"
+      assert agent.first_name == "some updated first_name"
+      assert agent.guarantor_first_name == "some updated guarantor_first_name"
+      assert agent.guarantor_phone == "some updated guarantor_phone"
 
-      assert campus_agent.guarantor_residential_address ==
+      assert agent.guarantor_residential_address ==
                "some updated guarantor_residential_address"
 
-      assert campus_agent.guarantor_last_name == "some updated guarantor_last_name"
-      assert campus_agent.home_town == "some updated home_town"
+      assert agent.guarantor_last_name == "some updated guarantor_last_name"
+      assert agent.home_town == "some updated home_town"
 
-      assert campus_agent.last_name == "some updated last_name"
-      assert campus_agent.means_of_id == "some updated means_of_id"
-      assert campus_agent.nationality == "some updated nationality"
-      assert campus_agent.phone == "some updated phone"
-      assert campus_agent.residential_address == "some updated residential_address"
-      assert campus_agent.secret_code == "some updated secret_code"
-      assert campus_agent.state_of_origin == "some updated state_of_origin"
-      assert campus_agent.status == "some updated status"
-      assert campus_agent.verified == true
+      assert agent.last_name == "some updated last_name"
+      assert agent.means_of_id == "some updated means_of_id"
+      assert agent.nationality == "some updated nationality"
+      assert agent.phone == "some updated phone"
+      assert agent.residential_address == "some updated residential_address"
+      assert agent.secret_code == "some updated secret_code"
+      assert agent.state_of_origin == "some updated state_of_origin"
+      assert agent.status == "some updated status"
+      assert agent.verified == true
     end
 
-    test "delete_campus_agent/1 deletes the campus_agent" do
+    test "delete_agent/1 deletes the agent" do
       ecommerce_control = build(:ecommerce_control)
       pickup_centre = insert!(:pickup_centre, ecommerce_control: ecommerce_control)
       location = insert!(:location, pickup_centre: pickup_centre)
 
-      campus_agent =
-        insert!(:campus_agent, location: location, ecommerce_control: ecommerce_control)
+      agent = insert!(:agent, location: location, ecommerce_control: ecommerce_control)
 
-      assert {:ok, %CampusAgent{}} = AgentsAndSuppliers.delete_campus_agent(campus_agent)
+      assert {:ok, %Agent{}} = AgentsAndSuppliers.delete_agent(agent)
+    end
+  end
+
+  describe "suppliers" do
+    alias LetorEcom.AgentsAndSuppliers.Supplier
+
+    import LetorEcom.AgentsAndSuppliersFixtures
+
+    @invalid_attrs %{
+      address: nil,
+      business_name: nil,
+      city: nil,
+      contact_person: nil,
+      country: nil,
+      email: nil,
+      first_name: nil,
+      full_name: nil,
+      last_name: nil,
+      means_of_id: nil,
+      national_supplier: nil,
+      phone: nil,
+      rc_number: nil,
+      regional_supplier: nil,
+      state: nil,
+      status: nil,
+      type: nil,
+      verified: nil
+    }
+
+    test "list_suppliers/0 returns all suppliers" do
+      supplier = supplier_fixture()
+      assert AgentsAndSuppliers.list_suppliers() == [supplier]
+    end
+
+    test "get_supplier!/1 returns the supplier with given id" do
+      supplier = supplier_fixture()
+      assert AgentsAndSuppliers.get_supplier!(supplier.id) == supplier
+    end
+
+    test "create_supplier/1 with valid data creates a supplier" do
+      valid_attrs = %{
+        address: "some address",
+        business_name: "some business_name",
+        city: "some city",
+        contact_person: "some contact_person",
+        country: "some country",
+        email: "some email",
+        first_name: "some first_name",
+        full_name: "some full_name",
+        last_name: "some last_name",
+        means_of_id: "some means_of_id",
+        national_supplier: true,
+        phone: "some phone",
+        rc_number: "some rc_number",
+        regional_supplier: true,
+        state: "some state",
+        status: "some status",
+        type: "some type",
+        verified: true
+      }
+
+      assert {:ok, %Supplier{} = supplier} = AgentsAndSuppliers.create_supplier(valid_attrs)
+      assert supplier.address == "some address"
+      assert supplier.business_name == "some business_name"
+      assert supplier.city == "some city"
+      assert supplier.contact_person == "some contact_person"
+      assert supplier.country == "some country"
+      assert supplier.email == "some email"
+      assert supplier.first_name == "some first_name"
+      assert supplier.full_name == "some full_name"
+      assert supplier.last_name == "some last_name"
+      assert supplier.means_of_id == "some means_of_id"
+      assert supplier.national_supplier == true
+      assert supplier.phone == "some phone"
+      assert supplier.rc_number == "some rc_number"
+      assert supplier.regional_supplier == true
+      assert supplier.state == "some state"
+      assert supplier.status == "some status"
+      assert supplier.type == "some type"
+      assert supplier.verified == true
+    end
+
+    test "create_supplier/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = AgentsAndSuppliers.create_supplier(@invalid_attrs)
+    end
+
+    test "update_supplier/2 with valid data updates the supplier" do
+      supplier = supplier_fixture()
+
+      update_attrs = %{
+        address: "some updated address",
+        business_name: "some updated business_name",
+        city: "some updated city",
+        contact_person: "some updated contact_person",
+        country: "some updated country",
+        email: "some updated email",
+        first_name: "some updated first_name",
+        full_name: "some updated full_name",
+        last_name: "some updated last_name",
+        means_of_id: "some updated means_of_id",
+        national_supplier: false,
+        phone: "some updated phone",
+        rc_number: "some updated rc_number",
+        regional_supplier: false,
+        state: "some updated state",
+        status: "some updated status",
+        type: "some updated type",
+        verified: false
+      }
+
+      assert {:ok, %Supplier{} = supplier} =
+               AgentsAndSuppliers.update_supplier(supplier, update_attrs)
+
+      assert supplier.address == "some updated address"
+      assert supplier.business_name == "some updated business_name"
+      assert supplier.city == "some updated city"
+      assert supplier.contact_person == "some updated contact_person"
+      assert supplier.country == "some updated country"
+      assert supplier.email == "some updated email"
+      assert supplier.first_name == "some updated first_name"
+      assert supplier.full_name == "some updated full_name"
+      assert supplier.last_name == "some updated last_name"
+      assert supplier.means_of_id == "some updated means_of_id"
+      assert supplier.national_supplier == false
+      assert supplier.phone == "some updated phone"
+      assert supplier.rc_number == "some updated rc_number"
+      assert supplier.regional_supplier == false
+      assert supplier.state == "some updated state"
+      assert supplier.status == "some updated status"
+      assert supplier.type == "some updated type"
+      assert supplier.verified == false
+    end
+
+    test "update_supplier/2 with invalid data returns error changeset" do
+      supplier = supplier_fixture()
+
+      assert {:error, %Ecto.Changeset{}} =
+               AgentsAndSuppliers.update_supplier(supplier, @invalid_attrs)
+
+      assert supplier == AgentsAndSuppliers.get_supplier!(supplier.id)
+    end
+
+    test "delete_supplier/1 deletes the supplier" do
+      supplier = supplier_fixture()
+      assert {:ok, %Supplier{}} = AgentsAndSuppliers.delete_supplier(supplier)
+      assert_raise Ecto.NoResultsError, fn -> AgentsAndSuppliers.get_supplier!(supplier.id) end
+    end
+
+    test "change_supplier/1 returns a supplier changeset" do
+      supplier = supplier_fixture()
+      assert %Ecto.Changeset{} = AgentsAndSuppliers.change_supplier(supplier)
     end
   end
 end
