@@ -89,9 +89,9 @@ defmodule LetorEcom.AgentsAndSuppliers.Supplier do
       message: "Your address should be at least 15 characters long",
       min: 15
     )
-    |> validate_length(:first_name, min: 4, max: 40)
+    |> validate_length(:first_name, min: 2, max: 40)
     |> validate_format(:first_name, ~r/^[a-zA-Z_-]+$/, message: "Name must only contain letters")
-    |> validate_length(:last_name, min: 4, max: 40)
+    |> validate_length(:last_name, min: 2, max: 40)
     |> validate_format(:last_name, ~r/^[a-zA-Z_-]+$/, message: "Name must only contain letters")
     |> validate_format(:business_name, ~r/^[a-zA-Z_-]+$/,
       message: "Name must only contain letters"
@@ -147,9 +147,9 @@ defmodule LetorEcom.AgentsAndSuppliers.Supplier do
       message: "Your address should be at least 15 characters long",
       min: 15
     )
-    |> validate_length(:first_name, min: 4, max: 40)
+    |> validate_length(:first_name, min: 2, max: 40)
     |> validate_format(:first_name, ~r/^[a-zA-Z_-]+$/, message: "Name must only contain letters")
-    |> validate_length(:last_name, min: 4, max: 40)
+    |> validate_length(:last_name, min: 2, max: 40)
     |> validate_format(:last_name, ~r/^[a-zA-Z_-]+$/, message: "Name must only contain letters")
     |> validate_format(:business_name, ~r/^[a-zA-Z_-]+$/,
       message: "Name must only contain letters"
@@ -172,9 +172,9 @@ defmodule LetorEcom.AgentsAndSuppliers.Supplier do
       message: "Your address should be at least 15 characters long",
       min: 15
     )
-    |> validate_length(:first_name, min: 4, max: 40)
+    |> validate_length(:first_name, min: 2, max: 40)
     |> validate_format(:first_name, ~r/^[a-zA-Z_-]+$/, message: "Name must only contain letters")
-    |> validate_length(:last_name, min: 4, max: 40)
+    |> validate_length(:last_name, min: 2, max: 40)
     |> validate_format(:last_name, ~r/^[a-zA-Z_-]+$/, message: "Name must only contain letters")
     |> validate_format(:business_name, ~r/^[a-zA-Z_-]+$/,
       message: "Name must only contain letters"

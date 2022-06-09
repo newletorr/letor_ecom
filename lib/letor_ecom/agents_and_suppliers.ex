@@ -7,7 +7,7 @@ defmodule LetorEcom.AgentsAndSuppliers do
   alias Ecto.Multi
   alias LetorEcom.Repo
 
-  alias LetorEcom.AgentsAndSuppliers.Agent
+  alias LetorEcom.AgentsAndSuppliers.{Agent, Supplier}
 
   @doc """
   Creates a agent.
@@ -73,37 +73,6 @@ defmodule LetorEcom.AgentsAndSuppliers do
     Repo.delete(agent)
   end
 
-  alias LetorEcom.AgentsAndSuppliers.Supplier
-
-  @doc """
-  Returns the list of suppliers.
-
-  ## Examples
-
-      iex> list_suppliers()
-      [%Supplier{}, ...]
-
-  """
-  def list_suppliers do
-    Repo.all(Supplier)
-  end
-
-  @doc """
-  Gets a single supplier.
-
-  Raises `Ecto.NoResultsError` if the Supplier does not exist.
-
-  ## Examples
-
-      iex> get_supplier!(123)
-      %Supplier{}
-
-      iex> get_supplier!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_supplier!(id), do: Repo.get!(Supplier, id)
-
   def search_supplier(query, nil), do: query
 
   def search_supplier(query, keywords) do
@@ -137,7 +106,7 @@ defmodule LetorEcom.AgentsAndSuppliers do
   """
   def update_supplier(%Supplier{} = supplier, attrs) do
     supplier
-    |> Supplier.changeset(attrs)
+    |> Supplier.update_changeset(attrs)
     |> Repo.update()
   end
 
@@ -161,18 +130,5 @@ defmodule LetorEcom.AgentsAndSuppliers do
   """
   def delete_supplier(%Supplier{} = supplier) do
     Repo.delete(supplier)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking supplier changes.
-
-  ## Examples
-
-      iex> change_supplier(supplier)
-      %Ecto.Changeset{data: %Supplier{}}
-
-  """
-  def change_supplier(%Supplier{} = supplier, attrs \\ %{}) do
-    Supplier.changeset(supplier, attrs)
   end
 end

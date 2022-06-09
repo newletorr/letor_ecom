@@ -9,6 +9,7 @@ defmodule LetorEcom.Account do
 
   alias LetorEcom.Account.{AddressBook, ReferedList, ShoppingList, User, UserFav, ViewedItem}
   alias LetorEcom.AgentsAndSuppliers.{Agent, Supplier}
+  alias LetorEcom.HumanResource.Staff
   alias LetorEcom.Transactions.UserWallet
 
   def data do
@@ -98,6 +99,41 @@ defmodule LetorEcom.Account do
     |> Multi.update(:user, user_changeset)
     |> Multi.run(:supplier, fn repo, _ ->
       repo.update(supplier_changeset)
+    end)
+    |> Repo.transaction()
+  end
+
+  def register_staff(attrs \\ %{}) do
+    staff_changeset = %Staff{} |> Staff.changeset(attrs)
+
+    Multi.new()
+    |> Multi.insert(:staff, staff_changeset)
+    |> Multi.run(:user, fn repo, %{staff: staff} ->
+      user_changeset =
+        %User{}
+        |> User.staff_changeset(Map.put(attrs, :staff_id, staff.id))
+
+      repo.insert(user_changeset)
+    end)
+    |> Repo.transaction()
+  end
+
+  def update_staff_profile(staff_user, attrs) do
+    user_changeset = staff_user |> User.update_changeset(attrs)
+
+    staff =
+      Repo.one(
+        from staff in Staff,
+          join: user in assoc(staff, :users),
+          where: user.id == ^staff_user.id
+      )
+
+    staff_changeset = staff |> Staff.update_changeset(attrs)
+
+    Multi.new()
+    |> Multi.update(:user, user_changeset)
+    |> Multi.run(:supplier, fn repo, _ ->
+      repo.update(staff_changeset)
     end)
     |> Repo.transaction()
   end

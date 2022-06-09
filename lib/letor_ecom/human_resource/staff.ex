@@ -1,5 +1,6 @@
 defmodule LetorEcom.HumanResource.Staff do
   use LetorEcom.SchemaHelper
+  alias LetorEcom.Account.User
   alias LetorEcom.HumanResource.{Driver, StaffPosting}
   alias LetorEcom.CustomerPurchases.OrderDispatch
   @email_regex ~r/^[A-Za-z0-9._%+-+']+@[A-Za-z0-9.-]+\.[A-Za-z]+$/
@@ -29,12 +30,13 @@ defmodule LetorEcom.HumanResource.Staff do
     has_many(:driver, Driver)
     has_many(:order_dispatch, OrderDispatch)
     has_many(:staff_postings, StaffPosting)
+    has_one(:users, User)
 
     timestamps(type: :utc_datetime)
   end
 
   @doc false
-  def changeset(staff, attrs) do
+  def update_changeset(staff, attrs) do
     staff
     |> cast(attrs, [
       :country,
@@ -76,10 +78,56 @@ defmodule LetorEcom.HumanResource.Staff do
     ])
     |> validate_format(:email, @email_regex)
     |> update_change(:email, &String.downcase/1)
+    |> validate_format(:email, @email_regex, message: "Email must have the @ sign and no spaces")
+    |> update_change(:email, &String.downcase/1)
+    |> validate_length(:email, min: 5, max: 160)
+    |> unique_constraint(:email, message: "A user with the same email already exists")
+    |> unique_constraint(:phone, message: "A user with the same phone number already exists")
+    |> validate_length(:first_name, min: 2, max: 40)
+    |> validate_format(:first_name, ~r/^[a-zA-Z_-]+$/, message: "Name must only contain letters")
+    |> validate_length(:last_name, min: 2, max: 40)
+    |> validate_format(:last_name, ~r/^[a-zA-Z_-]+$/, message: "Name must only contain letters")
     |> valid_phone(:phone)
     |> valid_phone(:guarantor_phone)
     |> join_names()
-    |> gen_staff_id_code
+  end
+
+  def changeset(staff, attrs) do
+    staff
+    |> cast(attrs, [
+      :country,
+      :id_code,
+      :date_employed,
+      :residential_address,
+      :designation,
+      :email,
+      :employment_status,
+      :first_name,
+      :full_name,
+      :guarantor_address,
+      :guarantor_name,
+      :guarantor_phone,
+      :means_of_id,
+      :home_town,
+      :last_name,
+      :lga,
+      :state_of_origin,
+      :phone
+    ])
+    |> validate_format(:email, @email_regex)
+    |> update_change(:email, &String.downcase/1)
+    |> validate_format(:email, @email_regex, message: "Email must have the @ sign and no spaces")
+    |> update_change(:email, &String.downcase/1)
+    |> validate_length(:email, min: 5, max: 160)
+    |> unique_constraint(:email, message: "A user with the same email already exists")
+    |> unique_constraint(:phone, message: "A user with the same phone number already exists")
+    |> validate_length(:first_name, min: 4, max: 40)
+    |> validate_format(:first_name, ~r/^[a-zA-Z_-]+$/, message: "Name must only contain letters")
+    |> validate_length(:last_name, min: 4, max: 40)
+    |> validate_format(:last_name, ~r/^[a-zA-Z_-]+$/, message: "Name must only contain letters")
+    |> valid_phone(:phone)
+    |> valid_phone(:guarantor_phone)
+    |> join_names()
   end
 
   defp join_names(changeset) do

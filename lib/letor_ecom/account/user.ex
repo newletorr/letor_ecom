@@ -5,12 +5,12 @@ defmodule LetorEcom.Account.User do
   alias LetorEcom.AgentsAndSuppliers.{Agent, Supplier}
   alias LetorEcom.Control.Location
   alias LetorEcom.CustomerPurchases.Order
+  alias LetorEcom.HumanResource.Staff
   alias LetorEcom.Sales.InstoreSale
   alias LetorEcom.Transactions.UserWallet
 
   @user_required_fields ~w(location_id email first_name last_name address  phone password password_confirmation)a
-  @agents_required_fields ~w(password password_confirmation)a
-  @supplier_required_fields ~w(password password_confirmation)a
+  @other_required_fields ~w(password password_confirmation)a
 
   @email_regex ~r/^[A-Za-z0-9._%+-+']+@[A-Za-z0-9.-]+\.[A-Za-z]+$/
   schema "users" do
@@ -55,6 +55,7 @@ defmodule LetorEcom.Account.User do
     belongs_to(:location, Location)
     belongs_to(:agent, Agent)
     belongs_to(:supplier, Supplier)
+    belongs_to(:staff, Staff)
 
     timestamps(type: :utc_datetime)
   end
@@ -86,9 +87,9 @@ defmodule LetorEcom.Account.User do
       message: "Your address should be at least 15 characters long",
       min: 15
     )
-    |> validate_length(:first_name, min: 4, max: 40)
+    |> validate_length(:first_name, min: 2, max: 40)
     |> validate_format(:first_name, ~r/^[a-zA-Z_-]+$/, message: "Name must only contain letters")
-    |> validate_length(:last_name, min: 4, max: 40)
+    |> validate_length(:last_name, min: 2, max: 40)
     |> validate_format(:last_name, ~r/^[a-zA-Z_-]+$/, message: "Name must only contain letters")
     |> validate_length(:password, min: 6, max: 80)
     |> validate_format(:password, ~r/[a-z]/,
@@ -112,7 +113,7 @@ defmodule LetorEcom.Account.User do
   def agents_changeset(user, attrs) do
     user
     |> cast(attrs, all_fields())
-    |> validate_required(@agents_required_fields)
+    |> validate_required(@other_required_fields)
     |> validate_format(:email, @email_regex, message: "Email must have the @ sign and no spaces")
     |> update_change(:email, &String.downcase/1)
     |> validate_length(:email, min: 5, max: 160)
@@ -123,9 +124,9 @@ defmodule LetorEcom.Account.User do
       message: "Your address should be at least 15 characters long",
       min: 15
     )
-    |> validate_length(:first_name, min: 4, max: 40)
+    |> validate_length(:first_name, min: 2, max: 40)
     |> validate_format(:first_name, ~r/^[a-zA-Z_-]+$/, message: "Name must only contain letters")
-    |> validate_length(:last_name, min: 4, max: 40)
+    |> validate_length(:last_name, min: 2, max: 40)
     |> validate_format(:last_name, ~r/^[a-zA-Z_-]+$/, message: "Name must only contain letters")
     |> validate_length(:password, min: 6, max: 80)
     |> validate_format(:password, ~r/[a-z]/,
@@ -148,7 +149,7 @@ defmodule LetorEcom.Account.User do
   def supplier_changeset(user, attrs) do
     user
     |> cast(attrs, all_fields())
-    |> validate_required(@supplier_required_fields)
+    |> validate_required(@other_required_fields)
     |> validate_format(:email, @email_regex, message: "Email must have the @ sign and no spaces")
     |> update_change(:email, &String.downcase/1)
     |> validate_length(:email, min: 5, max: 160)
@@ -158,9 +159,9 @@ defmodule LetorEcom.Account.User do
       message: "Your address should be at least 15 characters long",
       min: 15
     )
-    |> validate_length(:first_name, min: 4, max: 40)
+    |> validate_length(:first_name, min: 2, max: 40)
     |> validate_format(:first_name, ~r/^[a-zA-Z_-]+$/, message: "Name must only contain letters")
-    |> validate_length(:last_name, min: 4, max: 40)
+    |> validate_length(:last_name, min: 2, max: 40)
     |> validate_format(:last_name, ~r/^[a-zA-Z_-]+$/, message: "Name must only contain letters")
     |> validate_length(:password, min: 6, max: 80)
     |> validate_format(:password, ~r/[a-z]/,
@@ -178,6 +179,39 @@ defmodule LetorEcom.Account.User do
     |> valid_phone(:phone)
     |> assoc_constraint(:supplier)
     |> set_role("supplier")
+  end
+
+  def staff_changeset(user, attrs) do
+    user
+    |> cast(attrs, all_fields())
+    |> validate_required(@other_required_fields)
+    |> validate_format(:email, @email_regex, message: "Email must have the @ sign and no spaces")
+    |> update_change(:email, &String.downcase/1)
+    |> validate_length(:email, min: 5, max: 160)
+    |> unique_constraint(:email, message: "A user with the same email already exists")
+    |> unique_constraint(:phone, message: "A user with the same phone number already exists")
+    |> validate_length(:address,
+      message: "Your address should be at least 15 characters long",
+      min: 15
+    )
+    |> validate_length(:first_name, min: 2, max: 40)
+    |> validate_format(:first_name, ~r/^[a-zA-Z_-]+$/, message: "Name must only contain letters")
+    |> validate_length(:last_name, min: 2, max: 40)
+    |> validate_format(:last_name, ~r/^[a-zA-Z_-]+$/, message: "Name must only contain letters")
+    |> validate_length(:password, min: 6, max: 80)
+    |> validate_format(:password, ~r/[a-z]/,
+      message: "Password should have at least one lower case character."
+    )
+    |> validate_format(:password, ~r/[A-Z]/,
+      message: "Password should have at least one upper case character."
+    )
+    |> validate_format(:password, ~r/[!?@#$%^&*_0-9]/,
+      message: "Password should have at least one digit or punctuation character."
+    )
+    |> validate_confirmation(:password, message: "password does not match")
+    |> hash_password()
+    |> valid_phone(:phone)
+    |> assoc_constraint(:staff)
   end
 
   def update_changeset(user, attrs) do
