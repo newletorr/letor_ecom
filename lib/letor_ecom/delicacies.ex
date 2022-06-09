@@ -8,6 +8,15 @@ defmodule LetorEcom.Delicacies do
 
   alias LetorEcom.Delicacies.RecipeClass
 
+  def data do
+    Dataloader.Ecto.new(Repo, query: &query/2)
+  end
+
+  @spec query(any, any) :: any
+  def query(queryable, _params) do
+    queryable
+  end
+
   @doc """
   Returns the list of recipe_classes.
 

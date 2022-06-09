@@ -38,5 +38,7 @@ defmodule LetorEcom.Repo.Migrations.CreateSuppliers do
     create index(:suppliers, [:id])
     create index(:suppliers, [:location_id])
     create index(:suppliers, [:ecommerce_control_id])
+    create unique_index(:suppliers, [:email])
+    create unique_index(:suppliers, [:phone])
   end
 end

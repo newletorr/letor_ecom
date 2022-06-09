@@ -8,6 +8,15 @@ defmodule LetorEcom.Control do
 
   alias LetorEcom.Control.{CoveredInstitution, EcommerceControl, Location}
 
+  def data do
+    Dataloader.Ecto.new(Repo, query: &query/2)
+  end
+
+  @spec query(any, any) :: any
+  def query(queryable, _params) do
+    queryable
+  end
+
   @doc """
   Returns the list of ecommerce_controls.
 

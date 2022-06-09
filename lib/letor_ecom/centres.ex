@@ -23,6 +23,15 @@ defmodule LetorEcom.Centres do
     QualityAssuranceRequirement
   }
 
+  def data do
+    Dataloader.Ecto.new(Repo, query: &query/2)
+  end
+
+  @spec query(any, any) :: any
+  def query(queryable, _params) do
+    queryable
+  end
+
   def get_users_pickup_centre(staff_user) do
     pickup_centre =
       Repo.one(
@@ -298,7 +307,7 @@ defmodule LetorEcom.Centres do
 
   # def check_inventory_lead_time(inventory_id) do
   #
-  # from inventory in Inventory, join: purchase_item in assoc(inventory, :purchase_items), join: purchase in assoc(purchase_item, :purchase),  
+  # from inventory in Inventory, join: purchase_item in assoc(inventory, :purchase_items), join: purchase in assoc(purchase_item, :purchase),
 
   # end
 

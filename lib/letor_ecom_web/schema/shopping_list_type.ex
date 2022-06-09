@@ -39,7 +39,6 @@ defmodule LetorEcomWeb.Schema.Types.ShoppingListType do
       middleware(Middleware.Authorize, "customer")
 
       resolve(fn %{input: input}, %{context: context} ->
-        IO.inspect(context)
         main_input = Map.put(input, :user_id, context[:current_user].id)
 
         case Account.create_shopping_list(main_input) do

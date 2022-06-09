@@ -224,140 +224,6 @@ CoveredInstitution |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-Staff |> Repo.delete_all()
-
-{:ok, stf1} =
-  HumanResource.create_staff(%{
-    first_name: "Dumadi",
-    last_name: "Bakor",
-    email: "dumadivure.bakor@yahoomail.com",
-    phone: "08168891829",
-    residential_address: "No. 2 Agip Road Rumuola",
-    home_town: "Biara Gokana",
-    designation: "ceo",
-    lga: "Gokana",
-    state_of_origin: "Rivers State",
-    country: "Nigeria",
-    date_employed: ~D[2011-05-18],
-    employment_status: "active",
-    means_of_id: "Drivers Licence",
-    id_number: "RV990p30429845",
-    guarantor_phone: "08178891829",
-    guarantor_address: "No 12 Ada George Road Port Harcourt",
-    guarantor_name: "Collins Fraser",
-    guarantor_phone: "08172280192"
-  })
-
-{:ok, stf2} =
-  HumanResource.create_staff(%{
-    first_name: "Kelechi",
-    last_name: "Oliver",
-    email: "kelechioliver@gmail.com",
-    phone: "08168891800",
-    residential_address: "Flat 7 Road 18 Elekahia Housing Estate Rumuomasi",
-    home_town: "Okrika",
-    designation: "cto",
-    lga: "Okrika",
-    state_of_origin: "Rivers State",
-    country: "Nigeria",
-    date_employed: ~D[2011-05-18],
-    employment_status: "Active",
-    means_of_id: "Drivers Licence",
-    id_number: "RV990p304298490",
-    image_url: "728kkysd8jdf",
-    guarantor_phone: "08178891829",
-    guarantor_address: "No 12 Ada George Road Port Harcourt",
-    guarantor_name: "Collins Fraser",
-    guarantor_phone: "08172280192"
-  })
-
-{:ok, stf3} =
-  HumanResource.create_staff(%{
-    first_name: "Daniel",
-    last_name: "Don",
-    email: "danieldon@gmail.com",
-    phone: "08168891811",
-    residential_address: "Flat 1 Road 8  Elekahia Housing Estate Rumuomasi",
-    home_town: "Umuariam",
-    designation: "senior developer",
-    lga: "Enugu West",
-    state_of_origin: "Enugu State",
-    country: "Nigeria",
-    date_employed: ~D[2011-05-18],
-    employment_status: "Active",
-    means_of_id: "Drivers Licence",
-    id_number: "RX990p30429845",
-    guarantor_phone: "08178891829",
-    guarantor_address: "No 12 Ada George Road Port Harcourt",
-    guarantor_name: "Collins Fraser",
-    guarantor_phone: "08172280192"
-  })
-
-{:ok, stf4} =
-  HumanResource.create_staff(%{
-    first_name: "Jane",
-    last_name: "Lebatome",
-    email: "janelebatom@gmail.com",
-    phone: "08168901811",
-    residential_address: "Flat 1 Road 8  Elekahia Housing Estate Rumuomasi",
-    home_town: "Umuariam",
-    designation: "dispatcher",
-    lga: "Enugu West",
-    state_of_origin: "Enugu State",
-    country: "Nigeria",
-    date_employed: ~D[2011-05-18],
-    employment_status: "Active",
-    means_of_id: "Drivers Licence",
-    id_number: "RZ990p30429845",
-    guarantor_phone: "08178891829",
-    guarantor_address: "No 12 Ada George Road Port Harcourt",
-    guarantor_name: "Collins Fraser",
-    guarantor_phone: "08172280192"
-  })
-
-{:ok, stf5} =
-  HumanResource.create_staff(%{
-    first_name: "John",
-    last_name: "Lexter",
-    email: "johnlexter@gmail.com",
-    phone: "08175718927",
-    residential_address: "Flat 1 Road 8  Elekahia Housing Estate Rumuomasi",
-    home_town: "Umuariam",
-    designation: "dispatcher rider",
-    lga: "Enugu West",
-    state_of_origin: "Enugu State",
-    country: "Nigeria",
-    date_employed: ~D[2011-05-18],
-    employment_status: "Active",
-    means_of_id: "Drivers Licence",
-    id_number: "8990",
-    guarantor_phone: "08178891829",
-    guarantor_address: "No 12 Ada George Road Port Harcourt",
-    guarantor_name: "Collins Fraser",
-    guarantor_phone: "08172280192"
-  })
-
-{:ok, stf6} =
-  HumanResource.create_staff(%{
-    first_name: "Bruno",
-    last_name: "Maz",
-    email: "brunomaz@gmail.com",
-    phone: "08075718927",
-    residential_address: "Flat 1 Road 8  Elekahia Housing Estate Rumuomasi",
-    home_town: "Umuariam",
-    designation: "dispatch rider",
-    lga: "Enugu West",
-    state_of_origin: "Enugu State",
-    country: "Nigeria",
-    date_employed: ~D[2011-05-18],
-    employment_status: "Active",
-    means_of_id: "Drivers Licence",
-    id_number: "89600",
-    guarantor_address: "No 12 Ada George Road Port Harcourt",
-    guarantor_name: "Collins Fraser",
-    guarantor_phone: "08172280192"
-  })
-
 User |> Repo.delete_all()
 
 {:ok, %{user: user}} =
@@ -512,6 +378,30 @@ User |> Repo.delete_all()
 {:ok, code, confirmed_user} = Confirmation.generate_confirmation_code(user)
 
 {:ok, user8} = Confirmation.confirm_account(confirmed_user, code)
+
+{:ok, %{user: user}} =
+  Account.register_staff_user(%{
+    guarantor_address: "No 15 St George Road Port Harcourt",
+    guarantor_name: "Gabriel Thompson",
+    guarantor_phone: "08167781920",
+    id_image: "/home/dumadi/Downloads/WhatsApp Image 2021-11-04 at 12.49.11 AM.jpeg",
+    first_name: "Dumadi",
+    last_name: "Bakor",
+    email: "dumadivure.bakor@yahoomail.com",
+    phone: "08168891829",
+    address: "No. 2 Agip Road Rumuola",
+    home_town: "Biara Gokana",
+    designation: "ceo",
+    lga: "Gokana",
+    state_of_origin: "Rivers State",
+    country: "Nigeria",
+    date_employed: ~D[2011-05-18],
+    employment_status: "active",
+    means_of_id: "Drivers Licence",
+    id_number: "RV990p30429845",
+    password: "pass1Word*",
+    password_confirmation: "pass1Word*"
+  })
 
 ItemImage |> Repo.delete_all()
 
@@ -2115,18 +2005,6 @@ Delicacies.create_item_recipe(%{
   item_id: item8.id,
   recipe_id: recipe7.id
 })
-
-Driver |> Repo.delete_all()
-
-{:ok, driver} =
-  HumanResource.create_driver(%{
-    email: "johnlexter@gmail.com",
-    name: "John Lexter",
-    status: "on-duty",
-    phone: "08168817267",
-    pickup_centre_id: pickup_centre.id,
-    staff_id: stf5.id
-  })
 
 Agent |> Repo.delete_all()
 

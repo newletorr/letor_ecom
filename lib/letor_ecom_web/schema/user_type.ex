@@ -75,19 +75,6 @@ defmodule LetorEcomWeb.Schema.Types.UserType do
     field(:location_id, non_null(:id))
   end
 
-  input_object :staff_user_input_type do
-    field(:first_name, :string)
-    field(:last_name, :string)
-    field(:email, :string)
-    field(:password, :string)
-    field(:password_confirmation, :string)
-    field(:role, :string)
-    field(:staff_id, :id)
-  end
-
-  input_object :suppliers_user_input_type do
-  end
-
   input_object :agent_input_type do
     field(:business_address, :string)
     field(:email, :string)
@@ -160,6 +147,50 @@ defmodule LetorEcomWeb.Schema.Types.UserType do
     field :password, :string
     field :password_confirmation, :string
     field :location_id, :id
+  end
+
+  input_object :staff_user_input_type do
+    field :country, non_null(:string)
+    field :designation, non_null(:string)
+    field :email, non_null(:string)
+    field :employment_status, non_null(:string)
+    field :first_name, non_null(:string)
+    field :full_name, non_null(:string)
+    field :guarantor_address, non_null(:string)
+    field :guarantor_name, non_null(:string)
+    field :guarantor_phone, non_null(:string)
+    field :home_town, non_null(:string)
+    field :id_image, non_null(:string)
+    field :last_name, non_null(:string)
+    field :lga, non_null(:string)
+    field :means_of_id, non_null(:string)
+    field :phone, non_null(:string)
+    field :residential_address, non_null(:string)
+    field :state_of_origin, non_null(:string)
+    field :password, non_null(:string)
+    field :password_confirmation, non_null(:string)
+  end
+
+  input_object :staff_user_update_input_type do
+    field :country, :string
+    field :designation, :string
+    field :email, :string
+    field :employment_status, :string
+    field :first_name, :string
+    field :full_name, :string
+    field :guarantor_address, :string
+    field :guarantor_name, :string
+    field :guarantor_phone, :string
+    field :home_town, :string
+    field :id_image, :string
+    field :last_name, :string
+    field :lga, :string
+    field :means_of_id, :string
+    field :phone, :string
+    field :residential_address, :string
+    field :state_of_origin, :string
+    field :password, :string
+    field :password_confirmation, :string
   end
 
   input_object :login_input_type do
@@ -307,7 +338,8 @@ defmodule LetorEcomWeb.Schema.Types.UserType do
 
       resolve(fn %{input: input}, _ ->
         with {:ok, %{user: user}} <- Account.register_supplier(input),
-             {:ok, _sms} <- Sms.send_code(user) do
+             {:ok, _code, user_with_code} <- Confirmation.generate_confirmation_code(user),
+             {:ok, _sms} <- Sms.send_code(user_with_code) do
           {:ok, user}
         else
           {:error, :user, changeset, _} ->
@@ -324,6 +356,37 @@ defmodule LetorEcomWeb.Schema.Types.UserType do
 
       resolve(fn %{input: params}, %{context: %{current_user: current_user}} ->
         case Account.update_supplier_profile(current_user, params) do
+          {:error, changeset} ->
+            {:error, transform_errors(changeset)}
+
+          {:ok, %{user: user}} ->
+            {:ok, user}
+        end
+      end)
+    end
+
+    field :register_staff, :user_type, description: "Create Staff user account information" do
+      arg(:input, non_null(:supplier_user_input_type))
+
+      resolve(fn %{input: input}, _ ->
+        with {:ok, %{user: user}} <- Account.register_staff(input),
+             {:ok, _code, user_with_code} <- Confirmation.generate_confirmation_code(user),
+             {:ok, _sms} <- Sms.send_code(user_with_code) do
+          {:ok, user}
+        else
+          {:error, :user, changeset, _} ->
+            {:error, transform_errors(changeset)}
+        end
+      end)
+    end
+
+    field :update_staff_profile, :user_type, description: "Update Staff User account information" do
+      arg(:input, :staff_user_update_input_type)
+
+      middleware(Middleware.Authorize, "supplier")
+
+      resolve(fn %{input: params}, %{context: %{current_user: current_user}} ->
+        case Account.update_staff_profile(current_user, params) do
           {:error, changeset} ->
             {:error, transform_errors(changeset)}
 

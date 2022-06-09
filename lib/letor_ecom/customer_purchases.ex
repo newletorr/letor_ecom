@@ -21,6 +21,15 @@ defmodule LetorEcom.CustomerPurchases do
   alias LetorEcom.Transactions.Payment
   alias LetorEcom.Repo
 
+  def data do
+    Dataloader.Ecto.new(Repo, query: &query/2)
+  end
+
+  @spec query(any, any) :: any
+  def query(queryable, _params) do
+    queryable
+  end
+
   @doc """
   Creates a cart_items.
   """
@@ -310,7 +319,7 @@ defmodule LetorEcom.CustomerPurchases do
   """
   def confirm_delivery(%Order{} = order, attrs) do
     delivery_confirmation_changeset =
-      if is_nil(order.campus_agent_id) == false do
+      if is_nil(order.agent_id) == false do
         order
         |> Order.agent_delivery_confirmation_changeset(
           Map.merge(attrs, %{time_delivered: Timex.now(), order_status: "delivered to agent"})
