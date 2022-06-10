@@ -4,7 +4,7 @@ defmodule LetorEcomWeb.Schema do
 
   """
   use Absinthe.Schema
-
+  
   import_types(Absinthe.Plug.Types)
   import_types(LetorEcomWeb.Schema.Types)
   import_types(Absinthe.Type.Custom)
