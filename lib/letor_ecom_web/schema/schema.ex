@@ -16,6 +16,8 @@ defmodule LetorEcomWeb.Schema do
       |> Dataloader.add_source(Account, Account.data())
       |> Dataloader.add_source(Catalogue, Catalogue.data())
 
+    # |> Dataloader.add_source(Centers, Centers.data())
+
     Map.put(ctx, :loader, loader)
   end
 
@@ -36,8 +38,11 @@ defmodule LetorEcomWeb.Schema do
   query do
     import_fields(:address_book_query)
     import_fields(:daily_deal_query)
+    import_fields(:inventory_location_query)
     import_fields(:items_query)
+    import_fields(:item_category_query)
     import_fields(:item_image_query)
+    import_fields(:item_subcategory_query)
     import_fields(:shopping_list_query)
     import_fields(:supplier_query)
     import_fields(:user_query)
@@ -48,8 +53,11 @@ defmodule LetorEcomWeb.Schema do
   mutation do
     import_fields(:address_book_mutation)
     import_fields(:daily_deal_mutation)
+    import_fields(:inventory_location_mutation)
     import_fields(:items_mutation)
+    import_fields(:item_category_mutation)
     import_fields(:item_image_mutation)
+    import_fields(:item_subcategory_mutation)
     import_fields(:shopping_list_mutation)
     import_fields(:supplier_mutation)
     import_fields(:user_mutation)
