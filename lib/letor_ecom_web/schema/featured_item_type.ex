@@ -1,4 +1,4 @@
-defmodule LetorEcomWeb.Schema.Types.DailyDealType do
+defmodule LetorEcomWeb.Schema.Types.FeaturedItemType do
   @moduledoc """
   Copyright © 2019 Letorr Nigeria Limited.
   All rights reserved.
@@ -9,10 +9,10 @@ defmodule LetorEcomWeb.Schema.Types.DailyDealType do
   import LetorEcomWeb.Schema.ChangesetErrors, only: [transform_errors: 1]
   alias LetorEcom.Account.User
   alias LetorEcom.{Catalogue, Centres, Repo}
-  alias LetorEcom.Centres.DailyDeals
+  alias LetorEcom.Centres.FeaturedItem
   alias EcomHealthServiceWeb.Schema.Middleware
 
-  object :daily_deals_type do
+  object :featured_item_type do
     field(:id, :id)
     field :inserted_at, :datetime
     field :updated_at, :datetime
@@ -33,9 +33,11 @@ defmodule LetorEcomWeb.Schema.Types.DailyDealType do
     field :error, list_of(:mutation_error)
   end
 
-  object :daily_deal_mutation do
-    field :create_daily_deals, :daily_deals_type, description: "Create new daily deals" do
+  object :featured_item_mutation do
+    field :create_featured_item, :featured_item_type, description: "Create new featured Item" do
       middleware(Middleware.Authorize, [
+        "data analyst",
+        "office manager",
         "store manager",
         "pos officer"
       ])
@@ -52,7 +54,7 @@ defmodule LetorEcomWeb.Schema.Types.DailyDealType do
           )
 
         if is_nil(pickup_centre_id) == false do
-          case Centres.create_daily_deal(Map.put(input, :pickup_centre_id, pickup_centre_id)) do
+          case Centres.create_featured_item(Map.put(input, :pickup_centre_id, pickup_centre_id)) do
             {:error, changeset} ->
               {:error, transform_errors(changeset)}
 
@@ -65,20 +67,20 @@ defmodule LetorEcomWeb.Schema.Types.DailyDealType do
       end)
     end
 
-    field :delete_daily_deals, :daily_deals_type, description: "Delete a daily deal" do
-      arg(:daily_deals_id, non_null(:id))
+    field :delete_featured_item, :featured_item_type, description: "Delete a featured item" do
+      arg(:featured_item_id, non_null(:id))
 
       middleware(Middleware.Authorize, [
         "store manager"
       ])
 
       resolve(fn args, _ ->
-        daily_deals =
-          DailyDeals
+        featured_item =
+          FeaturedItem
           |> preload([:items, :pickup_centre])
-          |> Repo.get!(args[:daily_deals_id])
+          |> Repo.get!(args[:featured_item_id])
 
-        case Centres.delete_daily_deal(daily_deals) do
+        case Centres.delete_featured_item(featured_item) do
           {:error, changeset} ->
             {:error, transform_errors(changeset)}
 
@@ -89,20 +91,20 @@ defmodule LetorEcomWeb.Schema.Types.DailyDealType do
     end
   end
 
-  object :daily_deal_query do
-    field :daily_deals, list_of(:daily_deals_type), description: "Get list of daily deals" do
+  object :featured_item_query do
+    field :featured_item, list_of(:featured_item_type), description: "Get list of featured item" do
       arg(:offset, :integer, default_value: 0)
       arg(:limit, :integer, default_value: 10)
       middleware(Middleware.Authorize, :any)
 
       resolve(fn args, _ ->
-        daily_deals =
-          DailyDeals
+        featured_item =
+          FeaturedItem
           |> order_by(asc: :inserted_at)
           |> Repo.paginate(args[:offset], args[:limit])
           |> Repo.all()
 
-        {:ok, daily_deals}
+        {:ok, featured_item}
       end)
     end
   end

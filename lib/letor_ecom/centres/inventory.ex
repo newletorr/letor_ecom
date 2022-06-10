@@ -39,7 +39,7 @@ defmodule LetorEcom.Centres.Inventory do
     belongs_to(:item_image, ItemImage)
     belongs_to(:sku, Sku)
     has_many(:inventory_change_history, InventoryChangeHistory)
-    has_one(:inventory_metrics, InventoryMetric)
+    has_many(:inventory_metrics, InventoryMetric)
     has_many(:purchase_items, PurchaseItem)
 
     timestamps(type: :utc_datetime)
