@@ -8,7 +8,7 @@ defmodule LetorEcomWeb.Schema.Types.InventoryLocationType do
   import Absinthe.Resolution.Helpers
   import LetorEcomWeb.Schema.ChangesetErrors, only: [transform_errors: 1]
   alias LetorEcom.{Centres, Repo}
-  alias LetorEcom.Centers.InventoryLocation
+  alias LetorEcom.Centres.InventoryLocation
   alias LetorEcomWeb.Schema.Middleware
 
   object :inventory_location_type do
