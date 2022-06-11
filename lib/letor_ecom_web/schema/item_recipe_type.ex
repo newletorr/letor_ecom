@@ -16,7 +16,14 @@ defmodule LetorEcomWeb.Schema.Types.ItemRecipeType do
     field :id, :id
     field :inserted_at, :datetime
     field :updated_at, :datetime
-    field :items, :items_type, resolve: dataloader(Delicacies, :item, args: %{deleted: false})
+    field :items, list_of(:items_type) do
+      arg(:limit, :integer, default_value: 30)
+      arg(:offset, :integer, default_value: 0)
+      arg(:keywords, :string, default_value: nil)
+      arg(:filters, :all_items_filter_input_type)
+      arg(:order, :sort_order, default_value: :asc)
+      resolve(dataloader(Catalogue, :items))
+    end
 
     field :recipes, :recipe_type,
       resolve: dataloader(Delicacies, :recipe, args: %{deleted: false})
