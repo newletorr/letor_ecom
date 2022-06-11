@@ -5,7 +5,7 @@ defmodule LetorEcomWeb.Schema.Types.InventoryLocationType do
   """
   use Absinthe.Schema.Notation
   import Ecto.Query, warn: false
-  import Absinthe.Resolution.Helpers
+  # import Absinthe.Resolution.Helpers
   import LetorEcomWeb.Schema.ChangesetErrors, only: [transform_errors: 1]
   alias LetorEcom.{Centres, Repo}
   alias LetorEcom.Centres.InventoryLocation
