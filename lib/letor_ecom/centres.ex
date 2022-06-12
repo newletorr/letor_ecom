@@ -120,6 +120,8 @@ defmodule LetorEcom.Centres do
     |> Repo.insert()
   end
 
+  def get_inventory_location!(id), do: Repo.get!(InventoryLocation, id)
+
   @doc """
   Updates a inventory_location.
 
