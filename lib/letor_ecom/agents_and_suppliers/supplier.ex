@@ -1,10 +1,13 @@
 defmodule LetorEcom.AgentsAndSuppliers.Supplier do
+  @moduledoc """
+
+  """
   use Waffle.Ecto.Schema
   use LetorEcom.SchemaHelper
   alias LetorEcom.Account.User
   alias LetorEcom.Control.EcommerceControl
   @email_regex ~r/^[A-Za-z0-9._%+-+']+@[A-Za-z0-9.-]+\.[A-Za-z]+$/
-#This is a supply schema
+  # This is a supply schema
   schema "suppliers" do
     field(:address, :string)
     field(:business_name, :string)

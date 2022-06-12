@@ -8,13 +8,15 @@ defmodule LetorEcomWeb.Schema do
   import_types(Absinthe.Plug.Types)
   import_types(LetorEcomWeb.Schema.Types)
   import_types(Absinthe.Type.Custom)
-  alias LetorEcom.{Account, Catalogue}
+  alias LetorEcom.{Account, Catalogue, Centres, Delicacies}
 
   def context(ctx) do
     loader =
       Dataloader.new()
       |> Dataloader.add_source(Account, Account.data())
       |> Dataloader.add_source(Catalogue, Catalogue.data())
+      |> Dataloader.add_source(Centres, Centres.data())
+      |> Dataloader.add_source(Delicacies, Delicacies.data())
 
     # |> Dataloader.add_source(Centers, Centers.data())
 
@@ -38,12 +40,14 @@ defmodule LetorEcomWeb.Schema do
   query do
     import_fields(:address_book_query)
     import_fields(:daily_deal_query)
+    import_fields(:featured_item_query)
     import_fields(:inventory_location_query)
     import_fields(:items_query)
     import_fields(:item_category_query)
-    import_fields(:item_image_query)
-    import_fields(:item_recipe_query)
     import_fields(:item_subcategory_query)
+    import_fields(:item_image_query)
+    import_fields(:inventory_query)
+    import_fields(:item_recipe_query)
     import_fields(:recipe_query)
     import_fields(:recipe_class_query)
     import_fields(:shopping_list_query)
@@ -56,12 +60,14 @@ defmodule LetorEcomWeb.Schema do
   mutation do
     import_fields(:address_book_mutation)
     import_fields(:daily_deal_mutation)
-    import_fields(:inventory_location_mutation)
+    import_fields(:featured_item_mutation)
     import_fields(:items_mutation)
     import_fields(:item_category_mutation)
+    import_fields(:item_subcategory_mutation)
+    import_fields(:inventory_mutation)
+    import_fields(:inventory_location_mutation)
     import_fields(:item_image_mutation)
     import_fields(:item_recipe_mutation)
-    import_fields(:item_subcategory_mutation)
     import_fields(:recipe_mutation)
     import_fields(:recipe_class_mutation)
     import_fields(:shopping_list_mutation)
