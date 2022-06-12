@@ -16,6 +16,7 @@ defmodule LetorEcomWeb.Schema.Types.ItemRecipeType do
     field :id, :id
     field :inserted_at, :datetime
     field :updated_at, :datetime
+
     field :items, list_of(:items_type) do
       arg(:limit, :integer, default_value: 30)
       arg(:offset, :integer, default_value: 0)
