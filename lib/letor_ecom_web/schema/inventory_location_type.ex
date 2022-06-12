@@ -5,18 +5,29 @@ defmodule LetorEcomWeb.Schema.Types.InventoryLocationType do
   """
   use Absinthe.Schema.Notation
   import Ecto.Query, warn: false
-  # import Absinthe.Resolution.Helpers
+  import Absinthe.Resolution.Helpers
   import LetorEcomWeb.Schema.ChangesetErrors, only: [transform_errors: 1]
   alias LetorEcom.{Centres, Repo}
   alias LetorEcom.Centres.InventoryLocation
   alias LetorEcomWeb.Schema.Middleware
 
   object :inventory_location_type do
-    field :id, :id
-    field :name, non_null(:string)
-    field :type, non_null(:string)
-    field :inserted_at, :datetime
-    field :updated_at, :datetime
+    field(:id, :id)
+    field(:name, non_null(:string))
+    field(:type, non_null(:string))
+
+    field :inventory, list_of(:inventory_type) do
+      arg(:limit, :integer, default_value: 30)
+      arg(:offset, :integer, default_value: 0)
+      arg(:keywords, :string, default_value: nil)
+      arg(:filters, :inventory_items_filter_input_type)
+      arg(:order, type: :sort_order, default_value: :asc)
+
+      resolve(dataloader(Centres, :inventory))
+    end
+
+    field(:inserted_at, :datetime)
+    field(:updated_at, :datetime)
 
     field(:error, list_of(:mutation_error))
   end
@@ -31,10 +42,14 @@ defmodule LetorEcomWeb.Schema.Types.InventoryLocationType do
       description: "Create a new inventory location" do
       arg(:input, non_null(:inventory_location_input_type))
 
-      middleware(Middleware.Authorize, "customer")
+      middleware(Middleware.Authorize, ["store manager", "data analyst", "store manager"])
 
-      resolve(fn %{input: params}, _ ->
-        case Centers.create_inventory_location(params) do
+      resolve(fn %{input: params}, %{context: %{current_user: current_user}} ->
+        pickup_centre = Centres.get_users_pickup_centre(current_user)
+
+        case Centers.create_inventory_location(
+               Map.put(params, :pickup_centre_id, pickup_centre.id)
+             ) do
           {:error, changeset} ->
             {:error, transform_errors(changeset)}
 
@@ -49,7 +64,7 @@ defmodule LetorEcomWeb.Schema.Types.InventoryLocationType do
       arg(:inventory_location_id, non_null(:id))
       arg(:input, non_null(:inventory_location_input_type))
 
-      middleware(Middleware.Authorize, "customer")
+      middleware(Middleware.Authorize, ["store manager", "data analyst", "store manager"])
 
       resolve(fn %{input: params} = args, _ ->
         inventory_location =
@@ -73,7 +88,7 @@ defmodule LetorEcomWeb.Schema.Types.InventoryLocationType do
       description: "Delete item category" do
       arg(:inventory_location_id, non_null(:id))
 
-      middleware(Middleware.Authorize, "customer")
+      middleware(Middleware.Authorize, ["store manager", "data analyst", "store manager"])
 
       resolve(fn args, _ ->
         inventory_location =

@@ -3,8 +3,8 @@ defmodule LetorEcom.Centres.InventoryLocation do
   alias LetorEcom.Centres.{Inventory, PickupCentre}
 
   schema "inventory_location" do
-    field :name, :string, read_after_writes: true
-    field :type, :string, read_after_writes: true
+    field(:name, :string, read_after_writes: true)
+    field(:type, :string, read_after_writes: true)
     belongs_to(:pickup_centre, PickupCentre)
     has_many(:inventories, Inventory)
 
@@ -17,5 +17,6 @@ defmodule LetorEcom.Centres.InventoryLocation do
     |> cast(attrs, [:pickup_centre_id, :name, :type])
     |> validate_required([:pickup_centre_id, :name, :type])
     |> assoc_constraint(:pickup_centre)
+    |> no_assoc_constraint(:inventories)
   end
 end
