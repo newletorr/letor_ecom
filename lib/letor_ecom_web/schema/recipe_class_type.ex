@@ -7,7 +7,7 @@ defmodule LetorEcomWeb.Schema.Types.RecipeClassType do
   import Ecto.Query, warn: false
   import Absinthe.Resolution.Helpers
   import LetorEcomWeb.Schema.ChangesetErrors, only: [transform_errors: 1]
-  alias LetorEcom.{Delicacies, Repo}
+  alias LetorEcom.{Centres, Delicacies, Repo}
   alias LetorEcom.Delicacies.RecipeClass
   alias LetorEcomWeb.Schema.Middleware
 
