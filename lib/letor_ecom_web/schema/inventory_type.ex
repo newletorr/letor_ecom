@@ -87,7 +87,7 @@ defmodule LetorEcomWeb.Schema.Types.InventoryType do
     field :inventory_location_id, :id
     field :item_image_id, :id
   end
-  
+
   object :inventory_change_history_type do
     field(:id, :id)
     field(:buy_price, :decimal)
@@ -170,8 +170,6 @@ defmodule LetorEcomWeb.Schema.Types.InventoryType do
           ])
           |> Repo.get!(args[:inventory_id])
 
-        case Catalogue.update_item_category(
-
         case Catalogue.update_inventory(
                inventory,
                params
@@ -184,7 +182,6 @@ defmodule LetorEcomWeb.Schema.Types.InventoryType do
         end
       end)
     end
-
 
     field :delete_inventory, :inventory_type, description: "Delete inventory" do
       arg(:inventory_id, non_null(:id))
@@ -218,8 +215,6 @@ defmodule LetorEcomWeb.Schema.Types.InventoryType do
     end
   end
 
-
-
   object :inventory_query do
     field :inventory, list_of(:inventory_type), description: "Get list of inventory items" do
       arg(:offset, :integer, default_value: 0)
@@ -231,9 +226,7 @@ defmodule LetorEcomWeb.Schema.Types.InventoryType do
       resolve(fn args, _ ->
         inventory =
           Inventory
-
           |> Catalogue.search_inventories(args[:keywords])
-
           |> order_by(asc: :inserted_at)
           |> Repo.paginate(args[:offset], args[:limit])
           |> Repo.all()
@@ -241,7 +234,6 @@ defmodule LetorEcomWeb.Schema.Types.InventoryType do
         {:ok, inventory}
       end)
     end
-
 
     field :inventory_by_id, :inventory_type, description: "fetch a inventory by id" do
       arg(:inventory_id, non_null(:id))
