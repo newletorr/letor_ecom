@@ -13,11 +13,11 @@ defmodule LetorEcomWeb.Schema.Types.ItemSubcategoryType do
   alias LetorEcomWeb.Schema.Middleware
 
   object :item_subcategory_type do
-    field :id, :id
+    field(:id, :id)
     field(:name, :string)
     field(:description, :string)
-    field :inserted_at, :datetime
-    field :updated_at, :datetime
+    field(:inserted_at, :datetime)
+    field(:updated_at, :datetime)
 
     field(:error, list_of(:mutation_error))
   end

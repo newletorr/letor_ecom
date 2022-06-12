@@ -7,9 +7,10 @@ defmodule LetorEcomWeb.Schema.Types.InventoryType do
   import Ecto.Query, warn: false
   import Absinthe.Resolution.Helpers
   import LetorEcomWeb.Schema.ChangesetErrors, only: [transform_errors: 1]
-  alias LetorEcom.Account.User
+
   alias LetorEcom.{Catalogue, Centres, Repo}
-  alias LetorEcom.Centres.Inventory
+  alias LetorEcom.Account.User
+  alias LetorEcom.Catalogue.Inventory
   alias LetorEcomWeb.Schema.Middleware
 
   object :inventory_type do
@@ -86,11 +87,67 @@ defmodule LetorEcomWeb.Schema.Types.InventoryType do
     field :inventory_location_id, :id
     field :item_image_id, :id
   end
+  
+  object :inventory_change_history_type do
+    field(:id, :id)
+    field(:buy_price, :decimal)
+    field(:bulk_quantity, :integer)
+    field(:sales_unit_quantity, :integer)
+    field(:unit_sales_price, :decimal)
+    field(:bulk_sales_price, :decimal)
+    field(:change_type, :string)
+
+    field :inventory, list_of(:inventory_type) do
+      arg(:limit, :integer, default_value: 30)
+      arg(:offset, :integer, default_value: 0)
+      arg(:keywords, :string, default_value: nil)
+      arg(:filters, :inventory_items_filter_input_type)
+      arg(:order, type: :sort_order, default_value: :asc)
+
+      resolve(dataloader(Centres, :inventory))
+    end
+
+    field(:inserted_at, :datetime)
+    field(:updated_at, :datetime)
+  end
+
+  input_object :inventory_items_filter_input_type do
+    @desc "filter by brand name"
+    field(:brand_name, list_of(:string))
+    @desc "filter by internal quantity"
+    field(:sales_unit_quantity, :integer)
+    @desc "filter by external quantity"
+    field(:bulk_quantity, :integer)
+    @desc "filter by status"
+    field(:status, :string)
+  end
+
+  input_object :inventory_update_input_type do
+    field(:brand_name, :string)
+    field(:buy_price, :decimal)
+    field(:description, :string)
+    field(:expiry_date, :date)
+    field(:bulk_quantity, :integer)
+    field(:bulk_quantity_uom, :string)
+    field(:sales_unit_quantity_uom, :string)
+    field(:sales_unit_quantity, :integer)
+    field(:max_bulk_quantity, :integer)
+    field(:name, :string)
+    field(:quality_assurance_status, :string)
+    field(:unit_sales_price, :decimal)
+    field(:bulk_sales_price, :decimal)
+    field(:size, :integer)
+    field(:status, :string)
+    field(:re_order_level, :integer)
+    field(:shelf_replenishment_levels, :integer)
+    field(:inventory_location_id, :id)
+    field(:item_subcategory_id, :id)
+  end
 
   object :inventory_mutation do
-    field :update_inventory, :inventory_type, description: "Update an inventory item" do
+    field :update_inventory, :inventory_type, description: "change inventory location" do
       arg(:inventory_id, non_null(:id))
-      arg(:input, non_null(:inventory_input_type))
+      arg(:input, non_null(:inventory_update_input_type))
 
       middleware(Middleware.Authorize, [
         "data analyst",
@@ -114,6 +171,8 @@ defmodule LetorEcomWeb.Schema.Types.InventoryType do
           |> Repo.get!(args[:inventory_id])
 
         case Catalogue.update_item_category(
+
+        case Catalogue.update_inventory(
                inventory,
                params
              ) do
@@ -125,6 +184,7 @@ defmodule LetorEcomWeb.Schema.Types.InventoryType do
         end
       end)
     end
+
 
     field :delete_inventory, :inventory_type, description: "Delete inventory" do
       arg(:inventory_id, non_null(:id))
@@ -158,19 +218,37 @@ defmodule LetorEcomWeb.Schema.Types.InventoryType do
     end
   end
 
+
+
   object :inventory_query do
-    field :inventory, list_of(:inventory_type), description: "Get list of inventories" do
+    field :inventory, list_of(:inventory_type), description: "Get list of inventory items" do
       arg(:offset, :integer, default_value: 0)
-      arg(:limit, :integer, default_value: 10)
+      arg(:limit, :integer)
+      arg(:keywords, :string, default_value: nil)
+
       middleware(Middleware.Authorize, :any)
 
       resolve(fn args, _ ->
         inventory =
           Inventory
+
+          |> Catalogue.search_inventories(args[:keywords])
+
           |> order_by(asc: :inserted_at)
           |> Repo.paginate(args[:offset], args[:limit])
           |> Repo.all()
 
+        {:ok, inventory}
+      end)
+    end
+
+
+    field :inventory_by_id, :inventory_type, description: "fetch a inventory by id" do
+      arg(:inventory_id, non_null(:id))
+      middleware(Middleware.Authorize, :any)
+
+      resolve(fn args, _ ->
+        inventory = Inventory |> Repo.get!(args[:inventory_id])
         {:ok, inventory}
       end)
     end
