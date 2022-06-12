@@ -14,8 +14,8 @@ defmodule LetorEcomWeb.Schema.Types.DailyDealType do
 
   object :daily_deals_type do
     field(:id, :id)
-    field :inserted_at, :datetime
-    field :updated_at, :datetime
+    field(:inserted_at, :datetime)
+    field(:updated_at, :datetime)
 
     field :items, list_of(:items_type) do
       arg(:limit, :integer, default_value: 20)
@@ -30,7 +30,7 @@ defmodule LetorEcomWeb.Schema.Types.DailyDealType do
     # field :pickup_centre, :pickup_centres_type,
     # resolve: dataloader(Catalogue, :pickup_centre, args: %{deleted: false})
 
-    field :error, list_of(:mutation_error)
+    field(:error, list_of(:mutation_error))
   end
 
   object :daily_deal_mutation do
@@ -43,18 +43,10 @@ defmodule LetorEcomWeb.Schema.Types.DailyDealType do
       ])
 
       resolve(fn %{input: input}, %{context: %{current_user: current_user}} ->
-        pickup_centre_id =
-          Repo.one(
-            from user in User,
-              join: staff in assoc(user, :staff),
-              join: staff_posting in assoc(staff, :staff_posting),
-              join: pickup_centre in assoc(staff_posting, :pickup_centre),
-              where: user.id == ^current_user.id,
-              select: pickup_centre.id
-          )
+        pickup_centre = Centres.get_users_pickup_centre(current_user)
 
-        if is_nil(pickup_centre_id) == false do
-          case Centres.create_daily_deal(Map.put(input, :pickup_centre_id, pickup_centre_id)) do
+        if is_nil(pickup_centre) == false do
+          case Centres.create_daily_deal(Map.put(input, :pickup_centre_id, pickup_centre.id)) do
             {:error, changeset} ->
               {:error, transform_errors(changeset)}
 
