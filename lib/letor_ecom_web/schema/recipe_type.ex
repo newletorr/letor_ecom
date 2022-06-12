@@ -14,23 +14,24 @@ defmodule LetorEcomWeb.Schema.Types.RecipeType do
 
   object :recipe_type do
     field(:id, :id)
-    field :description, :string
-    field :directions, :string
-    field :image1_url, :string
-    field :image2_url, :string
-    field :image3_url, :string
-    field :meal_type, :string
-    field :name, :string
-    field :special, :boolean
-    field :video, :string
+    field(:description, :string)
+    field(:directions, :string)
+    field(:image1_url, :string)
+    field(:image2_url, :string)
+    field(:image3_url, :string)
+    field(:meal_type, :string)
+    field(:name, :string)
+    field(:special, :boolean)
+    field(:video, :string)
 
-    field :likes, :integer,
+    field(:likes, :integer,
       resolve: fn query, _, _ ->
         Delicacies.get_recipe_like_count(query.id)
       end
+    )
 
-    field :inserted_at, :datetime
-    field :updated_at, :datetime
+    field(:inserted_at, :datetime)
+    field(:updated_at, :datetime)
 
     field :items, list_of(:items_type) do
       arg(:limit, :integer, default_value: 30)
@@ -47,16 +48,16 @@ defmodule LetorEcomWeb.Schema.Types.RecipeType do
   end
 
   input_object :recipe_input_type do
-    field :description, non_null(:string)
-    field :name, non_null(:string)
-    field :directions, non_null(:string)
-    field :video, :string
-    field :special, :boolean
-    field :image1_url, non_null(:string)
-    field :image2_url, :string
-    field :image3_url, :string
-    field :meal_type, :string
-    field :recipe_class_id, non_null(:id)
+    field(:description, non_null(:string))
+    field(:name, non_null(:string))
+    field(:directions, non_null(:string))
+    field(:video, :string)
+    field(:special, :boolean)
+    field(:image1_url, non_null(:string))
+    field(:image2_url, :upload)
+    field(:image3_url, :upload)
+    field(:meal_type, :string)
+    field(:recipe_class_id, non_null(:id))
   end
 
   object :recipe_mutation do
@@ -64,19 +65,16 @@ defmodule LetorEcomWeb.Schema.Types.RecipeType do
       arg(:input, non_null(:recipe_input_type))
 
       middleware(Middleware.Authorize, [
-        "super admin",
-        "admin",
         "store manager",
-        "content officer",
-        "customer"
+        "data analyst",
+        "store manager",
+        "pos attendant"
       ])
 
       resolve(fn %{input: input}, _ ->
         case Delicacies.create_recipe(input) do
           {:error, changeset} ->
-            {:error,
-             message: "Something went wrong, please try again",
-             details: transform_errors(changeset)}
+            {:error, transform_errors(changeset)}
 
           success ->
             success
@@ -89,17 +87,16 @@ defmodule LetorEcomWeb.Schema.Types.RecipeType do
       arg(:input, non_null(:recipe_input_type))
 
       middleware(Middleware.Authorize, [
-        "super admin",
-        "admin",
         "store manager",
-        "content officer",
-        "customer"
+        "data analyst",
+        "store manager",
+        "pos attendant"
       ])
 
       resolve(fn %{input: params} = args, _ ->
         recipe =
           Recipe
-          # |> preload([:recipe_subclass, :recipe_image])
+          |> preload(:recipe_subclass)
           |> Repo.get!(args[:recipe_id])
 
         case Delicacies.update_recipe(
@@ -107,9 +104,7 @@ defmodule LetorEcomWeb.Schema.Types.RecipeType do
                params
              ) do
           {:error, changeset} ->
-            {:error,
-             message: "Something went wrong, please try again",
-             details: transform_errors(changeset)}
+            {:error, transform_errors(changeset)}
 
           success ->
             success
@@ -121,11 +116,9 @@ defmodule LetorEcomWeb.Schema.Types.RecipeType do
       arg(:recipe_id, non_null(:id))
 
       middleware(Middleware.Authorize, [
-        "super admin",
-        "admin",
         "store manager",
-        "content officer",
-        "customer"
+        "data analyst",
+        "store manager"
       ])
 
       resolve(fn args, _ ->
@@ -136,9 +129,7 @@ defmodule LetorEcomWeb.Schema.Types.RecipeType do
 
         case Delicacies.delete_recipe(recipe) do
           {:error, changeset} ->
-            {:error,
-             message: "Something went wrong, please try again",
-             details: transform_errors(changeset)}
+            {:error, transform_errors(changeset)}
 
           success ->
             success
