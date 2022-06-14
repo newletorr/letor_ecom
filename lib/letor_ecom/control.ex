@@ -127,6 +127,8 @@ defmodule LetorEcom.Control do
   """
   def get_location!(id), do: Repo.get!(Location, id)
 
+  def get_location!(location_area), do: Repo.get!(Location, location_area)
+
   @doc """
   Creates a location.
 
@@ -177,6 +179,18 @@ defmodule LetorEcom.Control do
   """
   def delete_location(%Location{} = location) do
     Repo.delete(location)
+  end
+
+  def get_loc_coordinates(coord) do
+    {:ok, json} = Geo.JSON.encode(coord)
+
+    case json do
+      nil ->
+        {:error, "Error getting value"}
+
+      _ ->
+        {:ok, json["coordinates"]}
+    end
   end
 
   @doc """
