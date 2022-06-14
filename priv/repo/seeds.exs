@@ -12,7 +12,7 @@ alias LetorEcom.{
 }
 
 alias LetorEcom.Account.{Address, Confirmation, ShoppingList, User}
-alias LetorEcom.AgentsAndSuppliers.CampusAgent
+alias LetorEcom.AgentsAndSuppliers.{Agent, Supplier}
 
 alias LetorEcom.Catalogue.{
   Item,
@@ -2005,62 +2005,3 @@ Delicacies.create_item_recipe(%{
   item_id: item8.id,
   recipe_id: recipe7.id
 })
-
-Agent |> Repo.delete_all()
-
-{:ok, campus_agent} =
-  AgentsAndSuppliers.create_agent(%{
-    business_address: "No 12 Agip Road Rumueme",
-    agents_image: "/home/dumadi/Downloads/WhatsApp Image 2022-04-11 at 1.35.14 PM.jpeg",
-    email: "nneka@gmail.com",
-    first_name: "Nneka",
-    guarantor_first_name: "Daniel",
-    guarantor_phone: "09029901928",
-    guarantor_residential_address: "No 12 Ada George Road PHC",
-    guarantor_last_name: "Micah",
-    home_town: "Alimnmini",
-    id_image: "/home/dumadi/Downloads/WhatsApp Image 2022-04-11 at 1.35.14 PM.jpeg",
-    last_name: "Nwachukwu",
-    means_of_id: "National ID",
-    nationality: "Nigeria",
-    phone: "08039901928",
-    residential_address: "No 1 Ada George Road PHC",
-    state_of_origin: "Rivers",
-    status: "active",
-    verified: true,
-    covered_institution_id: covered_institution.id,
-    ecommerce_control_id: ecommerce_control.id,
-    location_id: l1.id
-  })
-
-Supplier |> Repo.delete_all()
-
-# Warehouse |> Repo.delete_all()
-
-# {:ok, %{warehouse: warehouse}} =
-# Centres.create_warehouse(%{
-#  address: "No 12 Aba Road Port Harcourt",
-# area: "Rumuomasi",
-# city: "Port Harcourt",
-# country: "Nigeria",
-# name: "Aba Road Warehouse",
-# point: %Geo.Point{coordinates: {3.90010, -0.98827}, srid: 4326},
-# ecommerce_control_id: ecommerce_control.id,
-# state: "Rivers State"
-# })
-
-# WarehouseInventory |> Repo.delete_all()
-
-# Centres.create_warehouse_inventory(%{
-# description: "Special China ceramic dishes",
-# expiry_date: ~D[2021-06-16],
-## image_url: "87y0EF23rblhfa]av",
-# name: "Ceramicous Chinese",
-# quantity: 21,
-# unit_unit_sales_price: 1400,
-# bulk_unit_sales_price: 26000,
-# uom: "Carton",
-# warehouse_id: warehouse.id
-# seller_delivery_id
-# warehouse_inventory_location
-# })

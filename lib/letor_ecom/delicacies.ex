@@ -18,35 +18,6 @@ defmodule LetorEcom.Delicacies do
   end
 
   @doc """
-  Returns the list of recipe_classes.
-
-  ## Examples
-
-      iex> list_recipe_classes()
-      [%RecipeClass{}, ...]
-
-  """
-  def list_recipe_classes do
-    Repo.all(RecipeClass)
-  end
-
-  @doc """
-  Gets a single recipe_class.
-
-  Raises `Ecto.NoResultsError` if the Recipe class does not exist.
-
-  ## Examples
-
-      iex> get_recipe_class!(123)
-      %RecipeClass{}
-
-      iex> get_recipe_class!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_recipe_class!(id), do: Repo.get!(RecipeClass, id)
-
-  @doc """
   Creates a recipe_class.
 
   ## Examples

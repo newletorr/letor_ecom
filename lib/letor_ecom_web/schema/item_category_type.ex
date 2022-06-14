@@ -134,7 +134,7 @@ defmodule LetorEcomWeb.Schema.Types.ItemCategoryType do
       resolve(fn args, _ ->
         item_category =
           ItemCategory
-          |> Catalogue.search_item_categories(args[:keywords])
+          # |> Catalogue.search_item_categories(args[:keywords])
           |> order_by(asc: :inserted_at)
           |> Repo.paginate(args[:offset], args[:limit])
           |> Repo.all()

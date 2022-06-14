@@ -378,7 +378,7 @@ defmodule LetorEcom.CustomerPurchases.Order do
 
         case is_nil(curbside_agent_id) == false do
           true ->
-            curbside_agent = Repo.one(from c in CampusAgent, where: c.id == ^curbside_agent_id)
+            curbside_agent = Repo.one(from c in Agent, where: c.id == ^curbside_agent_id)
 
             changeset |> put_change(:agent_delivery_confirmation_code, curbside_agent.secret_code)
 

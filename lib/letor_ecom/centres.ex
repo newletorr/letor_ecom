@@ -27,6 +27,10 @@ defmodule LetorEcom.Centres do
     Dataloader.Ecto.new(Repo, query: &query/2)
   end
 
+  def query(Inventory, args) do
+    inventory_query(args)
+  end
+
   @spec query(any, any) :: any
   def query(queryable, _params) do
     queryable
@@ -35,11 +39,12 @@ defmodule LetorEcom.Centres do
   def get_users_pickup_centre(staff_user) do
     pickup_centre =
       Repo.one(
-        from user in User,
+        from(user in User,
           join: staff in assoc(user, :staff),
           join: staff_postings in assoc(staff, :staff_postings),
           join: pickup_centre in assoc(staff_postings, :pickup_centres),
           where: user.id == ^staff_user.id
+        )
       )
 
     pickup_centre
@@ -312,6 +317,77 @@ defmodule LetorEcom.Centres do
   # from inventory in Inventory, join: purchase_item in assoc(inventory, :purchase_items), join: purchase in assoc(purchase_item, :purchase),
 
   # end
+
+  def search_inventories(query, nil), do: query
+
+  def search_inventories(query, keywords) do
+    pattern = "%#{keywords}%"
+
+    from(
+      inventory in query,
+      where: ilike(inventory.name, ^pattern)
+    )
+  end
+
+  def list_inventory(args) do
+    args
+    |> inventory_query
+    |> Repo.all()
+  end
+
+  def inventory_query(args) do
+    args
+    |> Enum.reduce(Inventory, fn
+      {:keywords, term}, query ->
+        pattern = "%#{term}%"
+
+        from(inventory in query,
+          join: sku in assoc(inventory, :sku),
+          join: purchase_item in assoc(inventory, :purchase_items),
+          join: inventory_location in assoc(inventory, :inventory_location),
+          join: item_subcategory in assoc(inventory, :item_subcategory),
+          join: item_category in assoc(item_subcategory, :item_category),
+          where:
+            ilike(inventory.name, ^pattern) or
+              ilike(inventory.description, ^pattern) or ilike(sku.item_name, ^pattern) or
+              ilike(sku.code, ^pattern) or ilike(inventory_location.name, ^pattern) or
+              ilike(inventory_location.type, ^pattern) or ilike(item_subcategory.name, ^pattern) or
+              ilike(item_category.name, ^pattern) or ilike(purchase_item.suppliers_name, ^pattern) or
+              ilike(purchase_item.suppliers_phone, ^pattern) or
+              ilike(purchase_item.suppliers_email, ^pattern)
+        )
+
+      {:filters, filters}, query ->
+        filters_with(filters, query)
+
+      {:limit, limit}, query ->
+        from(p in query, limit: ^limit)
+
+      {:offset, offset}, query ->
+        from(p in query, offset: ^offset)
+
+      {:order, order}, query ->
+        from(q in query, order_by: [{^order, :inserted_at}])
+    end)
+  end
+
+  defp filters_with(filters, query) do
+    Enum.reduce(filters, query, fn
+      {:bulk_quantity, value}, query ->
+        from(q in query, where: q.bulk_quantity == ^value)
+
+      {:sales_unit_quantity, value}, query ->
+        from(q in query, where: q.sales_unit_quantity == ^value)
+
+      {:status, value}, query ->
+        from(q in query, where: q.status == ^value)
+
+      {:brand_name, brand_names}, query ->
+        from(q in query,
+          where: q.brand_name in ^brand_names
+        )
+    end)
+  end
 
   @doc """
   Creates a inventory.

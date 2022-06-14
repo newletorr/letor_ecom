@@ -1,4 +1,7 @@
 defmodule LetorEcom.AgentsAndSuppliers.Supplier do
+  @moduledoc """
+
+  """
   use Waffle.Ecto.Schema
   use LetorEcom.SchemaHelper
   alias LetorEcom.Account.User
