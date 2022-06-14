@@ -7,8 +7,8 @@ defmodule LetorEcomWeb.Schema.Types.InventoryLocationType do
   import Ecto.Query, warn: false
   # import Absinthe.Resolution.Helpers
   import LetorEcomWeb.Schema.ChangesetErrors, only: [transform_errors: 1]
-  alias LetorEcom.Repo
-  alias LetorEcom.Centers.InventoryLocation
+  alias LetorEcom.{Centres, Repo}
+  alias LetorEcom.Centres.InventoryLocation
   alias LetorEcomWeb.Schema.Middleware
 
   object :inventory_location_type do
@@ -34,7 +34,7 @@ defmodule LetorEcomWeb.Schema.Types.InventoryLocationType do
       middleware(Middleware.Authorize, "customer")
 
       resolve(fn %{input: params}, _ ->
-        case Centers.create_inventory_location(params) do
+        case Centres.create_inventory_location(params) do
           {:error, changeset} ->
             {:error, transform_errors(changeset)}
 
@@ -56,7 +56,7 @@ defmodule LetorEcomWeb.Schema.Types.InventoryLocationType do
           InventoryLocation
           |> Repo.get!(args[:inventory_location_id])
 
-        case Centers.update_inventory_location(
+        case Centres.update_inventory_location(
                inventory_location,
                params
              ) do
@@ -80,7 +80,7 @@ defmodule LetorEcomWeb.Schema.Types.InventoryLocationType do
           InventoryLocation
           |> Repo.get!(args[:inventory_location_id])
 
-        case Centers.delete_inventory_location(inventory_location) do
+        case Centres.delete_inventory_location(inventory_location) do
           {:error, changeset} ->
             {:error, transform_errors(changeset)}
 

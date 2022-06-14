@@ -380,7 +380,7 @@ User |> Repo.delete_all()
 {:ok, user8} = Confirmation.confirm_account(confirmed_user, code)
 
 {:ok, %{user: user}} =
-  Account.register_staff_user(%{
+  Account.register_staff(%{
     guarantor_address: "No 15 St George Road Port Harcourt",
     guarantor_name: "Gabriel Thompson",
     guarantor_phone: "08167781920",
