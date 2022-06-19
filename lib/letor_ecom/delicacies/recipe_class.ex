@@ -16,7 +16,7 @@ defmodule LetorEcom.Delicacies.RecipeClass do
   def changeset(recipe_class, attrs) do
     recipe_class
     |> cast(attrs, [:pickup_centre_id, :name, :description])
-    |> validate_required([:pickup_centre_id, :name, :description])
+    |> validate_required([:name, :description])
     |> assoc_constraint(:pickup_centre)
   end
 end

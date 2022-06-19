@@ -1,7 +1,9 @@
 defmodule LetorEcom.Repo.Migrations.CreateUsers do
   use Ecto.Migration
 
-  def change do
+  def up do
+    execute("CREATE EXTENSION IF NOT EXISTS pgcrypto")
+
     create table(:users, primary_key: false) do
       add :id, :binary_id, primary_key: true, default: fragment("gen_random_uuid()")
       add :email, :string
@@ -39,5 +41,10 @@ defmodule LetorEcom.Repo.Migrations.CreateUsers do
     create index(:users, [:id])
     create unique_index(:users, [:email])
     create unique_index(:users, [:phone])
+  end
+
+  def down do
+    drop table(:users)
+    execute("DROP EXTENSION IF EXISTS pgcrypto")
   end
 end

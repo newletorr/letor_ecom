@@ -33,12 +33,12 @@ defmodule LetorEcom.Control.Location do
       :location_coordinates
     ])
     |> validate_required([
-      :pickup_centre_id,
+      #:pickup_centre_id,
       :city,
       :country,
       :location_area,
-      :state,
-      :location_coordinates
+      :state
+      #:location_coordinates
     ])
     |> unique_constraint(:location_area)
     |> assoc_constraint(:pickup_centre)
