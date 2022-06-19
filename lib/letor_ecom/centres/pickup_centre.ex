@@ -8,7 +8,8 @@ defmodule LetorEcom.Centres.PickupCentre do
     InventoryLocation,
     DailyDeal,
     FeaturedItem,
-    PopularItem
+    PopularItem,
+    Purchase
   }
 
   alias LetorEcom.Control.{EcommerceControl, Location}
@@ -31,16 +32,17 @@ defmodule LetorEcom.Centres.PickupCentre do
     has_many(:item_categories, ItemCategory)
     has_many(:sku, Sku)
     has_many(:driver, Driver)
-    has_many(:inventory, Inventory)
+    has_many(:inventories, Inventory)
     has_many(:inventory_location, InventoryLocation)
     has_many(:daily_deals, DailyDeal)
     has_many(:featured_item, FeaturedItem)
     has_many(:popular_item, PopularItem)
     has_many(:pick_ups, PickUp)
-    has_many(:recipe_class, RecipeClass)
+    has_many(:recipe_classes, RecipeClass)
     has_many(:locations, Location)
     has_many(:order_dispatches, OrderDispatch)
     has_many(:staff_postings, StaffPosting)
+    has_many(:purchases, Purchase)
 
     timestamps(type: :utc_datetime)
   end

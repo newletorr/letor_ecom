@@ -1,11 +1,14 @@
 defmodule LetorEcom.Catalogue.ItemSubcategory do
   use LetorEcom.SchemaHelper
-  alias LetorEcom.Catalogue.ItemCategory
+  alias LetorEcom.Catalogue.{Item, ItemCategory}
+  alias LetorEcom.Centres.Inventory
 
   schema "item_subcategories" do
     field(:description, :string)
     field(:name, :string)
     belongs_to(:item_category, ItemCategory)
+    has_many(:items, Item)
+    has_many(:inventory, Inventory)
 
     timestamps(type: :utc_datetime)
   end

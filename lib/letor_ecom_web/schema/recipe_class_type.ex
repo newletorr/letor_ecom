@@ -18,7 +18,7 @@ defmodule LetorEcomWeb.Schema.Types.RecipeClassType do
     field(:inserted_at, :datetime)
     field(:updated_at, :datetime)
 
-    field(:recipe, :recipe_type,
+    field(:recipes, :recipe_type,
       resolve: dataloader(Delicacies, :recipes, args: %{deleted: false})
     )
 

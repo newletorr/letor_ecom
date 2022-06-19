@@ -8,8 +8,9 @@ defmodule LetorEcom.Centres.PurchaseItem do
     field :suppliers_email, :string, read_after_writes: true
     field :suppliers_name, :string, read_after_writes: true
     field :suppliers_phone, :string, read_after_writes: true
+    field :unit_of_measure, :string, read_after_writes: true
     field :total, :decimal, read_after_writes: true
-    field :unit_price, :decimal, read_after_writes: true
+    field :price_per_unit, :decimal, read_after_writes: true
     belongs_to(:inventory, Inventory)
     belongs_to(:purchase, Purchase)
 
@@ -21,15 +22,16 @@ defmodule LetorEcom.Centres.PurchaseItem do
     purchase_item
     |> cast(attrs, [
       :purchase_id,
-      :unit_price,
+      :price_per_unit,
       :item_name,
       :suppliers_email,
       :suppliers_phone,
       :suppliers_name,
+      :unit_of_measure,
       :quantity,
       :total
     ])
-    |> validate_required([:unit_price, :item_name, :quantity])
+    |> validate_required([:price_per_unit, :item_name, :quantity, :unit_of_measure])
     |> assoc_constraint(:purchase)
     |> get_total
   end
@@ -39,18 +41,20 @@ defmodule LetorEcom.Centres.PurchaseItem do
     |> cast(attrs, [
       :inventory_id,
       :purchase_id,
-      :unit_price,
+      :price_per_unit,
       :suppliers_email,
       :suppliers_phone,
       :suppliers_name,
+      :unit_of_measure,
       :quantity,
       :total
     ])
-    |> validate_required([:inventory_id, :unit_price, :item_name, :quantity])
+    |> validate_required([:inventory_id, :quantity])
     |> assoc_constraint(:inventory)
     |> assoc_constraint(:purchase)
     |> get_item_name
     |> get_unit_price
+    |> get_unit_of_measure
     |> get_total
   end
 
@@ -58,18 +62,20 @@ defmodule LetorEcom.Centres.PurchaseItem do
     purchase_item
     |> cast(attrs, [
       :inventory_id,
-      :unit_price,
+      :price_per_unit,
       :suppliers_email,
       :suppliers_phone,
       :suppliers_name,
+      :unit_of_measure,
       :quantity,
       :total
     ])
-    |> validate_required([:inventory_id, :unit_price, :item_name, :quantity])
+    |> validate_required([:inventory_id, :quantity])
     |> assoc_constraint(:inventory)
     |> assoc_constraint(:purchase)
     |> get_item_name
     |> get_unit_price
+    |> get_unit_of_measure
     |> get_total
   end
 
@@ -92,7 +98,20 @@ defmodule LetorEcom.Centres.PurchaseItem do
         inventory_id = get_field(changeset, :inventory_id)
         inventory = Repo.get(Inventory, inventory_id)
 
-        changeset |> put_change(:unit_price, inventory.buy_price)
+        changeset |> put_change(:price_per_unit, inventory.buy_price)
+
+      _ ->
+        changeset
+    end
+  end
+
+  defp get_unit_of_measure(changeset) do
+    case changeset.valid? do
+      true ->
+        inventory_id = get_field(changeset, :inventory_id)
+        inventory = Repo.get(Inventory, inventory_id)
+
+        changeset |> put_change(:unit_of_measure, inventory.bulk_quantity_uom)
 
       _ ->
         changeset
@@ -103,8 +122,8 @@ defmodule LetorEcom.Centres.PurchaseItem do
     case changeset.valid? do
       true ->
         quantity = get_field(changeset, :quantity) |> Decimal.new()
-        unit_price = get_field(changeset, :unit_price)
-        total = Decimal.mult(quantity, unit_price)
+        price_per_unit = get_field(changeset, :price_per_unit)
+        total = Decimal.mult(quantity, price_per_unit)
 
         changeset |> put_change(:total, total)
 

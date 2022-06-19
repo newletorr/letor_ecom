@@ -8,7 +8,6 @@ defmodule LetorEcomWeb.Schema.Types.ItemCategoryType do
   import Absinthe.Resolution.Helpers
   import LetorEcomWeb.Schema.ChangesetErrors, only: [transform_errors: 1]
   alias LetorEcom.{Catalogue, Centres, Repo}
-  alias LetorEcom.Account.User
   alias LetorEcom.Catalogue.ItemCategory
   alias LetorEcomWeb.Schema.Middleware
 
@@ -150,16 +149,6 @@ defmodule LetorEcomWeb.Schema.Types.ItemCategoryType do
 
       resolve(fn args, _ ->
         item_category = ItemCategory |> Repo.get!(args[:item_category_id])
-        {:ok, item_category}
-      end)
-    end
-
-    field :item_category_by_name, :item_category_type, description: "fetch Item Category by Name" do
-      arg(:name, non_null(:string))
-      middleware(Middleware.Authorize, :any)
-
-      resolve(fn %{name: name}, _ ->
-        {:ok, item_category} = Catalogue.item_category_by_name(name)
         {:ok, item_category}
       end)
     end

@@ -218,7 +218,7 @@ defmodule LetorEcom.Catalogue.Item do
             from(item_subcategory in ItemSubcategory,
               join: item_category in assoc(item_subcategory, :item_category),
               join: pickup_centre in assoc(item_category, :pickup_centre),
-              join: inventory in assoc(pickup_centre, :inventory),
+              join: inventory in assoc(pickup_centre, :inventories),
               join: inventory_location in assoc(inventory, :inventory_location),
               where: item_subcategory.id == ^item_subcategory_id and inventory.name == ^name,
               select: inventory_location.name

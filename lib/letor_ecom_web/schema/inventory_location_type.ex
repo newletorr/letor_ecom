@@ -49,12 +49,17 @@ defmodule LetorEcomWeb.Schema.Types.InventoryLocationType do
         "pos attendant"
       ])
 
+<<<<<<< HEAD
+      resolve(fn %{input: params}, _ ->
+        case Centres.create_inventory_location(params) do
+=======
       resolve(fn %{input: params}, %{context: %{current_user: current_user}} ->
         pickup_centre = Centres.get_users_pickup_centre(current_user)
 
-        case Centers.create_inventory_location(
+        case Centres.create_inventory_location(
                Map.put(params, :pickup_centre_id, pickup_centre.id)
              ) do
+>>>>>>> f3ddf4f08da18b2990efef55fcb9e9b534f3f11c
           {:error, changeset} ->
             {:error, transform_errors(changeset)}
 
@@ -81,7 +86,7 @@ defmodule LetorEcomWeb.Schema.Types.InventoryLocationType do
           InventoryLocation
           |> Repo.get!(args[:inventory_location_id])
 
-        case Centers.update_inventory_location(
+        case Centres.update_inventory_location(
                inventory_location,
                params
              ) do
@@ -105,7 +110,7 @@ defmodule LetorEcomWeb.Schema.Types.InventoryLocationType do
           InventoryLocation
           |> Repo.get!(args[:inventory_location_id])
 
-        case Centers.delete_inventory_location(inventory_location) do
+        case Centres.delete_inventory_location(inventory_location) do
           {:error, changeset} ->
             {:error, transform_errors(changeset)}
 

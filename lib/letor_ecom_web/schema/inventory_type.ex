@@ -10,7 +10,7 @@ defmodule LetorEcomWeb.Schema.Types.InventoryType do
 
   alias LetorEcom.{Catalogue, Centres, Repo}
   alias LetorEcom.Account.User
-  alias LetorEcom.Catalogue.Inventory
+  alias LetorEcom.Centres.Inventory
   alias LetorEcomWeb.Schema.Middleware
 
   object :inventory_type do
@@ -170,7 +170,7 @@ defmodule LetorEcomWeb.Schema.Types.InventoryType do
           ])
           |> Repo.get!(args[:inventory_id])
 
-        case Catalogue.update_inventory(
+        case Centres.update_inventory(
                inventory,
                params
              ) do
@@ -226,7 +226,7 @@ defmodule LetorEcomWeb.Schema.Types.InventoryType do
       resolve(fn args, _ ->
         inventory =
           Inventory
-          |> Catalogue.search_inventories(args[:keywords])
+          |> Centres.search_inventories(args[:keywords])
           |> order_by(asc: :inserted_at)
           |> Repo.paginate(args[:offset], args[:limit])
           |> Repo.all()

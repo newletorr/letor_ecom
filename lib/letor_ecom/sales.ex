@@ -6,7 +6,7 @@ defmodule LetorEcom.Sales do
   import Ecto.Query, warn: false
   alias Ecto.Multi
   alias LetorEcom.{CustomerPurchases, Repo}
-  alias LetorEcom.Centres.{Inventory, InventoryChangeHistory}
+  alias LetorEcom.Centres.{Inventory}
   alias LetorEcom.CustomerPurchases.CartItem
   alias LetorEcom.HumanResource.Staff
   alias LetorEcom.Sales.{CustomerInfo, InstoreSale, Sale}
