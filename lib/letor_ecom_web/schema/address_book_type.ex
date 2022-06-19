@@ -38,7 +38,7 @@ defmodule LetorEcomWeb.Schema.Types.AddressBookType do
   object :coordinates_type do
     field :coordinates, list_of(:float),
       resolve: fn query, _, _ ->
-        Account.get_address_coordinates(query)
+        Account.get_coordinates(query)
       end
 
     field(:srid, :integer, default_value: 4326)

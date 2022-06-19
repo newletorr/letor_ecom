@@ -1,11 +1,13 @@
 defmodule LetorEcom.Delicacies.RecipeClass do
   use LetorEcom.SchemaHelper
   alias LetorEcom.Centres.PickupCentre
+  alias LetorEcom.Delicacies.Recipe
 
   schema "recipe_classes" do
     field :description, :string
     field :name, :string
     belongs_to(:pickup_centre, PickupCentre)
+    has_many(:recipes, Recipe)
 
     timestamps(type: :utc_datetime)
   end

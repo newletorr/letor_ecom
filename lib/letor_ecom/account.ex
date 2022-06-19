@@ -263,7 +263,7 @@ defmodule LetorEcom.Account do
   @doc """
   Get longitude value for pickup centre
   """
-  def get_address_coordinates(coord) do
+  def get_coordinates(coord) do
     {:ok, json} = Geo.JSON.encode(coord)
 
     case json do

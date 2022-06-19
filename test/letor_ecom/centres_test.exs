@@ -862,4 +862,60 @@ defmodule LetorEcom.CentresTest do
       assert %Ecto.Changeset{} = Centres.change_purchase_item(purchase_item)
     end
   end
+
+  describe "batches" do
+    alias LetorEcom.Centres.Batch
+
+    import LetorEcom.CentresFixtures
+
+    @invalid_attrs %{code: nil, description: nil}
+
+    test "list_batches/0 returns all batches" do
+      batch = batch_fixture()
+      assert Centres.list_batches() == [batch]
+    end
+
+    test "get_batch!/1 returns the batch with given id" do
+      batch = batch_fixture()
+      assert Centres.get_batch!(batch.id) == batch
+    end
+
+    test "create_batch/1 with valid data creates a batch" do
+      valid_attrs = %{code: "some code", description: "some description"}
+
+      assert {:ok, %Batch{} = batch} = Centres.create_batch(valid_attrs)
+      assert batch.code == "some code"
+      assert batch.description == "some description"
+    end
+
+    test "create_batch/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Centres.create_batch(@invalid_attrs)
+    end
+
+    test "update_batch/2 with valid data updates the batch" do
+      batch = batch_fixture()
+      update_attrs = %{code: "some updated code", description: "some updated description"}
+
+      assert {:ok, %Batch{} = batch} = Centres.update_batch(batch, update_attrs)
+      assert batch.code == "some updated code"
+      assert batch.description == "some updated description"
+    end
+
+    test "update_batch/2 with invalid data returns error changeset" do
+      batch = batch_fixture()
+      assert {:error, %Ecto.Changeset{}} = Centres.update_batch(batch, @invalid_attrs)
+      assert batch == Centres.get_batch!(batch.id)
+    end
+
+    test "delete_batch/1 deletes the batch" do
+      batch = batch_fixture()
+      assert {:ok, %Batch{}} = Centres.delete_batch(batch)
+      assert_raise Ecto.NoResultsError, fn -> Centres.get_batch!(batch.id) end
+    end
+
+    test "change_batch/1 returns a batch changeset" do
+      batch = batch_fixture()
+      assert %Ecto.Changeset{} = Centres.change_batch(batch)
+    end
+  end
 end

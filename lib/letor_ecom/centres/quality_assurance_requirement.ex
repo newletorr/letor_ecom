@@ -1,6 +1,5 @@
 defmodule LetorEcom.Centres.QualityAssuranceRequirement do
   use LetorEcom.SchemaHelper
-  alias LetorEcom.Centres.{Inventory, PickupCentre}
   alias LetorEcom.HumanResource.Staff
 
   schema "quality_assurance_requirements" do
@@ -17,11 +16,9 @@ defmodule LetorEcom.Centres.QualityAssuranceRequirement do
     field :number_of_damaged_containers, :integer, read_after_writes: true
     field :number_of_items_with_broken_seal, :integer, read_after_writes: true
     field :observed_fungal_growth, :boolean, default: false, read_after_writes: true
-    field :product_type, :string, read_after_writes: true
     field :rusty_cans, :boolean, default: false, read_after_writes: true
-    belongs_to(:inventory, Inventory)
-    belongs_to(:pickup_centre, PickupCentre)
-    belongs_to(:staff, Staff)
+    field :product_type, :string, read_after_writes: true
+    has_many(:batches, Batch)
 
     timestamps(type: :utc_datetime)
   end

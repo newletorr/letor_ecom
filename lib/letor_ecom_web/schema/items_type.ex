@@ -41,11 +41,11 @@ defmodule LetorEcomWeb.Schema.Types.ItemsType do
     field(:type, :string)
     field(:instore_location, :string)
 
-    field(:qr_code_url, :string,
-      resolve: fn query, _, _ ->
-        Catalogue.get_qr_code_url(query)
-      end
-    )
+    # field(:qr_code_url, :string,
+    # resolve: fn query, _, _ ->
+    # Catalogue.get_qr_code_url(query)
+    # end
+    # )
 
     field(:inserted_at, :datetime)
     field(:updated_at, :datetime)
@@ -202,31 +202,31 @@ defmodule LetorEcomWeb.Schema.Types.ItemsType do
       end)
     end
 
-    field :create_food_vendor_items, :items_type, description: "Create vendor items" do
-      arg(:input, non_null(:food_vendor_input_type))
+    # field :create_food_vendor_items, :items_type, description: "Create vendor items" do
+    # arg(:input, non_null(:food_vendor_input_type))
 
-      middleware(Middleware.Authorize, [
-        "senior developer",
-        "junior developer",
-        "restaurant"
-      ])
+    # middleware(Middleware.Authorize, [
+    # "senior developer",
+    ## "junior developer",
+    # "restaurant"
+    # ])
 
-      resolve(fn %{input: input}, _ ->
-        case Catalogue.create_vendor_food_item(input) do
-          {:error, :sku, changeset, _} ->
-            {:error, transform_errors(changeset)}
+    # resolve(fn %{input: input}, _ ->
+    # case Catalogue.create_vendor_food_item(input) do
+    #  {:error, :sku, changeset, _} ->
+    #   {:error, transform_errors(changeset)}
 
-          {:error, :item_image, changeset, _} ->
-            {:error, transform_errors(changeset)}
+    # {:error, :item_image, changeset, _} ->
+    # {:error, transform_errors(changeset)}
 
-          {:error, :item, changeset, _} ->
-            {:error, transform_errors(changeset)}
+    # {:error, :item, changeset, _} ->
+    # {:error, transform_errors(changeset)}
 
-          {:ok, %{item: item}} ->
-            {:ok, item}
-        end
-      end)
-    end
+    # {:ok, %{item: item}} ->
+    # {:ok, item}
+    # end
+    # end)
+    # end
 
     field :update_items, :items_type, description: "Update items" do
       arg(:items_id, non_null(:id))
