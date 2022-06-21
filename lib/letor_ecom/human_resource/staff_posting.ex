@@ -8,6 +8,7 @@ defmodule LetorEcom.HumanResource.StaffPosting do
     belongs_to(:pickup_centre, PickupCentre)
     belongs_to(:ecommerce_control, EcommerceControl)
     belongs_to(:staff, Staff)
+    #belongs_to(:user, User)
 
     timestamps(type: :utc_datetime)
   end

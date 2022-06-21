@@ -115,10 +115,16 @@ defmodule LetorEcom.HumanResource do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_stores_posting(attrs \\ %{}) do
-    %StaffPosting{}
-    |> StaffPosting.stores_postings_changeset(attrs)
-    |> Repo.insert()
+
+  def create_staff_posting(attrs \\ %{}) do
+    staff_posting_changeset =
+      if is_nil(attrs.ecommerce_control_id) == false do
+        %StaffPosting{} |> StaffPosting.control_postings_changeset(attrs)
+      else
+        %StaffPosting{} |> StaffPosting.stores_postings_changeset(attrs)
+      end
+
+    staff_posting_changeset |> Repo.insert()
   end
 
   @doc """
@@ -138,6 +144,8 @@ defmodule LetorEcom.HumanResource do
     |> StaffPosting.control_postings_changeset(attrs)
     |> Repo.insert()
   end
+
+
 
   @doc """
   Updates a staff_posting.
