@@ -128,6 +128,7 @@ defmodule LetorEcom.HumanResource.Staff do
     |> valid_phone(:phone)
     |> valid_phone(:guarantor_phone)
     |> join_names()
+    |> gen_staff_id_code
   end
 
   defp join_names(changeset) do

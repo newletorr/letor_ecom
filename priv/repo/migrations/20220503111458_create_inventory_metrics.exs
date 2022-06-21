@@ -19,12 +19,10 @@ defmodule LetorEcom.Repo.Migrations.CreateInventoryMetrics do
       add :supplier_quality_index, :decimal
       add :weeks_on_hand, :decimal
       add :back_order, :decimal
-      add :inventory_id, references(:inventories, on_delete: :nothing, type: :binary_id)
 
       timestamps(type: :timestamptz)
     end
 
     create index(:inventory_metrics, [:id])
-    create index(:inventory_metrics, [:inventory_id])
   end
 end

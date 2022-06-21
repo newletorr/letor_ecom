@@ -152,15 +152,5 @@ defmodule LetorEcomWeb.Schema.Types.ItemCategoryType do
         {:ok, item_category}
       end)
     end
-
-    field :item_category_by_name, :item_category_type, description: "fetch Item Category by Name" do
-      arg(:name, non_null(:string))
-      middleware(Middleware.Authorize, :any)
-
-      resolve(fn %{name: name}, _ ->
-        {:ok, item_category} = Catalogue.item_category_by_name(name)
-        {:ok, item_category}
-      end)
-    end
   end
 end

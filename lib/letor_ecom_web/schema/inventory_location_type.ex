@@ -52,7 +52,7 @@ defmodule LetorEcomWeb.Schema.Types.InventoryLocationType do
       resolve(fn %{input: params}, %{context: %{current_user: current_user}} ->
         pickup_centre = Centres.get_users_pickup_centre(current_user)
 
-        case Centers.create_inventory_location(
+        case Centres.create_inventory_location(
                Map.put(params, :pickup_centre_id, pickup_centre.id)
              ) do
           {:error, changeset} ->

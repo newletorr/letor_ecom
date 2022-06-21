@@ -19,7 +19,6 @@ defmodule LetorEcom.Repo.Migrations.CreateQualityAssuranceRequirements do
       add :product_type, :string
       add :rusty_cans, :boolean, default: false, null: false
       add :no_of_rusty_cans, :integer
-      add :inventory_id, references(:inventories, on_delete: :nothing, type: :binary_id)
       add :pickup_centre_id, references(:pickup_centres, on_delete: :nothing, type: :binary_id)
       add :staff_id, references(:staff, on_delete: :nothing, type: :binary_id)
 
@@ -27,7 +26,7 @@ defmodule LetorEcom.Repo.Migrations.CreateQualityAssuranceRequirements do
     end
 
     create index(:quality_assurance_requirements, [:id])
-    create index(:quality_assurance_requirements, [:inventory_id])
+    # create index(:quality_assurance_requirements, [:inventory_id])
     create index(:quality_assurance_requirements, [:pickup_centre_id])
     create index(:quality_assurance_requirements, [:staff_id])
   end

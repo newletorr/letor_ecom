@@ -371,26 +371,6 @@ defmodule LetorEcom.CustomerPurchases.Order do
     end
   end
 
-  defp agent_order_confirmation_code(changeset) do
-    case changeset.valid? do
-      true ->
-        curbside_agent_id = get_field(changeset, :curbside_agent_id)
-
-        case is_nil(curbside_agent_id) == false do
-          true ->
-            curbside_agent = Repo.one(from c in Agent, where: c.id == ^curbside_agent_id)
-
-            changeset |> put_change(:agent_delivery_confirmation_code, curbside_agent.secret_code)
-
-          _ ->
-            changeset
-        end
-
-      _ ->
-        changeset
-    end
-  end
-
   defp customer_delivery_confirmation(changeset) do
     case changeset.valid? do
       true ->

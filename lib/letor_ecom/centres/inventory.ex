@@ -1,9 +1,10 @@
 defmodule LetorEcom.Centres.Inventory do
   use Waffle.Ecto.Schema
   use LetorEcom.SchemaHelper
-  alias LetorEcom.Catalogue.{ItemImage, Sku}
+  alias LetorEcom.Catalogue.{ItemImage, ItemSubcategory, Sku}
 
   alias LetorEcom.Centres.{
+    Batch,
     InventoryLocation,
     InventoryChangeHistory,
     InventoryMetric,
@@ -18,7 +19,9 @@ defmodule LetorEcom.Centres.Inventory do
     field(:expired, :boolean, default: false, read_after_writes: true)
     field(:expiry_date, :date, read_after_writes: true)
     field(:bulk_quantity, :integer, read_after_writes: true)
+    # Bulk quantity unit of measure
     field(:bulk_quantity_uom, :string, read_after_writes: true)
+    # sales quantity unit of measure
     field(:sales_unit_quantity_uom, :string, read_after_writes: true)
     field(:sales_unit_quantity, :integer, read_after_writes: true)
     field(:max_bulk_quantity, :integer, read_after_writes: true)
@@ -39,6 +42,7 @@ defmodule LetorEcom.Centres.Inventory do
     belongs_to(:item_image, ItemImage)
     belongs_to(:sku, Sku)
     belongs_to(:item_subcategory, ItemSubcategory)
+    belongs_to(:batch, Batch)
     has_many(:inventory_change_history, InventoryChangeHistory)
     has_many(:inventory_metrics, InventoryMetric)
     has_many(:purchase_items, PurchaseItem)
@@ -100,6 +104,7 @@ defmodule LetorEcom.Centres.Inventory do
     |> assoc_constraint(:sku)
     |> assoc_constraint(:item_subcategory)
     |> gen_inventory_code
+    |> reorder_required
   end
 
   def update_changeset(inventory, attrs) do
@@ -127,6 +132,7 @@ defmodule LetorEcom.Centres.Inventory do
     ])
     |> check_bulk_quantity_levels
     |> check_sales_unit_quantity_levels
+    |> reorder_required
     |> assoc_constraint(:inventory_location)
     |> assoc_constraint(:item_subcategory)
   end
@@ -217,6 +223,22 @@ defmodule LetorEcom.Centres.Inventory do
           )
         else
           changeset
+        end
+
+      _ ->
+        changeset
+    end
+  end
+
+  defp reorder_required(changeset) do
+    case changeset.valid? do
+      true ->
+        re_order_level = get_field(changeset, :re_order_level)
+        bulk_quantity = get_field(changeset, :bulk_quantity)
+
+        case re_order_level >= bulk_quantity do
+          true -> changeset |> put_change(:re_ordering_required, true)
+          _ -> changeset
         end
 
       _ ->

@@ -13,6 +13,12 @@ config :letor_ecom,
   migration_timestamps: [type: :utc_datetime],
   generators: [binary_id: true]
 
+config :letor_ecom, LetorEcom.Scheduler,
+  overlap: false,
+  jobs: [
+    {"@daily", {LetorEcom.ScheduledTasks, :create_purchase_on_reorder_level_reached, []}}
+  ]
+
 # Configures the endpoint
 config :letor_ecom, LetorEcomWeb.Endpoint,
   url: [host: "localhost"],

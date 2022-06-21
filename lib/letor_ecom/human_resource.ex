@@ -116,7 +116,7 @@ defmodule LetorEcom.HumanResource do
 
   """
 
-  def create_staff_posting(attrs \\ %{}) do
+  def create_posting(attrs \\ %{}) do
     staff_posting_changeset =
       if is_nil(attrs.ecommerce_control_id) == false do
         %StaffPosting{} |> StaffPosting.control_postings_changeset(attrs)
@@ -126,26 +126,6 @@ defmodule LetorEcom.HumanResource do
 
     staff_posting_changeset |> Repo.insert()
   end
-
-  @doc """
-  Creates a Control postings
-
-  ## Examples
-
-      iex> create_control_posting(%{field: value})
-      {:ok, %StaffPosting{}}
-
-      iex> create_control_posting(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_control_posting(attrs \\ %{}) do
-    %StaffPosting{}
-    |> StaffPosting.control_postings_changeset(attrs)
-    |> Repo.insert()
-  end
-
-
 
   @doc """
   Updates a staff_posting.

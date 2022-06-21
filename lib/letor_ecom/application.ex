@@ -15,9 +15,10 @@ defmodule LetorEcom.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: LetorEcom.PubSub},
       # Start the Endpoint (http/https)
-      LetorEcomWeb.Endpoint
-      # Start a worker by calling: LetorEcom.Worker.start_link(arg)
-      # {LetorEcom.Worker, arg}
+      LetorEcomWeb.Endpoint,
+      {Absinthe.Subscription, LetorEcomWeb.Endpoint},
+      {Guardian.DB.Token.SweeperServer, []},
+      LetorEcom.Scheduler
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -24,11 +24,11 @@ defmodule LetorEcomWeb.Schema.Types.RecipeType do
     field(:special, :boolean)
     field(:video, :string)
 
-    field(:likes, :integer,
-      resolve: fn query, _, _ ->
-        Delicacies.get_recipe_like_count(query.id)
-      end
-    )
+    # field(:likes, :integer,
+    # resolve: fn query, _, _ ->
+    #  Delicacies.get_recipe_like_count(query.id)
+    # end
+    # )
 
     field(:inserted_at, :datetime)
     field(:updated_at, :datetime)
@@ -155,24 +155,24 @@ defmodule LetorEcomWeb.Schema.Types.RecipeType do
       end)
     end
 
-    field :special_recipes, list_of(:recipe_type), description: "Get list of special recipes" do
-      arg(:limit, :integer, default_value: 5)
-      arg(:keywords, :string, default_value: nil)
-      arg(:order, type: :sort_order, default_value: :asc)
+    # field :special_recipes, list_of(:recipe_type), description: "Get list of special recipes" do
+    # arg(:limit, :integer, default_value: 5)
+    # arg(:keywords, :string, default_value: nil)
+    # arg(:order, type: :sort_order, default_value: :asc)
 
-      resolve(fn args, _ ->
-        {:ok, Delicacies.list_special_recipes(args)}
-      end)
-    end
+    # resolve(fn args, _ ->
+    # {:ok, Delicacies.list_special_recipes(args)}
+    # end)
+    # end
 
-    field :recipe_by_name, :recipe_type, description: "Fetch recipe by name" do
-      arg(:name, non_null(:string))
+    # field :recipe_by_name, :recipe_type, description: "Fetch recipe by name" do
+    # arg(:name, non_null(:string))
 
-      resolve(fn %{name: name}, _ ->
-        {:ok, recipe} = Delicacies.recipe_by_name(name)
-        {:ok, recipe}
-      end)
-    end
+    # resolve(fn %{name: name}, _ ->
+    # {:ok, recipe} = Delicacies.recipe_by_name(name)
+    # {:ok, recipe}
+    # end)
+    # end
 
     field :recipe_by_id, :recipe_type, description: "fetch a recipe by id" do
       arg(:recipe_id, non_null(:id))
