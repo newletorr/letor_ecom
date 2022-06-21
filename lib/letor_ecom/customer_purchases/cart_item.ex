@@ -29,7 +29,7 @@ defmodule LetorEcom.CustomerPurchases.CartItem do
       :sold,
       :purchase_price
     ])
-    |> validate_required([:quantity, :item_id, :order_id])
+    |> validate_required([:quantity]) #:item_id, :order_id])
     |> assoc_constraint(:item)
     |> assoc_constraint(:order)
     |> get_purchase_price

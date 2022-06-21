@@ -52,5 +52,3 @@ defmodule LetorEcom.Repo.Migrations.CreateInventories do
     create(index(:inventories, [:item_subcategory_id]))
   end
 end
-
-pr
