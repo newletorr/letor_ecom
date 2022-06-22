@@ -13,6 +13,8 @@ defmodule LetorEcom.Repo.Migrations.CreateStaffPostings do
 
       add :staff_id, references(:staff, on_delete: :nothing, type: :binary_id)
 
+      add :user_id, references(:user, on_delete: :nothing, type: :binary_id)
+
       timestamps(type: :timestamptz)
     end
 
@@ -20,5 +22,6 @@ defmodule LetorEcom.Repo.Migrations.CreateStaffPostings do
     create index(:staff_postings, [:pickup_centre_id])
     create index(:staff_postings, [:ecommerce_control_id])
     create index(:staff_postings, [:staff_id])
+    create index(:staff_postings, [:user_id])
   end
 end

@@ -8,7 +8,7 @@ defmodule LetorEcom.HumanResource.StaffPosting do
     belongs_to(:pickup_centre, PickupCentre)
     belongs_to(:ecommerce_control, EcommerceControl)
     belongs_to(:staff, Staff)
-    #belongs_to(:user, User)
+    belongs_to(:user, User)
 
     timestamps(type: :utc_datetime)
   end
@@ -40,8 +40,9 @@ defmodule LetorEcom.HumanResource.StaffPosting do
         ) :: Ecto.Changeset.t()
   def control_postings_changeset(staff_posting, attrs) do
     staff_posting
-    |> cast(attrs, [:ecommerce_control_id, :date_posted, :previous_posting])
+    |> cast(attrs, [:ecommerce_control_id, :user_id, :date_posted, :previous_posting])
     |> assoc_constraint(:ecommerce_control)
+    |> assoc_constraint(:user)
     |> get_previous_posting
   end
 
@@ -55,9 +56,16 @@ defmodule LetorEcom.HumanResource.StaffPosting do
         ) :: Ecto.Changeset.t()
   def posting_update_changeset(staff_posting, attrs) do
     staff_posting
-    |> cast(attrs, [:ecommerce_control_id, :pickup_centre_id, :date_posted, :previous_posting])
+    |> cast(attrs, [
+      :ecommerce_control_id,
+      :pickup_centre_id,
+      :user_id,
+      :date_posted,
+      :previous_posting
+    ])
     |> assoc_constraint(:ecommerce_control)
     |> assoc_constraint(:pickup_centre)
+    |> assoc_constraint(:user)
   end
 
   defp get_previous_posting(changeset) do
@@ -81,10 +89,24 @@ defmodule LetorEcom.HumanResource.StaffPosting do
 
         store_name = query2 |> last(:inserted_at) |> Repo.one()
 
+        query3 =
+          from staff_posting in __MODULE__,
+            join: user in assoc(staff_posting, :user),
+            where: staff_posting.staff_id == ^staff_id,
+            select: user.name
+
+        first_name = query3 |> last(:inserted_at) |> Repo.one()
+
         if is_nil(control_centre_name) == false do
           changeset |> put_change(:previous_posting, control_centre_name)
         else
           changeset |> put_change(:previous_posting, store_name)
+        end
+
+        if is_nil(store_name) == false do
+          changeset |> put_change(:previous_posting, store_name)
+        else
+          changeset |> put_change(:previous_posting, first_name)
         end
 
       _ ->
