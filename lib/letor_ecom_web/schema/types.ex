@@ -8,13 +8,10 @@ defmodule LetorEcomWeb.Schema.Types do
   alias LetorEcomWeb.Schema.Types
 
   import_types(Types.AddressBookType)
+  import_types(Types.CartItemType)
   import_types(Types.DailyDealType)
-<<<<<<< HEAD
   import_types(Types.EcommerceControlType)
-  import_types(Types.InventoryLocationType)
-=======
   import_types(Types.FeaturedItemType)
->>>>>>> f3ddf4f08da18b2990efef55fcb9e9b534f3f11c
   import_types(Types.ItemsType)
   import_types(Types.ItemImageType)
   import_types(Types.InventoryType)
@@ -28,6 +25,7 @@ defmodule LetorEcomWeb.Schema.Types do
   import_types(Types.RecipeClassType)
   import_types(Types.UserFavType)
   import_types(Types.ShoppingListType)
+  import_types(Types.StaffPostingType)
   import_types(Types.SupplierType)
   import_types(Types.UserType)
   import_types(Types.ViewedItemType)

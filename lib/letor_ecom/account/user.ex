@@ -5,7 +5,7 @@ defmodule LetorEcom.Account.User do
   alias LetorEcom.AgentsAndSuppliers.{Agent, Supplier}
   alias LetorEcom.Control.Location
   alias LetorEcom.CustomerPurchases.Order
-  alias LetorEcom.HumanResource.Staff
+  alias LetorEcom.HumanResource.{Staff, StaffPosting}
   alias LetorEcom.Sales.InstoreSale
   alias LetorEcom.Transactions.UserWallet
 
@@ -46,6 +46,7 @@ defmodule LetorEcom.Account.User do
     field :third_referal_earned, :string
     field(:inputed_code, :string, virtual: true)
     has_one(:addresses, Address)
+    has_one(:staff_posting, StaffPosting)
     has_one(:user_wallets, UserWallet)
     has_many(:refered_lists, ReferedList)
     has_many(:shopping_list, ShoppingList)
