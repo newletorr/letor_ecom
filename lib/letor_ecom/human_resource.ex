@@ -116,7 +116,7 @@ defmodule LetorEcom.HumanResource do
 
   """
 
-  def create_posting(attrs \\ %{}) do
+  def create_staff_posting(attrs \\ %{}) do
     staff_posting_changeset =
       if is_nil(attrs.ecommerce_control_id) == false do
         %StaffPosting{} |> StaffPosting.control_postings_changeset(attrs)

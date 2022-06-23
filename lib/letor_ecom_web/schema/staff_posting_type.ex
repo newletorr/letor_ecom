@@ -43,17 +43,17 @@ defmodule LetorEcomWeb.Schema.Types.StaffPostingType do
   end
 
   object :staff_posting_mutation do
-    field :create_staff_posting, :staff_posting_type, description: "Create a new staff_posting" do
+    field :create_staff_posting, :staff_posting_type, description: "Create a new staff posting" do
       arg(:input, non_null(:staff_posting_input_type))
 
       middleware(Middleware.Authorize, "customer")
 
-      resolve(fn %{input: input}, _ ->
-        case HumanResource.create_location(input) do
+      resolve(fn %{input: input}, %{context: context} ->
+        main_input = Map.put(input, :user_id, context[:current_user].id)
+
+        case HumanResource.create_staff_posting(main_input) do
           {:error, changeset} ->
-            {:error,
-             message: "Something went wrong, please try again",
-             details: transform_errors(changeset)}
+            {:error, transform_errors(changeset)}
 
           success ->
             success
