@@ -48,8 +48,8 @@ defmodule LetorEcomWeb.Schema.Types.StaffPostingType do
 
       middleware(Middleware.Authorize, "customer")
 
-      resolve(fn %{input: input}, %{context: context} ->
-        main_input = Map.put(input, :user_id, context[:current_user].id)
+      resolve(fn %{input: input}, %{context: %{current_user: current_user}} ->
+        main_input = Map.put(input, :user_id, current_user.id)
 
         case HumanResource.create_staff_posting(main_input) do
           {:error, changeset} ->
