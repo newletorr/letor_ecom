@@ -7,14 +7,15 @@ defmodule LetorEcom.Uploads do
   @versions [:original, :thumb]
   @extension_white_list ~w(.jpg .jpeg .gif .png .pdf)
 
-  # Override the bucket on a per definition basis:
-  # def bucket do
-  #   :custom_bucket_name
+  #   def bucket do
+  #    :letorimages
   # end
 
   # def bucket({_file, scope}) do
-  #   scope.bucket || bucket()
+  # scope.bucket || bucket()
   # end
+
+  def acl(:thumb, _), do: :public_read
 
   # Whitelist file extensions:
   def validate({file, _}) do

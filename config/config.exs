@@ -38,8 +38,9 @@ config :guardian, Guardian.DB,
 
 config :waffle,
   storage: Waffle.Storage.S3,
-  bucket: System.get_env("AWS_BUCKET_NAME"),
-  virtual_host: true
+  bucket: System.get_env("AWS_BUCKET_NAME")
+
+# virtual_host: true
 
 config :ex_aws,
   json_codec: Jason,
@@ -48,7 +49,7 @@ config :ex_aws,
   region: System.get_env("AWS_REGION"),
   s3: [
     scheme: "https://",
-    host: "letor-ecom-images.s3.eu-west-1.amazonaws.com/letor-ecom-images",
+    host: "letorbucket.s3.eu-west-1.amazonaws.com/letorbucket",
     region: "eu-west-1"
   ]
 

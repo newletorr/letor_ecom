@@ -718,18 +718,22 @@ defmodule LetorEcom.Catalogue do
 
   """
   def create_item_image(attrs \\ %{}) do
-    item_image_changeset = %ItemImage{} |> ItemImage.changeset(attrs)
+    # item_image_changeset = %ItemImage{} |> ItemImage.changeset(attrs)
 
-    Multi.new()
-    |> Multi.insert(:item_image, item_image_changeset)
-    |> Multi.run(:image_uploads, fn repo, %{item_image: item_image} ->
-      uploads_changeset =
-        item_image
-        |> ItemImage.image_uploads_changeset(attrs)
+    %ItemImage{}
+    |> ItemImage.changeset(attrs)
+    |> Repo.insert()
 
-      repo.update(uploads_changeset)
-    end)
-    |> Repo.transaction()
+    # Multi.new()
+    # |> Multi.insert(:item_image, item_image_changeset)
+    # |> Multi.run(:image_uploads, fn repo, %{item_image: item_image} ->
+    # uploads_changeset =
+    #  item_image
+    # |> ItemImage.image_uploads_changeset(attrs)
+
+    # repo.update(uploads_changeset)
+    # end)
+    # |> Repo.transaction()
   end
 
   @doc """
@@ -769,7 +773,10 @@ defmodule LetorEcom.Catalogue do
   def get_item_image1(item_image) do
     case is_nil(item_image.item_image1) == false do
       true ->
-        image_url = LetorEcom.Uploads.url({item_image.item_image1.file_name, item_image}, :thumb)
+        image_url =
+          LetorEcom.Uploads.url({item_image.item_image1.file_name, item_image}, :thumb,
+            signed: true
+          )
 
         {:ok, image_url}
 
@@ -781,7 +788,10 @@ defmodule LetorEcom.Catalogue do
   def get_item_image2(item_image) do
     case is_nil(item_image.item_image1) == false do
       true ->
-        image_url = LetorEcom.Uploads.url({item_image.item_image2.file_name, item_image}, :thumb)
+        image_url =
+          LetorEcom.Uploads.url({item_image.item_image2.file_name, item_image}, :thumb,
+            signed: true
+          )
 
         {:ok, image_url}
 
@@ -793,7 +803,10 @@ defmodule LetorEcom.Catalogue do
   def get_item_image3(item_image) do
     case is_nil(item_image.item_image1) == false do
       true ->
-        image_url = LetorEcom.Uploads.url({item_image.item_image3.file_name, item_image}, :thumb)
+        image_url =
+          LetorEcom.Uploads.url({item_image.item_image3.file_name, item_image}, :thumb,
+            signed: true
+          )
 
         {:ok, image_url}
 
@@ -805,7 +818,10 @@ defmodule LetorEcom.Catalogue do
   def get_item_image4(item_image) do
     case is_nil(item_image.item_image1) == false do
       true ->
-        image_url = LetorEcom.Uploads.url({item_image.item_image4.file_name, item_image}, :thumb)
+        image_url =
+          LetorEcom.Uploads.url({item_image.item_image4.file_name, item_image}, :thumb,
+            signed: true
+          )
 
         {:ok, image_url}
 

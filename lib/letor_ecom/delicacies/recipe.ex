@@ -1,6 +1,6 @@
 defmodule LetorEcom.Delicacies.Recipe do
   use LetorEcom.SchemaHelper
-
+  use Waffle.Ecto.Schema
   alias LetorEcom.Catalogue.Item
   alias LetorEcom.Delicacies.ItemRecipe
 
@@ -8,15 +8,14 @@ defmodule LetorEcom.Delicacies.Recipe do
     many_to_many(:items, Item, join_through: ItemRecipe)
     field :description, :string, read_after_writes: true
     field :directions, :string, read_after_writes: true
-    field :image1_url, :string, read_after_writes: true
-    field :image2_url, :string, read_after_writes: true
-    field :image3_url, :string, read_after_writes: true
+    field :image1_url, LetorEcom.Uploads.Type, read_after_writes: true
+    field :image2_url, LetorEcom.Uploads.Type, read_after_writes: true
+    field :image3_url, LetorEcom.Uploads.Type, read_after_writes: true
     field :meal_type, :string, read_after_writes: true
     field :name, :string, read_after_writes: true
     field :special, :boolean, read_after_writes: true
     field :video, :string, read_after_writes: true
     belongs_to(:recipe_class, RecipeClass)
-
     timestamps(type: :utc_datetime)
   end
 
@@ -35,6 +34,15 @@ defmodule LetorEcom.Delicacies.Recipe do
       :special,
       :meal_type
     ])
+    |> cast_attachments(
+      attrs,
+      [
+        :image1_url,
+        :image2_url,
+        :image3_url
+      ],
+      allow_urls: true
+    )
     |> validate_required([
       :description,
       :name,

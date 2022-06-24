@@ -405,7 +405,7 @@ User |> Repo.delete_all()
 
 ItemImage |> Repo.delete_all()
 
-{:ok, %{image_uploads: image1}} =
+{:ok, image1} =
   Catalogue.create_item_image(%{
     item_image1: "/home/dumadi/Desktop/banana.png",
     item_image2: "/home/dumadi/Desktop/banana.png",
@@ -415,7 +415,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, %{image_uploads: image2}} =
+{:ok, image2} =
   Catalogue.create_item_image(%{
     item_image1: "/home/dumadi/Desktop/cakes.png",
     item_image2: "/home/dumadi/Desktop/cakes.png",
@@ -425,7 +425,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, %{image_uploads: image3}} =
+{:ok, image3} =
   Catalogue.create_item_image(%{
     item_image1: "/home/dumadi/Desktop/crafish.png",
     item_image2: "/home/dumadi/Desktop/crafish.png",
@@ -435,7 +435,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, %{image_uploads: image4}} =
+{:ok, image4} =
   Catalogue.create_item_image(%{
     item_image1: "/home/dumadi/Desktop/eggs.png",
     item_image2: "/home/dumadi/Desktop/eggs.png",
@@ -445,7 +445,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, %{image_uploads: image5}} =
+{:ok, image5} =
   Catalogue.create_item_image(%{
     item_image1: "https://res.cloudinary.com/letorrc/image/upload/v1596849287/grapes_hzmvdv.png",
     item_image2: "https://res.cloudinary.com/letorrc/image/upload/v1596849287/grapes_hzmvdv.png",
@@ -455,7 +455,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, %{image_uploads: image6}} =
+{:ok, image6} =
   Catalogue.create_item_image(%{
     item_image1: "https://res.cloudinary.com/letorrc/image/upload/v1596849296/lemon_uelnua.png",
     item_image2: "https://res.cloudinary.com/letorrc/image/upload/v1596849296/lemon_uelnua.png",
@@ -465,7 +465,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, %{image_uploads: image7}} =
+{:ok, image7} =
   Catalogue.create_item_image(%{
     item_image1: "https://res.cloudinary.com/letorrc/image/upload/v1596849540/milk_vpoaow.png",
     item_image2: "https://res.cloudinary.com/letorrc/image/upload/v1596849540/milk_vpoaow.png",
@@ -475,7 +475,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, %{image_uploads: image8}} =
+{:ok, image8} =
   Catalogue.create_item_image(%{
     item_image1: "https://res.cloudinary.com/letorrc/image/upload/v1596849553/onion_zkuzio.png",
     item_image2: "https://res.cloudinary.com/letorrc/image/upload/v1596849553/onion_zkuzio.png",
@@ -485,7 +485,8 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, %{image_uploads: image9}} =
+# {:ok, %{image_uploads: image9}}
+{:ok, image9} =
   Catalogue.create_item_image(%{
     item_image1: "https://res.cloudinary.com/letorrc/image/upload/v1596849564/pepper_vlmw62.png",
     item_image2: "https://res.cloudinary.com/letorrc/image/upload/v1596849564/pepper_vlmw62.png",
@@ -495,7 +496,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, %{image_uploads: image10}} =
+{:ok, image10} =
   Catalogue.create_item_image(%{
     item_image1:
       "https://res.cloudinary.com/letorrc/image/upload/v1596849573/pompkins_mohcpx.png",
@@ -509,7 +510,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, %{image_uploads: image11}} =
+{:ok, image11} =
   Catalogue.create_item_image(%{
     item_image1: "https://res.cloudinary.com/letorrc/image/upload/v1596849595/potato_q40ppj.png",
     item_image2: "https://res.cloudinary.com/letorrc/image/upload/v1596849595/potato_q40ppj.png",
@@ -519,7 +520,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, %{image_uploads: image12}} =
+{:ok, image12} =
   Catalogue.create_item_image(%{
     item_image1: "https://res.cloudinary.com/letorrc/image/upload/v1596849603/spinash_lxtedb.png",
     item_image2: "https://res.cloudinary.com/letorrc/image/upload/v1596849603/spinash_lxtedb.png",
@@ -529,7 +530,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, %{image_uploads: image13}} =
+{:ok, image13} =
   Catalogue.create_item_image(%{
     item_image1:
       "https://res.cloudinary.com/letorrc/image/upload/v1600516853/new_images/Milo-Nestle_fnvnpg.jpg",
@@ -543,7 +544,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, %{image_uploads: image14}} =
+{:ok, image14} =
   Catalogue.create_item_image(%{
     item_image1: "/home/dumadi/Documents/New images/bournvita.jpg",
     item_image2: "/home/dumadi/Documents/New images/bournvita.jpg",
@@ -553,7 +554,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, %{image_uploads: image15}} =
+{:ok, image15} =
   Catalogue.create_item_image(%{
     item_image1: "/home/dumadi/Documents/New images/dangote-salt2.jpg",
     item_image2: "/home/dumadi/Documents/New images/dangote-salt2.jpg",
@@ -563,7 +564,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, %{image_uploads: image16}} =
+{:ok, image16} =
   Catalogue.create_item_image(%{
     item_image1: "/home/dumadi/Documents/New images/PowerPasta.jpg",
     item_image2: "/home/dumadi/Documents/New images/PowerPasta.jpg",
@@ -573,7 +574,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, %{image_uploads: image17}} =
+{:ok, image17} =
   Catalogue.create_item_image(%{
     item_image1: "/home/dumadi/Documents/New images/supradin.jpeg",
     item_image2: "/home/dumadi/Documents/New images/supradin.jpeg",
@@ -583,7 +584,7 @@ ItemImage |> Repo.delete_all()
     ecommerce_control_id: ecommerce_control.id
   })
 
-{:ok, %{image_uploads: image18}} =
+{:ok, image18} =
   Catalogue.create_item_image(%{
     item_image1: "/home/dumadi/Documents/New images/coffee machin.jpg",
     item_image2: "/home/dumadi/Documents/New images/coffee machin.jpg",
