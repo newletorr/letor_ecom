@@ -54,7 +54,7 @@ defmodule LetorEcomWeb.Schema do
     import_fields(:item_image_query)
     import_fields(:inventory_query)
     import_fields(:item_recipe_query)
-
+    import_fields(:pick_up_query)
     import_fields(:recipe_query)
     import_fields(:recipe_class_query)
     import_fields(:shopping_list_query)
@@ -83,7 +83,7 @@ defmodule LetorEcomWeb.Schema do
     import_fields(:item_recipe_mutation)
 
     import_fields(:location_mutation)
-
+    import_fields(:pick_up_mutation)
     import_fields(:recipe_mutation)
     import_fields(:recipe_class_mutation)
     import_fields(:shopping_list_mutation)
