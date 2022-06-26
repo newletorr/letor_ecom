@@ -29,6 +29,7 @@ defmodule LetorEcomWeb.Router do
     forward("/introspect", Absinthe.Plug.GraphiQL,
       schema: LetorEcomWeb.Schema,
       socket: LetorEcomWeb.UserSocket,
+      interface: :playground,
       analyze_complexity: true,
       max_complexity: 1000
     )

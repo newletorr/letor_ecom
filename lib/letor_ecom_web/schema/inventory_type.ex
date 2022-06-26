@@ -40,8 +40,8 @@ defmodule LetorEcomWeb.Schema.Types.InventoryType do
     field :shelf_replenishment_levels, :integer
     field :shelf_replenishment_required, :boolean
 
-    # field :inventory_location, inventory_location_type,
-    # resolve: dataloader(Centres, :inventory_location, args: %{deleted: false})
+    field :inventory_location, :inventory_location_type,
+      resolve: dataloader(Centres, :inventory_location, args: %{deleted: false})
 
     field :item_image, :item_image_type,
       resolve: dataloader(Catalogue, :item_image, args: %{deleted: false})

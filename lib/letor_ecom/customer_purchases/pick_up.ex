@@ -1,6 +1,6 @@
 defmodule LetorEcom.CustomerPurchases.PickUp do
   use LetorEcom.SchemaHelper
-  alias LetorEcom.AgentsAndSuppliers.CampusAgent
+  # alias LetorEcom.AgentsAndSuppliers.CampusAgent
   alias LetorEcom.Centres.PickupCentre
   alias LetorEcom.CustomerPurchases.Order
   alias LetorEcom.HumanResource.Staff

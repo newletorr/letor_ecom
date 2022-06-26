@@ -1,7 +1,6 @@
-# fly.toml file generated for delicate-wave-8745 on 2022-06-04T17:00:13+01:00
+# fly.toml file generated for red-hill-6274 on 2022-06-25T20:43:45+01:00
 
-app = "delicate-wave-8745"
-
+app = "red-hill-6274"
 kill_signal = "SIGTERM"
 kill_timeout = 5
 processes = []
@@ -10,8 +9,7 @@ processes = []
   release_command = "/app/bin/migrate"
 
 [env]
-  PHX_HOST = "delicate-wave-8745.fly.dev"
-  PORT = "8080"
+  PHX_HOST = "red-hill-6274.fly.dev"
 
 [experimental]
   allowed_public_ports = []
@@ -23,7 +21,6 @@ processes = []
   processes = ["app"]
   protocol = "tcp"
   script_checks = []
-
   [services.concurrency]
     hard_limit = 25
     soft_limit = 20

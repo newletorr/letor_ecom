@@ -49,8 +49,13 @@ defmodule LetorEcomWeb.Schema.Types.ItemImageType do
       resolve(dataloader(Catalogue, :item))
     end
 
-    # belongs_to(:ecommerce_control, EcommerceControl)
-    # has_many(:inventories, Inventory)
+    field(:ecommerce_control, :ecommerce_control_type,
+      resolve: dataloader(Control, :ecommerce_control, args: %{deleted: false})
+    )
+
+    field(:inventories, list_of(:inventory_type),
+      resolve: dataloader(Centres, :inventories, args: %{deleted: false})
+    )
   end
 
   input_object :item_image_input_type do
@@ -123,7 +128,7 @@ defmodule LetorEcomWeb.Schema.Types.ItemImageType do
       arg(:limit, :integer, default_value: 10)
       arg(:keywords, :string, default_value: nil)
 
-      #middleware(Middleware.Authorize, "customer")
+      middleware(Middleware.Authorize, "customer")
 
       resolve(fn args, _ ->
         item_image =
