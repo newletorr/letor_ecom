@@ -8,7 +8,7 @@ defmodule LetorEcomWeb.Schema.Types.ItemSubcategoryType do
   import Absinthe.Resolution.Helpers
   import LetorEcomWeb.Schema.ChangesetErrors, only: [transform_errors: 1]
   alias LetorEcom.{Catalogue, Centres, Repo}
-  alias LetorEcom.Account.User
+  # alias LetorEcom.Account.User
   alias LetorEcom.Catalogue.ItemSubcategory
   alias LetorEcomWeb.Schema.Middleware
 
@@ -18,6 +18,15 @@ defmodule LetorEcomWeb.Schema.Types.ItemSubcategoryType do
     field(:description, :string)
     field(:inserted_at, :datetime)
     field(:updated_at, :datetime)
+
+    field :items, list_of(:items_type) do
+      arg(:limit, :integer, default_value: 30)
+      arg(:offset, :integer, default_value: 0)
+      arg(:keywords, :string, default_value: nil)
+      arg(:filters, :all_items_filter_input_type)
+      arg(:order, :sort_order, default_value: :asc)
+      resolve(dataloader(Catalogue, :item))
+    end
 
     field(:error, list_of(:mutation_error))
   end

@@ -28,7 +28,13 @@ defmodule LetorEcomWeb.Schema.Types.InventoryType do
     field :sales_unit_quantity, :integer
     field :max_bulk_quantity, :integer
     field :name, :string
-    field :qr_code, :string
+
+    field(:qr_code_url, :string,
+      resolve: fn query, _, _ ->
+        Catalogue.get_inventory_qr_code_url(query)
+      end
+    )
+
     field :quality_assurance_status, :string
     field :unit_sales_price, :decimal
     field :bulk_sales_price, :decimal

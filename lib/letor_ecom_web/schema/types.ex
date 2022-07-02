@@ -19,6 +19,8 @@ defmodule LetorEcomWeb.Schema.Types do
   import_types(Types.ItemRecipeType)
   import_types(Types.ItemSubcategoryType)
   import_types(Types.LocationType)
+  import_types(Types.PickupCentreType)
+  import_types(Types.PurchaseType)
   import_types(Types.RecipeType)
   import_types(Types.RecipeClassType)
   import_types(Types.UserFavType)

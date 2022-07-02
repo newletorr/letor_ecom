@@ -41,11 +41,11 @@ defmodule LetorEcomWeb.Schema.Types.ItemsType do
     field(:type, :string)
     field(:instore_location, :string)
 
-    # field(:qr_code_url, :string,
-    # resolve: fn query, _, _ ->
-    # Catalogue.get_qr_code_url(query)
-    # end
-    # )
+    field(:qr_code_url, :string,
+      resolve: fn query, _, _ ->
+        Catalogue.get_item_qr_code_url(query)
+      end
+    )
 
     field(:inserted_at, :datetime)
     field(:updated_at, :datetime)

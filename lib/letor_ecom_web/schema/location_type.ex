@@ -14,6 +14,7 @@ defmodule LetorEcomWeb.Schema.Types.LocationType do
   alias LetorEcomWeb.Schema.Middleware
 
   object :location_type do
+    field :id, :id
     field :city, :string
     field :country, :string
     field :location_area, :string

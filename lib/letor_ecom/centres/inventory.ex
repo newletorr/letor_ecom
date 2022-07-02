@@ -26,7 +26,7 @@ defmodule LetorEcom.Centres.Inventory do
     field(:sales_unit_quantity, :integer, read_after_writes: true)
     field(:max_bulk_quantity, :integer, read_after_writes: true)
     field(:name, :string, read_after_writes: true)
-    field(:qr_code, :string, read_after_writes: true)
+    field(:qr_code, LetorEcom.Uploads.Type, read_after_writes: true)
     field(:quality_assurance_status, :string, read_after_writes: true)
     field(:unit_sales_price, :decimal, read_after_writes: true)
     field(:bulk_sales_price, :decimal, read_after_writes: true)
@@ -148,8 +148,6 @@ defmodule LetorEcom.Centres.Inventory do
   def qr_code_changeset(item, attrs) do
     item
     |> cast(attrs, [:qr_code])
-
-    # |> cast_attachments(attrs, [:qr_code])
   end
 
   defp check_bulk_quantity_levels(changeset) do

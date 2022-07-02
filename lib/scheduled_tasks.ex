@@ -11,7 +11,8 @@ defmodule LetorEcom.ScheduledTasks do
       Centres.add_purchase_items_to_purchase(%{
         inventory_id: item.id,
         pickup_centre_id: item.pickup_centre_id,
-        quantity: item.max_bulk_quantity - item.re_order_level
+        quantity: item.max_bulk_quantity - item.re_order_level,
+        status: "initialized"
       })
     end)
   end

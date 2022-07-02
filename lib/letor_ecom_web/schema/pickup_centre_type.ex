@@ -17,7 +17,7 @@ defmodule LetorEcomWeb.Schema.Types.PickupCentreType do
     field(:area, :string)
     field(:city, :string)
     field(:country, :string)
-    field(:location_coordinates, :coordinates_type)
+    field(:location_coordinates, :centre_coordinates_type)
     field(:name, :string)
     field(:state, :string)
     field(:centre_code, :string)
@@ -72,13 +72,17 @@ defmodule LetorEcomWeb.Schema.Types.PickupCentreType do
     #  resolve: dataloader(HumanResource, :staff_postings, args: %{deleted: false})
     # )
 
+    field(:purchases, list_of(:purchase_type),
+      resolve: dataloader(Centres, :purchases, args: %{deleted: false})
+    )
+
     field(:inserted_at, :datetime)
     field(:updated_at, :datetime)
 
     field(:error, list_of(:mutation_error))
   end
 
-  object :coordinates_type do
+  object :centre_coordinates_type do
     field(:coordinates, list_of(:float),
       resolve: fn query, _, _ ->
         Account.get_coordinates(query)
@@ -217,7 +221,7 @@ defmodule LetorEcomWeb.Schema.Types.PickupCentreType do
       arg(:offset, :integer, default_value: 0)
       arg(:limit, :integer)
       arg(:keywords, :string, default_value: nil)
-      middleware(Middleware.Authorize, :any)
+     # middleware(Middleware.Authorize, :any)
 
       resolve(fn args, _ ->
         pickup_centre =

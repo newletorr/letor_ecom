@@ -31,6 +31,16 @@ defmodule LetorEcom.Centres do
     inventory_query(args)
   end
 
+  def query(Purchase, %{scope: :pickup_centre, limit: limit, offset: offset}) do
+    todays_date = Timex.today()
+    purchase = from purchase in Purchase, where: type(purchase.inserted_at, :date) == ^todays_date
+
+    purchase
+    |> order_by(desc: :inserted_at)
+    |> limit(^limit)
+    |> offset(^offset)
+  end
+
   @spec query(any, any) :: any
   def query(queryable, _params) do
     queryable
@@ -661,9 +671,9 @@ defmodule LetorEcom.Centres do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_purchase(%Purchase{} = purchase, attrs) do
+  def approve_purchase(%Purchase{} = purchase) do
     purchase
-    |> Purchase.changeset(attrs)
+    |> Purchase.changeset(%{status: "approved"})
     |> Repo.update()
   end
 

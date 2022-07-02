@@ -830,6 +830,31 @@ defmodule LetorEcom.Catalogue do
     end
   end
 
+  def get_item_qr_code_url(item) do
+    case is_nil(item.qr_code) == false do
+      true ->
+        image_url = LetorEcom.Uploads.url({item.qr_code.file_name, item}, :thumb, signed: true)
+
+        {:ok, image_url}
+
+      _ ->
+        {:ok, nil}
+    end
+  end
+
+  def get_inventory_qr_code_url(inventory) do
+    case is_nil(inventory.qr_code) == false do
+      true ->
+        image_url =
+          LetorEcom.Uploads.url({inventory.qr_code.file_name, inventory}, :thumb, signed: true)
+
+        {:ok, image_url}
+
+      _ ->
+        {:ok, nil}
+    end
+  end
+
   @doc """
   Creates a item_tag.
 

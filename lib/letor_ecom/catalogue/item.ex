@@ -3,10 +3,9 @@ defmodule LetorEcom.Catalogue.Item do
   use Waffle.Ecto.Schema
   alias LetorEcom.Account.ShoppingList
   alias LetorEcom.Catalogue.{ItemImage, ItemSubcategory, ItemTag, ItemTagging, Sku}
-  alias LetorEcom.Centres.{DailyDeal, FeaturedItem, PopularItem}
+  alias LetorEcom.Centres.{DailyDeal, FeaturedItem}
   alias LetorEcom.CustomerPurchases.{CartItem, Order}
   alias LetorEcom.Repo
-  alias __MODULE__
 
   schema "items" do
     field(:actual_price, :decimal, read_after_writes: true)
@@ -28,7 +27,7 @@ defmodule LetorEcom.Catalogue.Item do
     field(:preparation_time, :string, read_after_writes: true)
     field(:promo_price, :decimal, read_after_writes: true)
     field(:qa_cleared, :boolean, default: false, read_after_writes: true)
-    field(:qr_code, :string, read_after_writes: true)
+    field(:qr_code, LetorEcom.Uploads.Type, read_after_writes: true)
     field(:regional_name, :string, read_after_writes: true)
     field(:size, :integer, read_after_writes: true)
     field(:third_party_item, :string, read_after_writes: true)
@@ -182,8 +181,7 @@ defmodule LetorEcom.Catalogue.Item do
   def qr_code_changeset(item, attrs) do
     item
     |> cast(attrs, [:qr_code])
-
-    # |> cast_attachments(attrs, [:qr_code], allow_urls: true)
+    |> cast_attachments(attrs, [:qr_code], allow_urls: true)
   end
 
   defp get_actual_price(changeset) do
