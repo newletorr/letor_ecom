@@ -72,9 +72,11 @@ defmodule LetorEcomWeb.Schema.Types.PickupCentreType do
     #  resolve: dataloader(HumanResource, :staff_postings, args: %{deleted: false})
     # )
 
-    field(:purchases, list_of(:purchase_type),
-      resolve: dataloader(Centres, :purchases, args: %{deleted: false})
-    )
+    field :purchases, list_of(:purchase_type) do
+      arg(:limit, :integer, default_value: 30)
+      arg(:offset, :integer, default_value: 0)
+      resolve(dataloader(Centres, :purchases, args: %{deleted: false, scope: :pickup_centre}))
+    end
 
     field(:inserted_at, :datetime)
     field(:updated_at, :datetime)
@@ -221,7 +223,7 @@ defmodule LetorEcomWeb.Schema.Types.PickupCentreType do
       arg(:offset, :integer, default_value: 0)
       arg(:limit, :integer)
       arg(:keywords, :string, default_value: nil)
-     # middleware(Middleware.Authorize, :any)
+      # middleware(Middleware.Authorize, :any)
 
       resolve(fn args, _ ->
         pickup_centre =

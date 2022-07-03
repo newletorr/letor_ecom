@@ -7,7 +7,7 @@ defmodule LetorEcom.Centres.Purchase do
     field(:approval_remark, :string, read_after_writes: true)
     field(:code, :string, read_after_writes: true)
     field(:quality_assurance_cleared, :boolean, default: false, read_after_writes: true)
-    # purchases status => initialized, completed, approved, delivered, cancelled, disaproved
+    # purchases status => initialized, approved, delivered, cancelled, disaproved
     field(:status, :string, read_after_writes: true)
     belongs_to(:staff, Staff)
     belongs_to(:pickup_centre, PickupCentre)
@@ -35,7 +35,6 @@ defmodule LetorEcom.Centres.Purchase do
       :code,
       :approval_remark,
       :status,
-      :creators_remark,
       :quality_assurance_cleared
     ])
   end

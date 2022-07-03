@@ -24,9 +24,11 @@ defmodule LetorEcomWeb.Schema.Types.PurchaseType do
     # resolve: dataloader(Centres, :pickup_centre, args: %{deleted: false})
     # )
 
-    # field(:purchase_items, list_of(:purchase_items_type),
-    # resolve: dataloader(Centres, :purchase_items, args: %{deleted: false})
-    # )
+    field :purchase_items, list_of(:purchase_items_type) do
+      arg(:limit, :integer, default_value: 30)
+      arg(:offset, :integer, default_value: 0)
+      resolve(dataloader(Centres, :purchase_items, args: %{deleted: false}))
+    end
   end
 
   object :purchase_items_type do

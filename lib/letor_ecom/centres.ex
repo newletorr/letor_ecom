@@ -41,6 +41,13 @@ defmodule LetorEcom.Centres do
     |> offset(^offset)
   end
 
+  def query(PurchaseItem, %{limit: limit, offset: offset}) do
+    PurchaseItem
+    |> order_by(desc: :inserted_at)
+    |> limit(^limit)
+    |> offset(^offset)
+  end
+
   @spec query(any, any) :: any
   def query(queryable, _params) do
     queryable
