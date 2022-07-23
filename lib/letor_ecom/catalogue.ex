@@ -18,7 +18,15 @@ defmodule LetorEcom.Catalogue do
     Sku
   }
 
-  alias LetorEcom.Centres.{DailyDeal, FeaturedItem, Inventory, InventoryChangeHistory}
+  alias LetorEcom.Centres.{
+    DailyDeal,
+    FeaturedItem,
+    Inventory,
+    InventoryChangeHistory,
+    PickupCentre
+  }
+
+  alias LetorEcom.CustomerPurchases.Order
 
   def data do
     Dataloader.Ecto.new(Repo, query: &query/2)
@@ -245,6 +253,51 @@ defmodule LetorEcom.Catalogue do
   """
   def delete_sku(%Sku{} = sku) do
     Repo.delete(sku)
+  end
+
+  def get_available_quantity(item) do
+    case item do
+      nil ->
+        {:ok, nil}
+
+      _ ->
+        inventory_quantity =
+          Repo.one(
+            from pickup_centre in PickupCentre,
+              join: inventory in assoc(pickup_centre, :inventories),
+              join: sku in assoc(inventory, :sku),
+              join: item in assoc(sku, :items),
+              where: item.id == ^item.id,
+              select: inventory.sales_unit_quantity
+          )
+
+        cart_quantities =
+          Repo.one(
+            from order in Order,
+              join: cart_item in assoc(order, :cart_items),
+              join: item in assoc(cart_item, :item),
+              join: item_subcategory in assoc(item, :item_subcategory),
+              join: item_category in assoc(item_subcategory, :item_category),
+              join: pickup_centre in assoc(item_category, :pickup_centre),
+              where: item.id == ^item.id and order.order_status == "cart activated",
+              select: sum(cart_item.quantity)
+          )
+
+        if is_nil(cart_quantities) == false do
+          available_quantity = inventory_quantity - cart_quantities
+
+          actual_available_quantity =
+            if available_quantity <= 0 do
+              0
+            else
+              available_quantity
+            end
+
+          {:ok, actual_available_quantity}
+        else
+          {:ok, inventory_quantity}
+        end
+    end
   end
 
   @doc """

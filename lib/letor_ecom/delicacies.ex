@@ -273,4 +273,100 @@ defmodule LetorEcom.Delicacies do
   def change_item_recipe(%ItemRecipe{} = item_recipe, attrs \\ %{}) do
     ItemRecipe.changeset(item_recipe, attrs)
   end
+
+  alias LetorEcom.Delicacies.UserRecipe
+
+  @doc """
+  Returns the list of user_recipes.
+
+  ## Examples
+
+      iex> list_user_recipes()
+      [%UserRecipe{}, ...]
+
+  """
+  def list_user_recipes do
+    Repo.all(UserRecipe)
+  end
+
+  @doc """
+  Gets a single user_recipe.
+
+  Raises `Ecto.NoResultsError` if the User recipe does not exist.
+
+  ## Examples
+
+      iex> get_user_recipe!(123)
+      %UserRecipe{}
+
+      iex> get_user_recipe!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_user_recipe!(id), do: Repo.get!(UserRecipe, id)
+
+  @doc """
+  Creates a user_recipe.
+
+  ## Examples
+
+      iex> create_user_recipe(%{field: value})
+      {:ok, %UserRecipe{}}
+
+      iex> create_user_recipe(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_user_recipe(attrs \\ %{}) do
+    %UserRecipe{}
+    |> UserRecipe.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a user_recipe.
+
+  ## Examples
+
+      iex> update_user_recipe(user_recipe, %{field: new_value})
+      {:ok, %UserRecipe{}}
+
+      iex> update_user_recipe(user_recipe, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_user_recipe(%UserRecipe{} = user_recipe, attrs) do
+    user_recipe
+    |> UserRecipe.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a user_recipe.
+
+  ## Examples
+
+      iex> delete_user_recipe(user_recipe)
+      {:ok, %UserRecipe{}}
+
+      iex> delete_user_recipe(user_recipe)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_user_recipe(%UserRecipe{} = user_recipe) do
+    Repo.delete(user_recipe)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking user_recipe changes.
+
+  ## Examples
+
+      iex> change_user_recipe(user_recipe)
+      %Ecto.Changeset{data: %UserRecipe{}}
+
+  """
+  def change_user_recipe(%UserRecipe{} = user_recipe, attrs \\ %{}) do
+    UserRecipe.changeset(user_recipe, attrs)
+  end
 end

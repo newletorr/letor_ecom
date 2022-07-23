@@ -9,6 +9,8 @@ defmodule LetorEcom.CustomerPurchases.PickUp do
     field :pick_up_time, :utc_datetime
     field :picked, :boolean, default: false
     field :pickup_code, :string
+    field :payment_option, :string
+    field :pos_ref, :string
     belongs_to(:order, Order)
     belongs_to(:pickup_centre, PickupCentre)
     belongs_to(:staff, Staff)

@@ -1,7 +1,7 @@
 defmodule LetorEcom.Control.EcommerceControl do
   use LetorEcom.SchemaHelper
   alias LetorEcom.AgentsAndSuppliers.Agent
-  alias LetorEcom.Centres.PickupCentre
+  alias LetorEcom.Centres.{PickupCentre, PurchaseOrder}
   alias LetorEcom.CustomerPurchases.{DeliveryCharge, ReferalDiscount}
   alias LetorEcom.Catalogue.ItemImage
   alias LetorEcom.HumanResource.StaffPosting
@@ -11,12 +11,14 @@ defmodule LetorEcom.Control.EcommerceControl do
     field :name, :string
     field :region, :string
     field :centre_code, :string
+    field :office_address, :string
     has_many(:pickup_centres, PickupCentre)
     has_one(:delivery_charges, DeliveryCharge)
     has_one(:referal_discounts, ReferalDiscount)
     has_many(:staff_postings, StaffPosting)
     has_many(:item_image, ItemImage)
     has_many(:agents, Agent)
+    has_many(:purchase_orders, PurchaseOrder)
 
     timestamps(type: :utc_datetime)
   end
@@ -32,10 +34,10 @@ defmodule LetorEcom.Control.EcommerceControl do
   @doc false
   def changeset(ecommerce_control, attrs) do
     ecommerce_control
-    |> cast(attrs, [:name, :region, :country, :centre_code])
-    |> validate_required([:name, :region, :country])
-    # |> unique_constraint(:name)
-    # |> unique_constraint(:region)
+    |> cast(attrs, [:name, :region, :country, :centre_code, :office_address])
+    |> validate_required([:name, :region, :country, :office_address])
+    |> unique_constraint(:name)
+    |> unique_constraint(:region)
     |> get_unique_code
   end
 

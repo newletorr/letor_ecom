@@ -45,7 +45,8 @@ EcommerceControl |> Repo.delete_all()
   Control.create_ecommerce_control(%{
     name: "Southern Control1",
     region: "South South",
-    country: "Nigeria"
+    country: "Nigeria",
+    office_address: "No 12 Ada Goerge Road"
   })
 
 ReferalDiscount |> Repo.delete_all()
@@ -1284,8 +1285,6 @@ InventoryChangeHistory |> Repo.delete_all()
     item_subcategory_id: sub4.id,
     item_tag_id: tag5.id,
     type: "Groceries",
-    details: "",
-    brand_name: "",
     package_uom: "Hand",
     barcode: "",
     brand_name: "",
@@ -1304,7 +1303,6 @@ InventoryChangeHistory |> Repo.delete_all()
     buy_price: 500,
     unit_sales_price: 800,
     bulk_sales_price: 3000,
-    re_order_level: 2,
     status: "available",
     expiry_date: ~D[2023-02-03]
   })

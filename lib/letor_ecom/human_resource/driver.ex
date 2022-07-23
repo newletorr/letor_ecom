@@ -19,7 +19,7 @@ defmodule LetorEcom.HumanResource.Driver do
   def changeset(driver, attrs) do
     driver
     |> cast(attrs, [:staff_id, :pickup_centre_id, :email, :name, :status, :phone])
-    |> validate_required([:staff_id, :pickup_centre_id, :email, :name, :status, :phone])
+    |> validate_required([:staff_id, :pickup_centre_id])
     |> unique_constraint(:email)
     |> unique_constraint(:phone)
     |> valid_phone(:phone)

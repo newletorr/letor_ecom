@@ -5,7 +5,6 @@ defmodule LetorEcom.Repo.Migrations.CreateItems do
     create table(:items, primary_key: false) do
       add :id, :binary_id, primary_key: true, default: fragment("gen_random_uuid()")
       add :actual_price, :decimal
-      add :available_quantity, :integer
       add :description, :string
       add :main_price, :decimal
       add :group_buying_price, :decimal
@@ -29,6 +28,7 @@ defmodule LetorEcom.Repo.Migrations.CreateItems do
       add :third_party_item, :string
       add :instore_location, :string
       add :qr_code, :string
+      add :ingredients, :text
 
       timestamps(type: :timestamptz)
     end

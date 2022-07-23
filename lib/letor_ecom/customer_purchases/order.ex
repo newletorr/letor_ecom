@@ -21,11 +21,13 @@ defmodule LetorEcom.CustomerPurchases.Order do
     field :delivery_option, :string, read_after_writes: true
     field :door_step_delivery, :boolean, default: false, read_after_writes: true
     field :eight_am_twelve_pm, :boolean, default: false, read_after_writes: true
-    field :fifteen_to_thirty_minutes, :boolean, default: false, read_after_writes: true
+    field :within_thirty_minutes, :boolean, default: false, read_after_writes: true
     field :four_pm_ten_pm, :boolean, default: false, read_after_writes: true
     field :grand_total, :decimal, read_after_writes: true
     field :latest_time, :time, read_after_writes: true
-    field :one_to_two_hours, :boolean, default: false, read_after_writes: true
+    field :within_one_hour, :boolean, default: false, read_after_writes: true
+    field :within_two_hours, :boolean, default: false, read_after_writes: true
+    field :within_three_hours, :boolean, default: false, read_after_writes: true
     field :order_confirmed, :boolean, default: false, read_after_writes: true
     field :order_instructions, :string, read_after_writes: true
     field :order_number, :string, read_after_writes: true
@@ -69,8 +71,8 @@ defmodule LetorEcom.CustomerPurchases.Order do
       :address_book_id,
       :delivery_charge,
       :delivery_date,
-      :fifteen_to_thirty_minutes,
-      :one_to_two_hours,
+      :within_thirty_minutes,
+      :within_one_hour,
       :eight_am_twelve_pm,
       :twelve_pm_four_pm,
       :four_pm_ten_pm,
@@ -132,7 +134,7 @@ defmodule LetorEcom.CustomerPurchases.Order do
       :address_book_id,
       :delivery_charge,
       :delivery_date,
-      :one_to_two_hours,
+      :within_one_hour,
       :eight_am_twelve_pm,
       :twelve_pm_four_pm,
       :four_pm_ten_pm,
@@ -251,7 +253,7 @@ defmodule LetorEcom.CustomerPurchases.Order do
     ])
     |> customer_order_confirmation_code
     # |> agent_order_confirmation_code
-    # |> valid_delivery_date_on_placing_order
+    |> valid_delivery_date_on_placing_order
     |> get_latest_time
     |> assoc_constraint(:item)
     |> get_popular_item
@@ -469,8 +471,8 @@ defmodule LetorEcom.CustomerPurchases.Order do
     case changeset.valid? do
       true ->
         pickup_centre_id = get_field(changeset, :pickup_centre_id)
-        fifteen_to_thirty_minutes = get_field(changeset, :fifteen_to_thirty_minutes)
-        one_to_two_hours = get_field(changeset, :one_to_two_hours)
+        within_thirty_minutes = get_field(changeset, :within_thirty_minutes)
+        within_one_hour = get_field(changeset, :within_one_hour)
         eight_am_twelve_pm = get_field(changeset, :eight_am_twelve_pm)
         twelve_pm_four_pm = get_field(changeset, :twelve_pm_four_pm)
         four_pm_ten_pm = get_field(changeset, :four_pm_ten_pm)
@@ -482,10 +484,10 @@ defmodule LetorEcom.CustomerPurchases.Order do
               where: p.id == ^pickup_centre_id
           )
 
-        if fifteen_to_thirty_minutes == true do
-          changeset |> put_change(:delivery_charge, delivery_charge.fifteen_to_thirty_minutes)
+        if within_thirty_minutes == true do
+          changeset |> put_change(:delivery_charge, delivery_charge.within_thirty_minutes)
         else
-          if one_to_two_hours == true do
+          if within_one_hour == true do
             changeset |> put_change(:delivery_charge, delivery_charge.one_hour)
           else
             if eight_am_twelve_pm == true do
@@ -651,15 +653,15 @@ defmodule LetorEcom.CustomerPurchases.Order do
       true ->
         order_time = get_field(changeset, :order_placed_at) |> DateTime.to_time()
         thirty_minutes_time = Time.add(order_time, 1800) |> Time.truncate(:second)
-        one_to_two_hours_time = Time.add(order_time, 7200) |> Time.truncate(:second)
-        one_to_two_hours = get_field(changeset, :one_to_two_hours)
+        within_one_hour_time = Time.add(order_time, 7200) |> Time.truncate(:second)
+        within_one_hour = get_field(changeset, :within_one_hour)
         thirty_minutes = get_field(changeset, :thirty_minutes)
         eight_am_twelve_pm = get_field(changeset, :eight_am_twelve_pm)
         twelve_pm_four_pm = get_field(changeset, :twelve_pm_four_pm)
         four_pm_ten_pm = get_field(changeset, :four_pm_ten_pm)
 
-        if one_to_two_hours == true do
-          changeset |> put_change(:latest_time, one_to_two_hours_time)
+        if within_one_hour == true do
+          changeset |> put_change(:latest_time, within_one_hour_time)
         else
           if thirty_minutes == true do
             changeset |> put_change(:latest_time, thirty_minutes_time)
@@ -688,16 +690,16 @@ defmodule LetorEcom.CustomerPurchases.Order do
   defp set_delivery_period(changeset) do
     case changeset.valid? do
       true ->
-        fifteen_to_thirty_minutes = get_field(changeset, :fifteen_to_thirty_minutes)
-        one_to_two_hours = get_field(changeset, :one_to_two_hours)
+        within_thirty_minutes = get_field(changeset, :within_thirty_minutes)
+        within_one_hour = get_field(changeset, :within_one_hour)
         eight_am_twelve_pm = get_field(changeset, :eight_am_twelve_pm)
         twelve_pm_four_pm = get_field(changeset, :twelve_pm_four_pm)
         four_pm_ten_pm = get_field(changeset, :four_pm_ten_pm)
 
-        if fifteen_to_thirty_minutes == true do
+        if within_thirty_minutes == true do
           changeset |> put_change(:delivery_period, "15 to 30 minutes")
         else
-          if one_to_two_hours == true do
+          if within_one_hour == true do
             changeset |> put_change(:delivery_period, "1 to 2 hours")
           else
             if eight_am_twelve_pm == true do

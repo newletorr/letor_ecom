@@ -8,12 +8,13 @@ defmodule LetorEcom.Repo.Migrations.CreateEcommerceControls do
       add :region, :string
       add :country, :string
       add :centre_code, :string
+      add :office_address, :string
 
       timestamps(type: :timestamptz)
     end
 
     create index(:ecommerce_controls, [:id])
-    # create unique_index(:ecommerce_controls, [:name])
-    # create unique_index(:ecommerce_controls, [:region])
+    create unique_index(:ecommerce_controls, [:name])
+    create unique_index(:ecommerce_controls, [:region])
   end
 end

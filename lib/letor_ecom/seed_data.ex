@@ -47,7 +47,8 @@ defmodule LetorEcom.SeedData do
       Control.create_ecommerce_control(%{
         name: "Southern Control1",
         region: "South South",
-        country: "Nigeria"
+        country: "Nigeria",
+        office_address: "No 12 Ada Goerge Road"
       })
 
     ReferalDiscount |> Repo.delete_all()

@@ -78,7 +78,9 @@ defmodule LetorEcom.MixProject do
       # testing, phone and email
       {:ex_twilio, "~> 0.9.1"},
       {:ex_phone_number, "~> 0.2.1"},
+      # email
       {:swoosh, "~> 1.3"},
+      ## {:gen_smtp, "~> 1.2"},
 
       # uploads
       {:sweet_xml, "~> 0.7.2", override: true},

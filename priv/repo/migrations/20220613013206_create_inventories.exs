@@ -27,6 +27,8 @@ defmodule LetorEcom.Repo.Migrations.CreateInventories do
         add(:re_ordering_required, :boolean)
         add(:shelf_replenishment_levels, :integer)
         add(:shelf_replenishment_required, :boolean)
+        add(:on_shelf_quantity, :integer)
+
         add(:pickup_centre_id, references(:pickup_centres, on_delete: :nothing, type: :binary_id))
 
         add(

@@ -10,12 +10,14 @@ defmodule LetorEcom.Centres do
   # alias LetorEcom.Catalogue.{Item, Sku}
 
   alias LetorEcom.Centres.{
+    Batch,
     DailyDeal,
     FeaturedItem,
     PickupCentre,
     PopularItem,
     Purchase,
     PurchaseItem,
+    PurchaseOrder,
     Inventory,
     InventoryChangeHistory,
     InventoryLocation,
@@ -799,8 +801,6 @@ defmodule LetorEcom.Centres do
     Repo.delete(purchase_item)
   end
 
-  alias LetorEcom.Centres.Batch
-
   @doc """
   Returns the list of batches.
 
@@ -883,15 +883,83 @@ defmodule LetorEcom.Centres do
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking batch changes.
+  Returns the list of purchase_orders.
 
   ## Examples
 
-      iex> change_batch(batch)
-      %Ecto.Changeset{data: %Batch{}}
+      iex> list_purchase_orders()
+      [%PurchaseOrder{}, ...]
 
   """
-  def change_batch(%Batch{} = batch, attrs \\ %{}) do
-    Batch.changeset(batch, attrs)
+  def list_purchase_orders do
+    Repo.all(PurchaseOrder)
+  end
+
+  @doc """
+  Gets a single purchase_order.
+
+  Raises `Ecto.NoResultsError` if the Purchase order does not exist.
+
+  ## Examples
+
+      iex> get_purchase_order!(123)
+      %PurchaseOrder{}
+
+      iex> get_purchase_order!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_purchase_order!(id), do: Repo.get!(PurchaseOrder, id)
+
+  @doc """
+  Creates a purchase_order.
+
+  ## Examples
+
+      iex> create_purchase_order(%{field: value})
+      {:ok, %PurchaseOrder{}}
+
+      iex> create_purchase_order(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_purchase_order(attrs \\ %{}) do
+    %PurchaseOrder{}
+    |> PurchaseOrder.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a purchase_order.
+
+  ## Examples
+
+      iex> update_purchase_order(purchase_order, %{field: new_value})
+      {:ok, %PurchaseOrder{}}
+
+      iex> update_purchase_order(purchase_order, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_purchase_order(%PurchaseOrder{} = purchase_order, attrs) do
+    purchase_order
+    |> PurchaseOrder.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a purchase_order.
+
+  ## Examples
+
+      iex> delete_purchase_order(purchase_order)
+      {:ok, %PurchaseOrder{}}
+
+      iex> delete_purchase_order(purchase_order)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_purchase_order(%PurchaseOrder{} = purchase_order) do
+    Repo.delete(purchase_order)
   end
 end

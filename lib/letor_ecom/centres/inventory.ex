@@ -23,8 +23,11 @@ defmodule LetorEcom.Centres.Inventory do
     field(:bulk_quantity_uom, :string, read_after_writes: true)
     # sales quantity unit of measure
     field(:sales_unit_quantity_uom, :string, read_after_writes: true)
+
+    # sales unit quantity should be the number of units to be sold that could be found in the bulk quantity.
     field(:sales_unit_quantity, :integer, read_after_writes: true)
     field(:max_bulk_quantity, :integer, read_after_writes: true)
+    field(:on_shelf_quantity, :integer, read_after_writes: true)
     field(:name, :string, read_after_writes: true)
     field(:qr_code, LetorEcom.Uploads.Type, read_after_writes: true)
     field(:quality_assurance_status, :string, read_after_writes: true)
@@ -145,10 +148,31 @@ defmodule LetorEcom.Centres.Inventory do
             },
           :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
         ) :: Ecto.Changeset.t()
-  def qr_code_changeset(item, attrs) do
-    item
+  def qr_code_changeset(inventory, attrs) do
+    inventory
     |> cast(attrs, [:qr_code])
   end
+
+  def unshelf_quantity_update_changeset(inventory, attrs) do
+    inventory
+    |> cast(attrs, [
+      :sales_unit_quantity,
+      :on_shelf_quantity,
+      :shelf_replenishment_levels,
+      :shelf_replenishment_required
+    ])
+  end
+
+  # defp validate_on_shelf_quantity(changeset) do
+  # case changeset.valid? do
+  #  true ->
+  #   on_shelf_quantity = get_field(changeset, :on_shelf_quantity)
+  #  sales_unit_quantity = get_field(changeset, :sales_unit_quantity)
+
+  # if
+
+  # end
+  # end
 
   defp check_bulk_quantity_levels(changeset) do
     case changeset.valid? do

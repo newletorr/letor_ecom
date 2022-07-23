@@ -5,6 +5,7 @@ defmodule LetorEcom.Account.User do
   alias LetorEcom.AgentsAndSuppliers.{Agent, Supplier}
   alias LetorEcom.Control.Location
   alias LetorEcom.CustomerPurchases.Order
+  alias LetorEcom.Delicacies.UserRecipe
   alias LetorEcom.HumanResource.Staff
   alias LetorEcom.Sales.InstoreSale
   alias LetorEcom.Transactions.UserWallet
@@ -52,6 +53,7 @@ defmodule LetorEcom.Account.User do
     has_many(:user_fav, UserFav)
     has_many(:instore_sales, InstoreSale)
     has_many(:orders, Order)
+    has_many(:user_recipes, UserRecipe)
     belongs_to(:location, Location)
     belongs_to(:agent, Agent)
     belongs_to(:supplier, Supplier)

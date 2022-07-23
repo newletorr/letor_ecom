@@ -10,7 +10,6 @@ defmodule LetorEcom.Catalogue.Item do
   schema "items" do
     field(:actual_price, :decimal, read_after_writes: true)
     field(:availability_time, :string, read_after_writes: true)
-    field(:available_quantity, :integer, read_after_writes: true)
     field(:barcode, :string, read_after_writes: true)
     field(:brand_name, :string, read_after_writes: true)
     field(:bulk, :boolean, default: false, read_after_writes: true)
@@ -33,6 +32,7 @@ defmodule LetorEcom.Catalogue.Item do
     field(:third_party_item, :string, read_after_writes: true)
     field(:type, :string, read_after_writes: true)
     field(:instore_location, :string, read_after_writes: true)
+    field(:ingredients, :string, read_after_writes: true)
     many_to_many(:item_tag, ItemTag, join_through: ItemTagging)
     belongs_to(:item_image, ItemImage)
     belongs_to(:item_subcategory, ItemSubcategory)
@@ -43,7 +43,7 @@ defmodule LetorEcom.Catalogue.Item do
     has_many(:item_taggings, ItemTagging)
     has_many(:order, Order)
 
-    has_many(:shopping_lists, ShoppingList)
+    has_many(:shopping_lisdriverts, ShoppingList)
 
     timestamps(type: :utc_datetime)
   end
@@ -64,7 +64,6 @@ defmodule LetorEcom.Catalogue.Item do
       :item_subcategory_id,
       :item_image_id,
       :actual_price,
-      :available_quantity,
       :description,
       :instore_location,
       :main_price,
@@ -87,7 +86,8 @@ defmodule LetorEcom.Catalogue.Item do
       :customization_allowed,
       :preparation_time,
       :availability_time,
-      :third_party_item
+      :third_party_item,
+      :ingredients
     ])
     |> validate_required([
       :sku_id,
@@ -122,7 +122,6 @@ defmodule LetorEcom.Catalogue.Item do
       :sku_id,
       :item_subcategory_id,
       :actual_price,
-      :available_quantity,
       :description,
       :main_price,
       :group_buying_price,

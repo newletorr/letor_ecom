@@ -6,8 +6,11 @@ defmodule LetorEcom.AgentsAndSuppliers.Supplier do
   use LetorEcom.SchemaHelper
   alias LetorEcom.Account.User
   alias LetorEcom.Control.EcommerceControl
+  alias LetorEcom.Centres.PurchaseOrder
+
+  @required_fields ~w(address status type means_of_id id_image first_name last_name email phone city state country)a
   @email_regex ~r/^[A-Za-z0-9._%+-+']+@[A-Za-z0-9.-]+\.[A-Za-z]+$/
-  # This is a supply schema
+
   schema "suppliers" do
     field(:address, :string)
     field(:business_name, :string)
@@ -19,12 +22,9 @@ defmodule LetorEcom.AgentsAndSuppliers.Supplier do
     field(:full_name, :string)
     field(:last_name, :string)
     field(:means_of_id, :string)
-    # LetorEcom.Uploads.Type
-    field(:logo, :string)
-    # LetorEcom.Uploads.Type
-    field(:image, :string)
-    # LetorEcom.Uploads.Type
-    field(:id_image, :string)
+    field(:logo, LetorEcom.Uploads.Type)
+    field(:image, LetorEcom.Uploads.Type)
+    field(:id_image, LetorEcom.Uploads.Type)
     field(:national_supplier, :boolean, default: false)
     field(:phone, :string)
     field(:rc_number, :string)
@@ -36,6 +36,7 @@ defmodule LetorEcom.AgentsAndSuppliers.Supplier do
     belongs_to(:ecommerce_control, EcommerceControl)
     belongs_to(:location, Location)
     has_one(:users, User)
+    has_many(:purchase_orders, PurchaseOrder)
     timestamps(type: :utc_datetime)
   end
 
@@ -46,43 +47,9 @@ defmodule LetorEcom.AgentsAndSuppliers.Supplier do
   @doc false
   def individual_supplier_changeset(supplier, attrs) do
     supplier
-    |> cast(attrs, [
-      :ecommerce_control_id,
-      :location_id,
-      :address,
-      :status,
-      :type,
-      :means_of_id,
-      :first_name,
-      :last_name,
-      :full_name,
-      :image,
-      :logo,
-      :id_image,
-      :email,
-      :phone,
-      :verified,
-      :city,
-      :state,
-      :country,
-      :regional_supplier,
-      :national_supplier
-    ])
-    # |> cast_attachments(attrs, [:id_image, :image, :logo])
-    |> validate_required([
-      :address,
-      :status,
-      :type,
-      :means_of_id,
-      :id_image,
-      :first_name,
-      :last_name,
-      :email,
-      :phone,
-      :city,
-      :state,
-      :country
-    ])
+    |> cast(attrs, all_fields())
+    |> cast_attachments(attrs, [:id_image, :image, :logo])
+    |> validate_required(@required_fields)
     |> validate_format(:email, @email_regex, message: "Email must have the @ sign and no spaces")
     |> update_change(:email, &String.downcase/1)
     |> validate_length(:email, min: 5, max: 160)

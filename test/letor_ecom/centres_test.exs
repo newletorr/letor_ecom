@@ -918,4 +918,186 @@ defmodule LetorEcom.CentresTest do
       assert %Ecto.Changeset{} = Centres.change_batch(batch)
     end
   end
+
+  describe "purchase_order" do
+    alias LetorEcom.Centres.PurchaseOrder
+
+    import LetorEcom.CentresFixtures
+
+    @invalid_attrs %{
+      fob_point: nil,
+      po_number: nil,
+      shipping_and_handling: nil,
+      state: nil,
+      tax_rate: nil,
+      terms_and_conditions: nil
+    }
+
+    test "list_purchase_order/0 returns all purchase_order" do
+      purchase_order = purchase_order_fixture()
+      assert Centres.list_purchase_order() == [purchase_order]
+    end
+
+    test "get_purchase_order!/1 returns the purchase_order with given id" do
+      purchase_order = purchase_order_fixture()
+      assert Centres.get_purchase_order!(purchase_order.id) == purchase_order
+    end
+
+    test "create_purchase_order/1 with valid data creates a purchase_order" do
+      valid_attrs = %{
+        fob_point: "some fob_point",
+        po_number: "some po_number",
+        shipping_and_handling: "120.5",
+        state: "some state",
+        tax_rate: 120.5,
+        terms_and_conditions: "some terms_and_conditions"
+      }
+
+      assert {:ok, %PurchaseOrder{} = purchase_order} = Centres.create_purchase_order(valid_attrs)
+      assert purchase_order.fob_point == "some fob_point"
+      assert purchase_order.po_number == "some po_number"
+      assert purchase_order.shipping_and_handling == Decimal.new("120.5")
+      assert purchase_order.state == "some state"
+      assert purchase_order.tax_rate == 120.5
+      assert purchase_order.terms_and_conditions == "some terms_and_conditions"
+    end
+
+    test "create_purchase_order/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Centres.create_purchase_order(@invalid_attrs)
+    end
+
+    test "update_purchase_order/2 with valid data updates the purchase_order" do
+      purchase_order = purchase_order_fixture()
+
+      update_attrs = %{
+        fob_point: "some updated fob_point",
+        po_number: "some updated po_number",
+        shipping_and_handling: "456.7",
+        state: "some updated state",
+        tax_rate: 456.7,
+        terms_and_conditions: "some updated terms_and_conditions"
+      }
+
+      assert {:ok, %PurchaseOrder{} = purchase_order} =
+               Centres.update_purchase_order(purchase_order, update_attrs)
+
+      assert purchase_order.fob_point == "some updated fob_point"
+      assert purchase_order.po_number == "some updated po_number"
+      assert purchase_order.shipping_and_handling == Decimal.new("456.7")
+      assert purchase_order.state == "some updated state"
+      assert purchase_order.tax_rate == 456.7
+      assert purchase_order.terms_and_conditions == "some updated terms_and_conditions"
+    end
+
+    test "update_purchase_order/2 with invalid data returns error changeset" do
+      purchase_order = purchase_order_fixture()
+
+      assert {:error, %Ecto.Changeset{}} =
+               Centres.update_purchase_order(purchase_order, @invalid_attrs)
+
+      assert purchase_order == Centres.get_purchase_order!(purchase_order.id)
+    end
+
+    test "delete_purchase_order/1 deletes the purchase_order" do
+      purchase_order = purchase_order_fixture()
+      assert {:ok, %PurchaseOrder{}} = Centres.delete_purchase_order(purchase_order)
+      assert_raise Ecto.NoResultsError, fn -> Centres.get_purchase_order!(purchase_order.id) end
+    end
+
+    test "change_purchase_order/1 returns a purchase_order changeset" do
+      purchase_order = purchase_order_fixture()
+      assert %Ecto.Changeset{} = Centres.change_purchase_order(purchase_order)
+    end
+  end
+
+  describe "purchase_orders" do
+    alias LetorEcom.Centres.PurchaseOrder
+
+    import LetorEcom.CentresFixtures
+
+    @invalid_attrs %{
+      fob_point: nil,
+      po_number: nil,
+      shipping_and_handling: nil,
+      state: nil,
+      tax_rate: nil,
+      terms_and_conditions: nil
+    }
+
+    test "list_purchase_orders/0 returns all purchase_orders" do
+      purchase_order = purchase_order_fixture()
+      assert Centres.list_purchase_orders() == [purchase_order]
+    end
+
+    test "get_purchase_order!/1 returns the purchase_order with given id" do
+      purchase_order = purchase_order_fixture()
+      assert Centres.get_purchase_order!(purchase_order.id) == purchase_order
+    end
+
+    test "create_purchase_order/1 with valid data creates a purchase_order" do
+      valid_attrs = %{
+        fob_point: "some fob_point",
+        po_number: "some po_number",
+        shipping_and_handling: "120.5",
+        state: "some state",
+        tax_rate: 120.5,
+        terms_and_conditions: "some terms_and_conditions"
+      }
+
+      assert {:ok, %PurchaseOrder{} = purchase_order} = Centres.create_purchase_order(valid_attrs)
+      assert purchase_order.fob_point == "some fob_point"
+      assert purchase_order.po_number == "some po_number"
+      assert purchase_order.shipping_and_handling == Decimal.new("120.5")
+      assert purchase_order.state == "some state"
+      assert purchase_order.tax_rate == 120.5
+      assert purchase_order.terms_and_conditions == "some terms_and_conditions"
+    end
+
+    test "create_purchase_order/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Centres.create_purchase_order(@invalid_attrs)
+    end
+
+    test "update_purchase_order/2 with valid data updates the purchase_order" do
+      purchase_order = purchase_order_fixture()
+
+      update_attrs = %{
+        fob_point: "some updated fob_point",
+        po_number: "some updated po_number",
+        shipping_and_handling: "456.7",
+        state: "some updated state",
+        tax_rate: 456.7,
+        terms_and_conditions: "some updated terms_and_conditions"
+      }
+
+      assert {:ok, %PurchaseOrder{} = purchase_order} =
+               Centres.update_purchase_order(purchase_order, update_attrs)
+
+      assert purchase_order.fob_point == "some updated fob_point"
+      assert purchase_order.po_number == "some updated po_number"
+      assert purchase_order.shipping_and_handling == Decimal.new("456.7")
+      assert purchase_order.state == "some updated state"
+      assert purchase_order.tax_rate == 456.7
+      assert purchase_order.terms_and_conditions == "some updated terms_and_conditions"
+    end
+
+    test "update_purchase_order/2 with invalid data returns error changeset" do
+      purchase_order = purchase_order_fixture()
+
+      assert {:error, %Ecto.Changeset{}} =
+               Centres.update_purchase_order(purchase_order, @invalid_attrs)
+
+      assert purchase_order == Centres.get_purchase_order!(purchase_order.id)
+    end
+
+    test "delete_purchase_order/1 deletes the purchase_order" do
+      purchase_order = purchase_order_fixture()
+      assert {:ok, %PurchaseOrder{}} = Centres.delete_purchase_order(purchase_order)
+      assert_raise Ecto.NoResultsError, fn -> Centres.get_purchase_order!(purchase_order.id) end
+    end
+
+    test "change_purchase_order/1 returns a purchase_order changeset" do
+      purchase_order = purchase_order_fixture()
+      assert %Ecto.Changeset{} = Centres.change_purchase_order(purchase_order)
+    end
+  end
 end

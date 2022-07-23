@@ -7,9 +7,9 @@ defmodule LetorEcomWeb.Schema.Types.ItemsType do
   import Ecto.Query, warn: false
   import Absinthe.Resolution.Helpers
   import LetorEcomWeb.Schema.ChangesetErrors, only: [transform_errors: 1]
-  alias LetorEcom.{Catalogue, Centres, Control, Ordering, Repo}
+  alias LetorEcom.{Catalogue, Control, Repo}
   alias LetorEcom.Catalogue.Item
-  alias LetorEcom.Centres.SalesPromotion
+  # alias LetorEcom.Centres.SalesPromotion
   alias LetorEcom.Repo
   alias LetorEcomWeb.Schema.Middleware
 
@@ -17,7 +17,13 @@ defmodule LetorEcomWeb.Schema.Types.ItemsType do
     field(:id, :id)
     field(:actual_price, :decimal)
     field(:availability_time, :string)
-    field(:available_quantity, :integer)
+
+    field(:available_quantity, :integer,
+      resolve: fn item, _, _ ->
+        Catalogue.get_available_quantity(item)
+      end
+    )
+
     field(:barcode, :string)
     field(:brand_name, :string)
     field(:bulk, :boolean)
@@ -34,12 +40,12 @@ defmodule LetorEcomWeb.Schema.Types.ItemsType do
     field(:preparation_time, :string)
     field(:promo_price, :decimal)
     field(:qa_cleared, :boolean)
-    # LetorEcom.Uploads.Type)
     field(:regional_name, :string)
     field(:size, :integer)
     field(:third_party_item, :string)
     field(:type, :string)
     field(:instore_location, :string)
+    field :ingredients, :string
 
     field(:qr_code_url, :string,
       resolve: fn query, _, _ ->

@@ -2,7 +2,7 @@ defmodule LetorEcom.Delicacies.Recipe do
   use LetorEcom.SchemaHelper
   use Waffle.Ecto.Schema
   alias LetorEcom.Catalogue.Item
-  alias LetorEcom.Delicacies.ItemRecipe
+  alias LetorEcom.Delicacies.{UserRecipe, ItemRecipe}
 
   schema "recipes" do
     many_to_many(:items, Item, join_through: ItemRecipe)
@@ -16,6 +16,7 @@ defmodule LetorEcom.Delicacies.Recipe do
     field :special, :boolean, read_after_writes: true
     field :video, :string, read_after_writes: true
     belongs_to(:recipe_class, RecipeClass)
+    has_many(:user_recipes, UserRecipe)
     timestamps(type: :utc_datetime)
   end
 

@@ -8,8 +8,10 @@ defmodule LetorEcom.Repo.Migrations.CreateOrders do
       add :address, :string
       add :delivery_charge, :decimal
       add :delivery_date, :date
-      add :fifteen_to_thirty_minutes, :boolean, default: false, null: false
-      add :one_to_two_hours, :boolean, default: false, null: false
+      add :within_thirty_minutes, :boolean, default: false, null: false
+      add :within_one_hour, :boolean, default: false, null: false
+      add :within_two_hours, :boolean, default: false, null: false
+      add :within_three_hours, :boolean, default: false, null: false
       add :eight_am_twelve_pm, :boolean, default: false, null: false
       add :twelve_pm_four_pm, :boolean, default: false, null: false
       add :four_pm_ten_pm, :boolean, default: false, null: false

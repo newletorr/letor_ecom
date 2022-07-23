@@ -221,4 +221,60 @@ defmodule LetorEcom.DelicaciesTest do
       assert %Ecto.Changeset{} = Delicacies.change_item_recipe(item_recipe)
     end
   end
+
+  describe "user_recipes" do
+    alias LetorEcom.Delicacies.UserRecipe
+
+    import LetorEcom.DelicaciesFixtures
+
+    @invalid_attrs %{}
+
+    test "list_user_recipes/0 returns all user_recipes" do
+      user_recipe = user_recipe_fixture()
+      assert Delicacies.list_user_recipes() == [user_recipe]
+    end
+
+    test "get_user_recipe!/1 returns the user_recipe with given id" do
+      user_recipe = user_recipe_fixture()
+      assert Delicacies.get_user_recipe!(user_recipe.id) == user_recipe
+    end
+
+    test "create_user_recipe/1 with valid data creates a user_recipe" do
+      valid_attrs = %{}
+
+      assert {:ok, %UserRecipe{} = user_recipe} = Delicacies.create_user_recipe(valid_attrs)
+    end
+
+    test "create_user_recipe/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Delicacies.create_user_recipe(@invalid_attrs)
+    end
+
+    test "update_user_recipe/2 with valid data updates the user_recipe" do
+      user_recipe = user_recipe_fixture()
+      update_attrs = %{}
+
+      assert {:ok, %UserRecipe{} = user_recipe} =
+               Delicacies.update_user_recipe(user_recipe, update_attrs)
+    end
+
+    test "update_user_recipe/2 with invalid data returns error changeset" do
+      user_recipe = user_recipe_fixture()
+
+      assert {:error, %Ecto.Changeset{}} =
+               Delicacies.update_user_recipe(user_recipe, @invalid_attrs)
+
+      assert user_recipe == Delicacies.get_user_recipe!(user_recipe.id)
+    end
+
+    test "delete_user_recipe/1 deletes the user_recipe" do
+      user_recipe = user_recipe_fixture()
+      assert {:ok, %UserRecipe{}} = Delicacies.delete_user_recipe(user_recipe)
+      assert_raise Ecto.NoResultsError, fn -> Delicacies.get_user_recipe!(user_recipe.id) end
+    end
+
+    test "change_user_recipe/1 returns a user_recipe changeset" do
+      user_recipe = user_recipe_fixture()
+      assert %Ecto.Changeset{} = Delicacies.change_user_recipe(user_recipe)
+    end
+  end
 end
