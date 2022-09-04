@@ -10,8 +10,8 @@ defmodule LetorEcom.Catalogue.ItemImage do
     field :item_image2, :string, read_after_writes: true
     field :item_image3, :string, read_after_writes: true
     field :item_image4, :string, read_after_writes: true
-    field(:item_name, :string, read_after_writes: true)
-    field(:video_url, :string, read_after_writes: true)
+    field :item_name, :string, read_after_writes: true
+    field :video_url, :string, read_after_writes: true
     belongs_to(:ecommerce_control, EcommerceControl)
     has_many(:items, Item)
     has_many(:inventories, Inventory)
@@ -25,7 +25,11 @@ defmodule LetorEcom.Catalogue.ItemImage do
     |> cast(attrs, [
       :ecommerce_control_id,
       :item_name,
-      :video_url
+      :video_url,
+      :item_image1,
+      :item_image2,
+      :item_image3,
+      :item_image4
     ])
     |> validate_required([
       :ecommerce_control_id,

@@ -47,11 +47,11 @@ defmodule LetorEcom.Centres.Purchase do
 
         count =
           Repo.one(
-            from(purchase in __MODULE__,
+            from(purchase in __MODULE__, #where: is_nil(purchase.pickup_centre_id),
               join: pickup_centre in assoc(purchase, :pickup_centre),
               where:
                 purchase.pickup_centre_id ==
-                  ^pickup_centre_id,
+                  ^pickup_centre_id, # and is_nil(purchase.pickup_centre_id),
               select: count(purchase.id)
             )
           )

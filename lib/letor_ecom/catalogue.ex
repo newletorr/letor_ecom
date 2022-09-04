@@ -718,18 +718,9 @@ defmodule LetorEcom.Catalogue do
 
   """
   def create_item_image(attrs \\ %{}) do
-    item_image_changeset = %ItemImage{} |> ItemImage.changeset(attrs)
-
-    Multi.new()
-    |> Multi.insert(:item_image, item_image_changeset)
-    |> Multi.run(:image_uploads, fn repo, %{item_image: item_image} ->
-      uploads_changeset =
-        item_image
-        |> ItemImage.image_uploads_changeset(attrs)
-
-      repo.update(uploads_changeset)
-    end)
-    |> Repo.transaction()
+    %ItemImage{}
+    |> ItemImage.changeset(attrs)
+    |> Repo.insert()
   end
 
   @doc """

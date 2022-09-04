@@ -22,5 +22,6 @@ defmodule LetorEcom.Repo.Migrations.CreateItemsAssoc do
     create index(:items, [:daily_deal_id])
     create index(:items, [:featured_item_id])
     create index(:items, [:item_image_id])
+    create unique_index(:items, [:featured_item_id], name: "items_featured_item_id_index")
   end
 end

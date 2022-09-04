@@ -1,12 +1,11 @@
 defmodule LetorEcom.Catalogue.Item do
   use LetorEcom.SchemaHelper
   use Waffle.Ecto.Schema
-  alias LetorEcom.Account.ShoppingList
+  alias LetorEcom.Account.{ShoppingList, ViewedItem}
   alias LetorEcom.Catalogue.{ItemImage, ItemSubcategory, ItemTag, ItemTagging, Sku}
-  alias LetorEcom.Centres.{DailyDeal, FeaturedItem, PopularItem}
+  alias LetorEcom.Centres.{DailyDeal, FeaturedItem}
   alias LetorEcom.CustomerPurchases.{CartItem, Order}
-  alias LetorEcom.Repo
-  alias __MODULE__
+  alias LetorEcom.Delicacies.ItemRecipe
 
   schema "items" do
     field(:actual_price, :decimal, read_after_writes: true)
@@ -43,6 +42,8 @@ defmodule LetorEcom.Catalogue.Item do
     has_many(:cart_items, CartItem)
     has_many(:item_taggings, ItemTagging)
     has_many(:order, Order)
+    has_many(:viewed_item, ViewedItem)
+    has_many(:item_recipes, ItemRecipe)
 
     has_many(:shopping_lists, ShoppingList)
 
@@ -153,7 +154,8 @@ defmodule LetorEcom.Catalogue.Item do
     |> assoc_constraint(:sku)
     |> assoc_constraint(:daily_deal)
     |> assoc_constraint(:featured_item)
-    |> assoc_constraint(:popular_item)
+
+    # |> assoc_constraint(:popular_item)
   end
 
   @spec special_category_changeset(
@@ -169,6 +171,7 @@ defmodule LetorEcom.Catalogue.Item do
     |> cast(attrs, [:featured_item_id, :daily_deal_id])
     |> assoc_constraint(:daily_deal)
     |> assoc_constraint(:featured_item)
+    |> foreign_key_constraint(:featured_item_id)
   end
 
   @spec qr_code_changeset(

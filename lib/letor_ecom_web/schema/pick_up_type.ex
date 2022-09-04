@@ -1,4 +1,4 @@
-defmodule LetorEcomWeb.Schema.Types.PickupType do
+defmodule LetorEcomWeb.Schema.Types.PickUpType do
   @moduledoc """
   Copyright © 2019 Letorr Nigeria Limited.
   All rights reserved.
@@ -49,12 +49,12 @@ defmodule LetorEcomWeb.Schema.Types.PickupType do
 
       middleware(Middleware.Authorize, "customer")
 
-      resolve(fn %{input: input}, %{context: %{current_user: current_user}} ->
-        main_input = Map.put(input, :user_id, current_user.id)
-
-        case CustomerPurchases.create_pick_up(main_input) do
+      resolve(fn %{input: input}, _ ->
+        case CustomerPurchases.create_pick_up(input) do
           {:error, changeset} ->
-            {:error, transform_errors(changeset)}
+            {:error,
+             message: "Something went wrong, please try again",
+             details: transform_errors(changeset)}
 
           success ->
             success

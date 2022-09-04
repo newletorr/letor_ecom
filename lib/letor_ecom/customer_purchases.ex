@@ -609,6 +609,8 @@ defmodule LetorEcom.CustomerPurchases do
     Repo.delete(referal_discount)
   end
 
+  def get_pick_up!(id), do: Repo.get!(PickUp, id)
+
   @doc """
   Creates a pick_up.
 
@@ -623,7 +625,7 @@ defmodule LetorEcom.CustomerPurchases do
   """
   def create_pick_up(attrs \\ %{}) do
     %PickUp{}
-    |> PickUp.changeset(attrs)
+    |> PickUp.instore_pickup_changeset(attrs)
     |> Repo.insert()
   end
 
@@ -641,7 +643,7 @@ defmodule LetorEcom.CustomerPurchases do
   """
   def update_pick_up(%PickUp{} = pick_up, attrs) do
     pick_up
-    |> PickUp.changeset(attrs)
+    |> PickUp.instore_pickup_changeset(attrs)
     |> Repo.update()
   end
 

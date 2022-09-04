@@ -7,7 +7,7 @@ defmodule LetorEcom.Delicacies.RecipeClass do
     field :description, :string
     field :name, :string
     belongs_to(:pickup_centre, PickupCentre)
-    has_many(:recipes, Recipe)
+    has_many(:recipes, Recipe, on_delete: :delete_all)
 
     timestamps(type: :utc_datetime)
   end

@@ -13,7 +13,7 @@ defmodule LetorEcom.Repo.Migrations.CreateStaffPostings do
 
       add :staff_id, references(:staff, on_delete: :nothing, type: :binary_id)
 
-      add :user_id, references(:user, on_delete: :nothing, type: :binary_id)
+      add :user_id, references(:users, on_delete: :nothing, type: :binary_id)
 
       timestamps(type: :timestamptz)
     end

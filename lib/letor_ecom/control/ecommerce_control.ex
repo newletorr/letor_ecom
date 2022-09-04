@@ -1,6 +1,6 @@
 defmodule LetorEcom.Control.EcommerceControl do
   use LetorEcom.SchemaHelper
-  alias LetorEcom.AgentsAndSuppliers.Agent
+  #alias LetorEcom.AgentsAndSuppliers.Agent
   alias LetorEcom.Centres.PickupCentre
   alias LetorEcom.CustomerPurchases.{DeliveryCharge, ReferalDiscount}
   alias LetorEcom.Catalogue.ItemImage
@@ -16,7 +16,7 @@ defmodule LetorEcom.Control.EcommerceControl do
     has_one(:referal_discounts, ReferalDiscount)
     has_many(:staff_postings, StaffPosting)
     has_many(:item_image, ItemImage)
-    has_many(:agents, Agent)
+    #has_many(:agents, Agent)
 
     timestamps(type: :utc_datetime)
   end

@@ -2,7 +2,7 @@ defmodule LetorEcom.Delicacies.Recipe do
   use LetorEcom.SchemaHelper
 
   alias LetorEcom.Catalogue.Item
-  alias LetorEcom.Delicacies.ItemRecipe
+  alias LetorEcom.Delicacies.{ItemRecipe, RecipeClass}
 
   schema "recipes" do
     many_to_many(:items, Item, join_through: ItemRecipe)
@@ -16,6 +16,7 @@ defmodule LetorEcom.Delicacies.Recipe do
     field :special, :boolean, read_after_writes: true
     field :video, :string, read_after_writes: true
     belongs_to(:recipe_class, RecipeClass)
+    has_many(:item_recipes, ItemRecipe)
 
     timestamps(type: :utc_datetime)
   end
@@ -36,12 +37,13 @@ defmodule LetorEcom.Delicacies.Recipe do
       :meal_type
     ])
     |> validate_required([
+      :recipe_class_id,
       :description,
       :name,
       :directions,
       :image1_url,
       :meal_type
     ])
-    |> assoc_constraint(:recipe_class)
+    |> foreign_key_constraint(:recipe_class_id, name: :recipes_recipe_class_id_fkey)
   end
 end

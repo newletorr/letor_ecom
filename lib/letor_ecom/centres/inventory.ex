@@ -115,7 +115,6 @@ defmodule LetorEcom.Centres.Inventory do
       :buy_price,
       :description,
       :max_bulk_quantity,
-      :max_sales_unit_quantity,
       :name,
       :sales_unit_quantity,
       :bulk_quantity,

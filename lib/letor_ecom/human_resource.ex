@@ -17,6 +17,24 @@ defmodule LetorEcom.HumanResource do
     queryable
   end
 
+  def list_staff do
+    Repo.all(Staff)
+  end
+
+  def get_staff!(id) do
+    Repo.get!(Staff, id)
+  end
+
+  def create_staff(attrs \\ %{}) do
+    %Staff{}
+    |> Staff.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  # @spec update_staff(
+  ##        %LetorEcom.HumanResource.Staff{optional(atom) => any},
+  #      :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
+  #   ) :: any
   @doc """
   Updates a staff.
 
@@ -49,6 +67,14 @@ defmodule LetorEcom.HumanResource do
   """
   def delete_staff(%Staff{} = staff) do
     Repo.delete(staff)
+  end
+
+  def list_drivers do
+    Repo.all(Driver) |> List.last()
+  end
+
+  def get_driver!(id) do
+    Repo.get!(Driver, id)
   end
 
   @doc """
@@ -117,14 +143,16 @@ defmodule LetorEcom.HumanResource do
   """
 
   def create_staff_posting(attrs \\ %{}) do
-    staff_posting_changeset =
+    control_posting_changeset =
       if is_nil(attrs.ecommerce_control_id) == false do
         %StaffPosting{} |> StaffPosting.control_postings_changeset(attrs)
       else
         %StaffPosting{} |> StaffPosting.stores_postings_changeset(attrs)
       end
 
-    staff_posting_changeset |> Repo.insert()
+    control_posting_changeset
+    |> StaffPosting.control_postings_changeset(attrs)
+    |> Repo.insert()
   end
 
   @doc """

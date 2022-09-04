@@ -65,8 +65,10 @@ defmodule LetorEcom.Delicacies do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_recipe_class(%RecipeClass{} = recipe_class) do
-    Repo.delete(recipe_class)
+  def delete_recipe_class(%RecipeClass{} = recipe_class, attrs \\ %{}) do
+    recipe_class
+    |> RecipeClass.changeset(attrs)
+    |> Repo.delete()
   end
 
   @doc """
@@ -161,8 +163,10 @@ defmodule LetorEcom.Delicacies do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_recipe(%Recipe{} = recipe) do
-    Repo.delete(recipe)
+  def delete_recipe(%Recipe{} = recipe, attrs \\ %{}) do
+    recipe
+    |> Recipe.changeset(attrs)
+    |> Repo.delete()
   end
 
   @doc """

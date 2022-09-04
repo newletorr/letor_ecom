@@ -7,7 +7,7 @@ defmodule LetorEcom.TransactionsTest do
   describe "payments" do
     alias LetorEcom.Transactions.Payment
 
-    import LetorEcom.TransactionsFixtures
+    # import LetorEcom.TransactionsFixtures
 
     @invalid_attrs %{
       amount: nil,
@@ -28,7 +28,9 @@ defmodule LetorEcom.TransactionsTest do
       assert Transactions.get_payment!(payment.id) == payment
     end
 
-    test "create_payment/1 with valid data creates a payment" do
+    test "make_order_payment/1 with valid data creates a payment" do
+      order = order_fixture()
+
       valid_attrs = %{
         amount: "120.5",
         authorization_url: "some authorization_url",
@@ -38,17 +40,18 @@ defmodule LetorEcom.TransactionsTest do
         verified: true
       }
 
-      assert {:ok, %Payment{} = payment} = Transactions.create_payment(valid_attrs)
+      assert {:ok, %Payment{} = payment} = Transactions.make_order_payment(valid_attrs)
       assert payment.amount == Decimal.new("120.5")
       assert payment.authorization_url == "some authorization_url"
       assert payment.ip_address == "some ip_address"
       assert payment.reference_code == "some reference_code"
       assert payment.transaction_id == 42
       assert payment.verified == true
+      assert payment.order_id == order.id
     end
 
-    test "create_payment/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Transactions.create_payment(@invalid_attrs)
+    test "make_order_payment/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Transactions.make_order_payment(@new_attrs)
     end
 
     test "update_payment/2 with valid data updates the payment" do
@@ -88,15 +91,15 @@ defmodule LetorEcom.TransactionsTest do
   describe "user_wallets" do
     alias LetorEcom.Transactions.UserWallet
 
-    import LetorEcom.TransactionsFixtures
+    # import LetorEcom.TransactionsFixtures
 
     @invalid_attrs %{amount: nil, wallet_id: nil}
 
     test "create_user_wallet/1 with valid data creates a user_wallet" do
-      valid_attrs = %{amount: "some amount", wallet_id: "some wallet_id"}
+      valid_attrs = %{amount: Decimal.new("400"), wallet_id: "some wallet_id"}
 
       assert {:ok, %UserWallet{} = user_wallet} = Transactions.create_user_wallet(valid_attrs)
-      assert user_wallet.amount == "some amount"
+      assert user_wallet.amount == Decimal.new("400")
       assert user_wallet.wallet_id == "some wallet_id"
     end
 
@@ -106,20 +109,21 @@ defmodule LetorEcom.TransactionsTest do
 
     test "update_user_wallet/2 with valid data updates the user_wallet" do
       user_wallet = user_wallet_fixture()
-      update_attrs = %{amount: "some updated amount", wallet_id: "some updated wallet_id"}
+
+      update_attrs = %{amount: Decimal.new("120.5"), wallet_id: "some updated wallet_id"}
 
       assert {:ok, %UserWallet{} = user_wallet} =
                Transactions.update_user_wallet(user_wallet, update_attrs)
 
-      assert user_wallet.amount == "some updated amount"
+      assert user_wallet.amount == Decimal.new("120.5")
       assert user_wallet.wallet_id == "some updated wallet_id"
     end
 
     test "update_user_wallet/2 with invalid data returns error changeset" do
       user_wallet = user_wallet_fixture()
 
-      assert {:error, %Ecto.Changeset{}} =
-               Transactions.update_user_wallet(user_wallet, @invalid_attrs)
+     assert {:error, %Ecto.Changeset{}} =
+              Transactions.update_user_wallet(user_wallet, @invalid_attrs)
 
       assert user_wallet == Transactions.get_user_wallet!(user_wallet.id)
     end

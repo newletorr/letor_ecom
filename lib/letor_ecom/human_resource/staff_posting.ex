@@ -43,7 +43,7 @@ defmodule LetorEcom.HumanResource.StaffPosting do
     |> cast(attrs, [:ecommerce_control_id, :user_id, :date_posted, :previous_posting])
     |> assoc_constraint(:ecommerce_control)
     |> assoc_constraint(:user)
-    |> get_previous_posting
+    |> get_previous_posting()
   end
 
   @spec posting_update_changeset(

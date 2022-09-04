@@ -29,7 +29,7 @@ defmodule LetorEcom.ControlTest do
     end
 
     test "update_ecommerce_control/2 with valid data updates the ecommerce_control" do
-      ecommerce_control = Repo.all(EcommerceControl) |> List.first()
+      ecommerce_control = ecommerce_control_fixture()
 
       update_attrs = %{
         country: "some updated country",
@@ -46,7 +46,7 @@ defmodule LetorEcom.ControlTest do
     end
 
     test "update_ecommerce_control/2 with invalid data returns error changeset" do
-      ecommerce_control = Repo.all(EcommerceControl) |> List.first()
+      ecommerce_control = ecommerce_control_fixture()
 
       assert {:error, %Ecto.Changeset{}} =
                Control.update_ecommerce_control(ecommerce_control, @invalid_attrs)
@@ -73,7 +73,7 @@ defmodule LetorEcom.ControlTest do
     }
 
     test "create_location/1 with valid data creates a location" do
-      pickup_centre = Repo.all(PickupCentre) |> List.first()
+      pickup_centre = pickup_centre_fixture()
 
       valid_attrs = %{
         city: "some city",
@@ -107,7 +107,7 @@ defmodule LetorEcom.ControlTest do
     end
 
     test "update_location/2 with valid data updates the location" do
-      location = Repo.all(Location) |> List.first()
+      location = location_fixture()
 
       update_attrs = %{
         city: "some updated city",
@@ -130,7 +130,7 @@ defmodule LetorEcom.ControlTest do
     end
 
     test "update_location/2 with invalid data returns error changeset" do
-      location = Repo.all(Location) |> List.first()
+      location = location_fixture()
       assert {:error, %Ecto.Changeset{}} = Control.update_location(location, @invalid_attrs)
       assert location == Control.get_location!(location.id)
     end
@@ -138,59 +138,6 @@ defmodule LetorEcom.ControlTest do
     # test "delete_location/1 deletes the location" do
     # location = Repo.all(Location) |> List.first()
     # assert {:ok, %Location{}} = Control.delete_location(location)
-    # end
-  end
-
-  describe "covered_institutions" do
-    alias LetorEcom.Control.{CoveredInstitution, EcommerceControl, Location}
-
-    @invalid_attrs %{campus_name: nil, name: nil, location_id: nil, ecommerce_control_id: nil}
-
-    test "create_covered_institution/1 with valid data creates a covered_institution" do
-      location = Repo.all(Location) |> List.first()
-      ecommerce_control = Repo.all(EcommerceControl) |> List.first()
-
-      valid_attrs = %{
-        campus_name: "some campus_name",
-        name: "some name",
-        location_id: location.id,
-        ecommerce_control_id: ecommerce_control.id
-      }
-
-      assert {:ok, %CoveredInstitution{} = covered_institution} =
-               Control.create_covered_institution(valid_attrs)
-
-      assert covered_institution.campus_name == "some campus_name"
-      assert covered_institution.name == "some name"
-    end
-
-    test "create_covered_institution/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Control.create_covered_institution(@invalid_attrs)
-    end
-
-    test "update_covered_institution/2 with valid data updates the covered_institution" do
-      covered_institution = Repo.all(CoveredInstitution) |> List.first()
-      update_attrs = %{campus_name: "some updated campus_name", name: "some updated name"}
-
-      assert {:ok, %CoveredInstitution{} = covered_institution} =
-               Control.update_covered_institution(covered_institution, update_attrs)
-
-      assert covered_institution.campus_name == "some updated campus_name"
-      assert covered_institution.name == "some updated name"
-    end
-
-    test "update_covered_institution/2 with invalid data returns error changeset" do
-      covered_institution = Repo.all(CoveredInstitution) |> List.first()
-
-      assert {:error, %Ecto.Changeset{}} =
-               Control.update_covered_institution(covered_institution, @invalid_attrs)
-    end
-
-    # test "delete_covered_institution/1 deletes the covered_institution" do
-    # covered_institution = Repo.all(CoveredInstitution) |> List.first()
-
-    # assert {:ok, %CoveredInstitution{}} =
-    #        Control.delete_covered_institution(covered_institution)
     # end
   end
 end

@@ -35,7 +35,7 @@ defmodule LetorEcom.AgentsAndSuppliers.Supplier do
     field(:verified, :boolean, default: false)
     belongs_to(:ecommerce_control, EcommerceControl)
     belongs_to(:location, Location)
-    has_one(:users, User)
+    has_one(:users, User, on_delete: :delete_all)
     timestamps(type: :utc_datetime)
   end
 

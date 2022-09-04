@@ -13,7 +13,7 @@ defmodule LetorEcom.Repo.Migrations.CreateRecipes do
       add :video, :string
       add :special, :boolean
       add :meal_type, :string
-      add :recipe_class_id, references(:recipe_classes, on_delete: :nothing, type: :binary_id)
+      add :recipe_class_id, references(:recipe_classes, on_delete: :delete_all, type: :binary_id)
 
       timestamps(type: :timestamptz)
     end

@@ -7,7 +7,8 @@ defmodule LetorEcomWeb.Schema.Types.EcommerceControlType do
   import Ecto.Query, warn: false
   import Absinthe.Resolution.Helpers, only: [dataloader: 3]
   import LetorEcomWeb.Schema.ChangesetErrors, only: [transform_errors: 1]
-  alias LetorEcom.{Control} #Centres,
+  # Centres,
+  alias LetorEcom.{Control}
   alias LetorEcom.Control.EcommerceControl
   alias LetorEcom.Repo
   alias LetorEcomWeb.Schema.Middleware
@@ -17,7 +18,7 @@ defmodule LetorEcomWeb.Schema.Types.EcommerceControlType do
     field :country, :string
     field :name, :string
     field :region, :string
-    #field :centre_code, :string
+    # field :centre_code, :string
     field :inserted_at, :datetime
     field :updated_at, :datetime
 
@@ -52,7 +53,7 @@ defmodule LetorEcomWeb.Schema.Types.EcommerceControlType do
     field :country, non_null(:string)
     field :name, non_null(:string)
     field :region, non_null(:string)
-    #field :centre_code, non_null(:string)
+    # field :centre_code, non_null(:string)
   end
 
   object :ecommerce_control_mutation do

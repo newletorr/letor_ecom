@@ -30,5 +30,6 @@ defmodule LetorEcom.Repo.Migrations.CreateStaff do
     create index(:staff, [:id])
     create unique_index(:staff, [:email])
     create unique_index(:staff, [:phone])
+    create_unique_index(:staff, [:guarantor_phone])
   end
 end

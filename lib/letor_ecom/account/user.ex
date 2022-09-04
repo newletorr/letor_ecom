@@ -1,7 +1,7 @@
 defmodule LetorEcom.Account.User do
   use Waffle.Ecto.Schema
   use LetorEcom.SchemaHelper
-  alias LetorEcom.Account.{Address, ReferedList, ShoppingList, UserFav}
+  alias LetorEcom.Account.{Address, ReferedList, ShoppingList, ViewedItem, UserFav}
   alias LetorEcom.AgentsAndSuppliers.{Agent, Supplier}
   alias LetorEcom.Control.Location
   alias LetorEcom.CustomerPurchases.Order
@@ -52,7 +52,8 @@ defmodule LetorEcom.Account.User do
     has_many(:shopping_list, ShoppingList)
     has_many(:user_fav, UserFav)
     has_many(:instore_sales, InstoreSale)
-    has_many(:orders, Order)
+    has_many(:viewed_items, ViewedItem)
+    has_many(:orders, Order, on_delete: :delete_all)
     belongs_to(:location, Location)
     belongs_to(:agent, Agent)
     belongs_to(:supplier, Supplier)
@@ -109,6 +110,8 @@ defmodule LetorEcom.Account.User do
     |> valid_phone(:phone)
     |> create_full_name()
     |> gen_referal_code
+    # |> update_email(:email)
+    |> downcase_email()
   end
 
   def agents_changeset(user, attrs) do
@@ -219,7 +222,7 @@ defmodule LetorEcom.Account.User do
     user
     |> cast(attrs, all_fields())
     |> validate_format(:email, @email_regex)
-    |> update_change(:email, &String.downcase/1)
+    # |> update_change(:email, &String.downcase/1)
     |> unique_constraint(:email, message: "A user with the same email already exists")
     |> unique_constraint(:phone, message: "Phone number has already been used")
     |> validate_length(:address,
@@ -230,6 +233,8 @@ defmodule LetorEcom.Account.User do
     |> assoc_constraint(:location)
     |> valid_phone(:phone)
     |> create_full_name
+    # |> update_email(:email)
+    |> downcase_email()
   end
 
   @spec update_referals_earned_changeset(
@@ -429,6 +434,25 @@ defmodule LetorEcom.Account.User do
     else
       changeset
     end
+  end
+
+  # def update_email(changeset, field) do
+  # email = get_field(changeset, field)
+
+  # if is_nil(email) == true do
+  # {:ok, email} = String.downcase(email, &String.downcase/1)
+
+  # case String.downcase(email) do
+  # false -> changeset
+  # _ -> "Invalid email"
+  # end
+  # else
+  # changeset
+  # end
+  # end
+
+  def downcase_email(changeset) do
+    Ecto.Changeset.update_change(changeset, :email, &String.downcase/1)
   end
 
   defp create_full_name(changeset) do

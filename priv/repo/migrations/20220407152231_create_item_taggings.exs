@@ -13,5 +13,6 @@ defmodule LetorEcom.Repo.Migrations.CreateItemTaggings do
     create index(:item_taggings, [:item_id])
     create index(:item_taggings, [:item_tag_id])
     create index(:item_taggings, [:id])
+    create unique_index(:item_taggings, [:item_id], name: "item_taggings_item_id_index")
   end
 end

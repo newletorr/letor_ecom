@@ -1,6 +1,6 @@
 defmodule LetorEcom.CustomerPurchases.PickUp do
   use LetorEcom.SchemaHelper
-  alias LetorEcom.AgentsAndSuppliers.CampusAgent
+  # alias LetorEcom.AgentsAndSuppliers.CampusAgent
   alias LetorEcom.Centres.PickupCentre
   alias LetorEcom.CustomerPurchases.Order
   alias LetorEcom.HumanResource.Staff
@@ -10,28 +10,11 @@ defmodule LetorEcom.CustomerPurchases.PickUp do
     field :picked, :boolean, default: false
     field :pickup_code, :string
     belongs_to(:order, Order)
-    belongs_to(:agent, Agent)
+    # belongs_to(:agent, Agent)
     belongs_to(:pickup_centre, PickupCentre)
     belongs_to(:staff, Staff)
 
     timestamps(type: :utc_datetime)
-  end
-
-  @spec campus_agent_changeset(
-          {map, map}
-          | %{
-              :__struct__ => atom | %{:__changeset__ => map, optional(any) => any},
-              optional(atom) => any
-            },
-          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
-        ) :: Ecto.Changeset.t()
-  @doc false
-  def campus_agent_changeset(pick_up, attrs) do
-    pick_up
-    |> cast(attrs, [:order_id, :campus_agent_id, :pick_up_time, :picked, :pickup_code])
-    |> validate_required([:pick_up_time, :picked, :pickup_code])
-    |> assoc_constraint(:order)
-    |> assoc_constraint(:agent)
   end
 
   @spec instore_pickup_changeset(

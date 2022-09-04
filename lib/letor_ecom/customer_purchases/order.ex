@@ -1,7 +1,7 @@
 defmodule LetorEcom.CustomerPurchases.Order do
   use LetorEcom.SchemaHelper
   alias LetorEcom.Account.{AddressBook, User}
-  alias LetorEcom.AgentsAndSuppliers.Agent
+  #alias LetorEcom.AgentsAndSuppliers.Agent
   alias LetorEcom.Catalogue.Item
   alias LetorEcom.Control.Location
   alias LetorEcom.CustomerPurchases.{CartItem, DeliveryCharge, OrderDispatch, PickUp}
@@ -44,7 +44,7 @@ defmodule LetorEcom.CustomerPurchases.Order do
     belongs_to(:item, Item)
     belongs_to(:user, User)
     belongs_to(:location, Location)
-    belongs_to(:agent, Agent)
+    #belongs_to(:agent, Agent)
     belongs_to(:order_dispatch, OrderDispatch)
     belongs_to(:address_book, AddressBook)
     has_many(:cart_items, CartItem)
@@ -53,6 +53,14 @@ defmodule LetorEcom.CustomerPurchases.Order do
     timestamps(type: :utc_datetime)
   end
 
+  @spec activate_cart_changeset(
+          {map, map}
+          | %{
+              :__struct__ => atom | %{:__changeset__ => map, optional(any) => any},
+              optional(atom) => any
+            },
+          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: Ecto.Changeset.t()
   @doc false
   def activate_cart_changeset(order, attrs) do
     order

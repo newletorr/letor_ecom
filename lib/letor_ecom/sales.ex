@@ -238,6 +238,7 @@ defmodule LetorEcom.Sales do
     Repo.delete(sales)
   end
 
+  def get_customer_info!(id), do: Repo.get!(CustomerInfo, id)
   @doc """
   Creates a customer_info.
 

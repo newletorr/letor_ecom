@@ -2,6 +2,7 @@ defmodule LetorEcom.HumanResource.Staff do
   use LetorEcom.SchemaHelper
   alias LetorEcom.Account.User
   alias LetorEcom.HumanResource.{Driver, StaffPosting}
+  alias LetorEcom.Sales.Sale
   alias LetorEcom.CustomerPurchases.OrderDispatch
   @email_regex ~r/^[A-Za-z0-9._%+-+']+@[A-Za-z0-9.-]+\.[A-Za-z]+$/
 
@@ -30,6 +31,7 @@ defmodule LetorEcom.HumanResource.Staff do
     has_many(:driver, Driver)
     has_many(:order_dispatch, OrderDispatch)
     has_many(:staff_postings, StaffPosting)
+    has_many(:sales, Sale)
     has_one(:users, User)
 
     timestamps(type: :utc_datetime)
@@ -83,6 +85,7 @@ defmodule LetorEcom.HumanResource.Staff do
     |> validate_length(:email, min: 5, max: 160)
     |> unique_constraint(:email, message: "A user with the same email already exists")
     |> unique_constraint(:phone, message: "A user with the same phone number already exists")
+    |> unique_constraint(:guarantor_phone)
     |> validate_length(:first_name, min: 2, max: 40)
     |> validate_format(:first_name, ~r/^[a-zA-Z_-]+$/, message: "Name must only contain letters")
     |> validate_length(:last_name, min: 2, max: 40)
@@ -121,6 +124,7 @@ defmodule LetorEcom.HumanResource.Staff do
     |> validate_length(:email, min: 5, max: 160)
     |> unique_constraint(:email, message: "A user with the same email already exists")
     |> unique_constraint(:phone, message: "A user with the same phone number already exists")
+    |> unique_constraint(:guarantor_phone)
     |> validate_length(:first_name, min: 4, max: 40)
     |> validate_format(:first_name, ~r/^[a-zA-Z_-]+$/, message: "Name must only contain letters")
     |> validate_length(:last_name, min: 4, max: 40)

@@ -12,6 +12,7 @@ defmodule LetorEcom.Repo.Migrations.CreateUserFavs do
 
     create index(:user_favs, [:id])
     create index(:user_favs, [:user_id])
+    create index(:user_favs, [:item_id])
     create unique_index(:user_favs, [:item_id, :user_id], name: "users_fav_item_id_user_id_index")
   end
 end

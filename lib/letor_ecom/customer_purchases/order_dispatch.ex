@@ -27,8 +27,8 @@ defmodule LetorEcom.CustomerPurchases.OrderDispatch do
       :driver_id,
       :pickup_centre_id,
       :order_count,
-      :order_delivered,
-      :all_orders_delivered
+      :order_delivered
+      #:all_orders_delivered
     ])
     |> unique_constraint(:staff_id,
       message: "Please dispatch your existing dispatch(es) before creating a new one.",

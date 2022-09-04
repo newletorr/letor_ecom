@@ -18,9 +18,9 @@ defmodule LetorEcom.Account.AddressBook do
   end
 
   @doc false
-  def changeset(address, attrs) do
-    address
-    |> cast(attrs, [:user_id, :address, :city, :state, :zip_code, :area, :coordinates])
+  def changeset(address_book, attrs) do
+    address_book
+    |> cast(attrs, [:address, :city, :state, :zip_code, :area, :coordinates, :user_id])
     |> validate_required([:address, :city, :area, :state])
     |> unique_constraint(:address,
       message: "You have already added this address",

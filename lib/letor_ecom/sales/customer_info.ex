@@ -14,8 +14,8 @@ defmodule LetorEcom.Sales.CustomerInfo do
   @doc false
   def changeset(customer_info, attrs) do
     customer_info
-    |> cast(attrs, [:sale_id, :email, :phone, :name])
-    |> validate_required([:email, :phone, :name])
+    |> cast(attrs, [:sale_id, :phone, :name])
+    |> validate_required([:phone, :name])
     |> unique_constraint(:phone, message: "A user with the same phone number already exists")
     |> assoc_constraint(:user)
     |> assoc_constraint(:sale)

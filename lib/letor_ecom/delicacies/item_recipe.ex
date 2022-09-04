@@ -15,5 +15,7 @@ defmodule LetorEcom.Delicacies.ItemRecipe do
     item_recipe
     |> cast(attrs, [:item_id, :recipe_id])
     |> validate_required([:item_id, :recipe_id])
+    |> assoc_constraint(:item)
+    |> assoc_constraint(:recipe)
   end
 end

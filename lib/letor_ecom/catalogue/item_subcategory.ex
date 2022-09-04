@@ -28,7 +28,7 @@ defmodule LetorEcom.Catalogue.ItemSubcategory do
     |> validate_required([:item_category_id, :name, :description])
     |> unique_constraint(:name,
       message: "A subcategory with the same name already exist in this Category",
-      name: :item_subcategories_name_item_category_id_index
+      name: :item_subcategories_name_index
     )
     |> foreign_key_constraint(:item_category_id)
   end

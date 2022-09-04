@@ -4,73 +4,17 @@ defmodule LetorEcom.AgentsAndSuppliers do
   """
 
   import Ecto.Query, warn: false
-  alias Ecto.Multi
+  # alias Ecto.Multi
   alias LetorEcom.Repo
 
-  alias LetorEcom.AgentsAndSuppliers.{Agent, Supplier}
+  alias LetorEcom.AgentsAndSuppliers.Supplier
 
-  @doc """
-  Creates a agent.
+  def get_supplier!(id), do: Repo.get!(Supplier, id)
 
-  ## Examples
-
-      iex> create_agent(%{field: value})
-      {:ok, %Agent{}}
-
-      iex> create_agent(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_agent(attrs \\ %{}) do
-    agent = %Agent{} |> Agent.changeset(attrs)
-
-    Multi.new()
-    |> Multi.insert(:agent, agent)
-    |> Multi.run(:agents_uploads, fn repo, %{agent: agent} ->
-      agents_uploads_changeset =
-        agent
-        |> Agent.images_upload_changeset(%{
-          agents_image: attrs.agents_image,
-          id_image: attrs.id_image
-        })
-
-      repo.update(agents_uploads_changeset)
-    end)
-    |> Repo.transaction()
-  end
-
-  @doc """
-  Updates a agent.
-
-  ## Examples
-
-      iex> update_agent(agent, %{field: new_value})
-      {:ok, %Agent{}}
-
-      iex> update_agent(agent, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_agent(%Agent{} = agent, attrs) do
-    agent
-    |> Agent.update_changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a agent.
-
-  ## Examples
-
-      iex> delete_agent(agent)
-      {:ok, %Agent{}}
-
-      iex> delete_agent(agent)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_agent(%Agent{} = agent) do
-    Repo.delete(agent)
+  def create_supplier(attrs \\ %{}) do
+    %Supplier{}
+    |> Supplier.individual_supplier_changeset(attrs)
+    |> Repo.insert()
   end
 
   def search_supplier(query, nil), do: query

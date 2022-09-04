@@ -8,7 +8,7 @@ defmodule LetorEcom.Repo.Migrations.CreatePickUps do
       add :picked, :boolean, default: false, null: false
       add :pickup_code, :string
       add :order_id, references(:orders, on_delete: :nothing, type: :binary_id)
-      add :agent_id, references(:agents, on_delete: :nothing, type: :binary_id)
+      #add :agent_id, references(:agents, on_delete: :nothing, type: :binary_id)
       add :pickup_centre_id, references(:pickup_centres, on_delete: :nothing, type: :binary_id)
       add :staff_id, references(:staff, on_delete: :nothing, type: :binary_id)
 
@@ -17,7 +17,7 @@ defmodule LetorEcom.Repo.Migrations.CreatePickUps do
 
     create index(:pick_ups, [:id])
     create index(:pick_ups, [:order_id])
-    create index(:pick_ups, [:agent_id])
+    #create index(:pick_ups, [:agent_id])
     create index(:pick_ups, [:pickup_centre_id])
     create index(:pick_ups, [:staff_id])
   end

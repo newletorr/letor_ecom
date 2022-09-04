@@ -1,6 +1,7 @@
 defmodule LetorEcom.Centres.QualityAssuranceRequirement do
   use LetorEcom.SchemaHelper
-  alias LetorEcom.HumanResource.Staff
+  #alias LetorEcom.HumanResource.Staff
+  alias LetorEcom.Centres.Batch
 
   schema "quality_assurance_requirements" do
     field :acceptable_quantity_of_damage_item, :boolean, default: false, read_after_writes: true

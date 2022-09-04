@@ -33,7 +33,7 @@ defmodule LetorEcom.Sales.Sale do
     |> cast(attrs, [
       :staff_id,
       :pickup_centre_id,
-      :cart_items_id,
+      :cart_item_id,
       :quantity,
       :sales_price,
       :buy_price,
@@ -44,10 +44,10 @@ defmodule LetorEcom.Sales.Sale do
       :sales_status
     ])
     |> validate_required([
-      :cart_items_id
+      :cart_item_id
     ])
     |> assoc_constraint(:staff)
-    |> assoc_constraint(:cart_items)
+    |> assoc_constraint(:cart_item)
     |> assoc_constraint(:pickup_centre)
     |> cart_item_already_sold
     |> get_cart_item_sales_price

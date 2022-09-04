@@ -19,16 +19,17 @@ defmodule LetorEcom.Account.ShoppingList do
   @doc false
   def changeset(shopping_list, attrs) do
     shopping_list
-    |> cast(attrs, [:title, :user_id])
+    |> cast(attrs, [:title, :quantity, :item_price, :total, :user_id, :item_id])
     |> validate_required([:title])
     |> unique_constraint(:title, name: :shopping_lists_title_user_id_index)
     |> assoc_constraint(:user)
+    |> assoc_constraint(:item)
   end
 
   @doc false
   def update_changeset(shopping_list, attrs) do
     shopping_list
-    |> cast(attrs, [:item_price, :quantity, :item_id, :total])
+    |> cast(attrs, [:item_price, :quantity, :user_id, :title, :item_id, :total])
     |> validate_required(@required_fields)
     |> get_item_price
     |> calculate_total

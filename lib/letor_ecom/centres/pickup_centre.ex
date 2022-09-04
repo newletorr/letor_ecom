@@ -83,7 +83,7 @@ defmodule LetorEcom.Centres.PickupCentre do
     |> unique_constraint(:address, message: "A centre with the same address already exists")
     |> unique_constraint(:area,
       message: "There is a centre in this location already",
-      name: :pickup_centres_area_city_index
+      name: :pickup_centres_area_index
     )
     |> assoc_constraint(:ecommerce_control)
     |> gen_centre_code

@@ -8,10 +8,10 @@ defmodule LetorEcom.Account do
   alias Ecto.Multi
 
   alias LetorEcom.Account.{AddressBook, ReferedList, ShoppingList, User, UserFav, ViewedItem}
-  alias LetorEcom.AgentsAndSuppliers.{Agent, Supplier}
+  alias LetorEcom.AgentsAndSuppliers.Supplier
   alias LetorEcom.HumanResource.Staff
   alias LetorEcom.Transactions.UserWallet
-
+  
   def data do
     Dataloader.Ecto.new(Repo, query: &query/2)
   end
@@ -44,21 +44,6 @@ defmodule LetorEcom.Account do
         |> UserWallet.changeset(%{user_id: user.id})
 
       repo.insert(user_wallet_changeset)
-    end)
-    |> Repo.transaction()
-  end
-
-  def register_agent(attrs \\ %{}) do
-    agent_changeset = %Agent{} |> Agent.changeset(attrs)
-
-    Multi.new()
-    |> Multi.insert(:agent, agent_changeset)
-    |> Multi.run(:user, fn repo, %{agent: agent} ->
-      user_changeset =
-        %User{}
-        |> User.agent_changeset(Map.put(attrs, :agent_id, agent.id))
-
-      repo.insert(user_changeset)
     end)
     |> Repo.transaction()
   end
@@ -255,9 +240,7 @@ defmodule LetorEcom.Account do
 
   """
   def delete_address_book(%AddressBook{} = address_book) do
-    address_book
-    |> AddressBook.deletion_changeset()
-    |> Repo.delete()
+    Repo.delete(address_book)
   end
 
   @doc """
@@ -326,6 +309,8 @@ defmodule LetorEcom.Account do
   def delete_refered_list(%ReferedList{} = refered_list) do
     Repo.delete(refered_list)
   end
+
+  def get_shopping_list!(id), do: Repo.get!(ShoppingList, id)
 
   @doc """
   Creates a shopping_list.
